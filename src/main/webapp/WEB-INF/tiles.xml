@@ -14,4 +14,12 @@
         <put-attribute name="body" value="/WEB-INF/templates/home-body.jsp"/>
     </definition>
 
+    <definition name="login" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/templates/login-body.jsp"/>
+    </definition>
+
+    <definition name="registration" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/templates/registration-body.jsp"/>
+    </definition>
+
 </tiles-definitions>
