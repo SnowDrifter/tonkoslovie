@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 
         baseRoles.add(Role.ROLE_USER);
         user.setRoles(baseRoles);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
     }
