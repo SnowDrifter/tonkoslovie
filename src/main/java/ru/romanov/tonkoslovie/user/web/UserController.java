@@ -10,6 +10,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
 import ru.romanov.tonkoslovie.user.UserService;
 import ru.romanov.tonkoslovie.user.entity.User;
 
@@ -51,6 +53,16 @@ public class UserController {
         userService.saveNewUser(user);
 
         return "redirect:/home";
+    }
+
+    @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
+    public String confirmRegistration(@RequestParam("token") String token) {
+
+        if(userService.checkToken(token)){
+            return "redirect:/home";
+        } else {
+            return "redirect:/registration";
+        }
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)

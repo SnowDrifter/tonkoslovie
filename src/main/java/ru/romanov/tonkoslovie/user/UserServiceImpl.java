@@ -7,13 +7,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import ru.romanov.tonkoslovie.mail.pojo.EmailVerification;
+import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
+import ru.romanov.tonkoslovie.mail.MailService;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,6 +23,10 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private EmailVerificationRepository emailVerificationRepository;
 
     @PostConstruct
     @Transactional
@@ -33,6 +38,7 @@ public class UserServiceImpl implements UserService {
             root.setUsername("root");
             root.setPassword(passwordEncoder.encode("1q2w3e4r"));
             root.setRoles(new HashSet<>(Arrays.asList(Role.values())));
+            root.setEnabled(true);
             userRepository.save(root);
         }
     }
@@ -55,12 +61,35 @@ public class UserServiceImpl implements UserService {
         user.setRoles(baseRoles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        String token = UUID.randomUUID().toString();
+
+        EmailVerification verification = new EmailVerification();
+        verification.setUser(user);
+        verification.setToken(token);
+        verification.setExpiryDate(new Date());
+
         userRepository.save(user);
+        emailVerificationRepository.save(verification);
+        mailService.sendVerification(user.getEmail(), token);
     }
 
     @Override
     public long countByUsername(String username) {
         return userRepository.countByUsername(username);
+    }
+
+    @Override
+    public boolean checkToken(String token) {
+        EmailVerification verification = emailVerificationRepository.findByToken(token);
+
+        if(verification != null){
+            User user = verification.getUser();
+            user.setEnabled(true);
+            userRepository.save(user);
+            return true;
+        } else{
+            return false;
+        }
     }
 
     @Override

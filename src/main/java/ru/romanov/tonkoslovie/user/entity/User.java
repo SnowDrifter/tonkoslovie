@@ -26,6 +26,8 @@ public class User implements UserDetails {
     private String email;
     private String firstName;
     private String lastName;
+    @Column(columnDefinition = "boolean default false")
+    private boolean enabled;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -49,6 +51,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

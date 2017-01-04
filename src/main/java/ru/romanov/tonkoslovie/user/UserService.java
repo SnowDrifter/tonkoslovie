@@ -11,4 +11,6 @@ public interface UserService extends UserDetailsService {
     void saveNewUser(User user);
 
     long countByUsername(String username);
+
+    boolean checkToken(String token);
 }

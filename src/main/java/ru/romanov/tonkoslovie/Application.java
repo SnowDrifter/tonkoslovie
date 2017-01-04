@@ -7,8 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.mail.internet.AddressException;
+import java.io.UnsupportedEncodingException;
+
 @Controller
-@ComponentScan
+@ComponentScan(basePackages = {"ru.romanov", "it.ozimov.springboot"})
 @SpringBootApplication
 public class Application {
 
@@ -17,7 +20,7 @@ public class Application {
     }
 
     @RequestMapping(value = {"/", "/home"}, method = RequestMethod.GET)
-    public String home(){
+    public String home() throws AddressException, UnsupportedEncodingException {
         return "home";
     }
 }
