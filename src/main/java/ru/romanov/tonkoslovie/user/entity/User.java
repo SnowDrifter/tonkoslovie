@@ -11,13 +11,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Entity
+@Entity(name = "users")
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue
     private Long id;
-    @CollectionTable
+    @CollectionTable(name="roles")
     @ElementCollection(fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
