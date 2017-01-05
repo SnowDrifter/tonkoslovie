@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.mail.pojo;
+package ru.romanov.tonkoslovie.mail.entity;
 
 import lombok.Data;
 import ru.romanov.tonkoslovie.user.entity.User;

@@ -22,4 +22,12 @@
         <put-attribute name="body" value="/WEB-INF/templates/registration-body.jsp"/>
     </definition>
 
+    <definition name="edit-profile" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/templates/edit-profile-body.jsp"/>
+    </definition>
+
+    <definition name="accept" extends="base-definition">
+        <put-attribute name="body" value="/WEB-INF/templates/accept-body.jsp"/>
+    </definition>
+
 </tiles-definitions>

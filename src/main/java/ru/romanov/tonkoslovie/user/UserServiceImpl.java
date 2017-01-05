@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import ru.romanov.tonkoslovie.mail.pojo.EmailVerification;
+import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.MailService;
 import ru.romanov.tonkoslovie.user.entity.Role;
@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
             root.setPassword(passwordEncoder.encode("1q2w3e4r"));
             root.setRoles(new HashSet<>(Arrays.asList(Role.values())));
             root.setEnabled(true);
+            root.setEmail("mail@mail.mail");
             userRepository.save(root);
         }
     }
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
         if (StringUtils.hasText(username)) {
-            return userRepository.findByUsername(username);
+            return userRepository.findFirstByUsername(username);
         } else {
             return null;
         }
@@ -74,6 +75,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User update(User user) {
+        user = updateFields(user);
+        return userRepository.save(user);
+    }
+
+    @Override
     public long countByUsername(String username) {
         return userRepository.countByUsername(username);
     }
@@ -94,6 +101,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
+        return userRepository.findFirstByUsername(username);
+    }
+
+    private User updateFields(User user){
+        User oldUser = userRepository.getOne(user.getId());
+
+        if(user.getFirstName() != null){
+            oldUser.setFirstName(user.getFirstName());
+        }
+
+        if(user.getLastName() != null){
+            oldUser.setLastName(user.getLastName());
+        }
+
+        return oldUser;
     }
 }
