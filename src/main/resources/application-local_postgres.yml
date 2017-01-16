@@ -13,3 +13,11 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
+
+metrics:
+  influxdb:
+    active: true
+    host: 127.0.0.1
+    port: 8086
+    database: tonkoslovie
+    auth: admin:admin

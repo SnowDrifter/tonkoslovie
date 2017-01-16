@@ -21,8 +21,7 @@
     <spring:message code="user.lastName"/>: <form:input class="field" path="lastName" value=""/>
     <form:errors path="lastName" cssClass="error" element="div"/><br/>
 
-    <button id="registration_submit" type="submit"> <spring:message code="submit"/></button>
+    <button id="registration_submit" type="submit"><spring:message code="submit"/></button>
 </form:form>
-
 
 

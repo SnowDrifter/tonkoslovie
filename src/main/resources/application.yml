@@ -22,3 +22,7 @@ spring:
           auth: true
           starttls.enable: true
           starttls.required: true
+
+metrics:
+  influxdb.active: false
+  console: false

@@ -18,7 +18,6 @@
     <label for="remember-me" class="css-label lite-gray-check"><spring:message code="login.rememberMe"/></label>
     <input type="checkbox" checked class="css-checkbox" id="remember-me" name="remember-me"/><br/>
 
-
     <button id="login_submit" type="submit"><spring:message code="submit"/></button>
     <input type="hidden" name="<c:out value="${_csrf.parameterName}"/>" value="<c:out value="${_csrf.token}"/>"/>
 </form>
