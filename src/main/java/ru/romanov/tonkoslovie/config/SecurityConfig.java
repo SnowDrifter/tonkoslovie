@@ -37,7 +37,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/edit").access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')");
 
-
         http.userDetailsService(userService);
 
         http.rememberMe().tokenRepository(persistentTokenRepository()).tokenValiditySeconds(1209600);
