@@ -1,17 +1,22 @@
 package ru.romanov.tonkoslovie.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.MailService;
+import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
+import ru.romanov.tonkoslovie.security.AuthService;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
+import ru.romanov.tonkoslovie.user.web.request.UserRequest;
+import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -19,14 +24,20 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final MailService mailService;
+    private final EmailVerificationRepository emailVerificationRepository;
+    private final AuthService authService;
+
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private MailService mailService;
-    @Autowired
-    private EmailVerificationRepository emailVerificationRepository;
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService, EmailVerificationRepository emailVerificationRepository, AuthService authService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.mailService = mailService;
+        this.emailVerificationRepository = emailVerificationRepository;
+        this.authService = authService;
+    }
 
     @PostConstruct
     @Transactional
@@ -42,6 +53,28 @@ public class UserServiceImpl implements UserService {
             root.setEmail("mail@mail.mail");
             userRepository.save(root);
         }
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<UserResponse> login(UserRequest request) {
+        User user = userRepository.findFirstByUsername(request.getUsername());
+        if (user == null) {
+            return new ResponseEntity<>(new UserResponse(null, "Пользователь не найден"), HttpStatus.BAD_REQUEST);
+        }
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            return new ResponseEntity<>(new UserResponse(null, "Неправильный пароль"), HttpStatus.BAD_REQUEST);
+        }
+
+        StringBuilder roles = new StringBuilder();
+        user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+
+        String token = authService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+        user.setToken(token);
+        userRepository.save(user);
+
+       return new ResponseEntity<>(new UserResponse(token, null), HttpStatus.OK);
     }
 
     @Override
@@ -89,12 +122,12 @@ public class UserServiceImpl implements UserService {
     public boolean checkToken(String token) {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
-        if(verification != null){
+        if (verification != null) {
             User user = verification.getUser();
             user.setEnabled(true);
             userRepository.save(user);
             return true;
-        } else{
+        } else {
             return false;
         }
     }
@@ -104,14 +137,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.findFirstByUsername(username);
     }
 
-    private User updateFields(User user){
+    private User updateFields(User user) {
         User oldUser = userRepository.getOne(user.getId());
 
-        if(user.getFirstName() != null){
+        if (user.getFirstName() != null) {
             oldUser.setFirstName(user.getFirstName());
         }
 
-        if(user.getLastName() != null){
+        if (user.getLastName() != null) {
             oldUser.setLastName(user.getLastName());
         }
 

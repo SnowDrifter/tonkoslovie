@@ -26,3 +26,6 @@ spring:
 metrics:
   influxdb.active: false
   console: false
+
+mail:
+  host: http://localhost:8080

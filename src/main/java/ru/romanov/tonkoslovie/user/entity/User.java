@@ -13,7 +13,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@Entity(name = "users")
+@Entity
+@Table(name = "\"user\"",
+        indexes = {
+                @Index(name = "tokenIndex", columnList = "token")
+        }
+)
 public class User implements UserDetails {
 
     @Id
@@ -23,17 +28,14 @@ public class User implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();
-    @NotEmpty(message="{validation.username.notEmpty}")
     private String username;
-    @NotEmpty(message="{validation.password.notEmpty}")
     private String password;
-    @NotEmpty(message="{validation.email.notEmpty}")
-    @Email(message="{validation.email}")
     private String email;
     private String firstName;
     private String lastName;
     @Column(columnDefinition = "boolean default false")
     private boolean enabled;
+    private String token;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
