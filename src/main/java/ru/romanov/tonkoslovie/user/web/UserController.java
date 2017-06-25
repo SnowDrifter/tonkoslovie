@@ -1,33 +1,25 @@
 package ru.romanov.tonkoslovie.user.web;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import ru.romanov.tonkoslovie.security.AuthService;
-import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.UserService;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
+import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
 
 @RestController
 public class UserController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final UserService userService;
 
     @Autowired
@@ -41,14 +33,13 @@ public class UserController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public void processRegistration(@RequestBody User user) {
-        // Already registered
-        if (userService.countByUsername(user.getUsername()) > 0) {
-            // TODO: message
-            return;
+    public RegistrationResponse processRegistration(@RequestBody User user, HttpServletResponse response) {
+        RegistrationResponse registrationResponse = userService.saveNewUser(user);
+        if(StringUtils.hasText(registrationResponse.getErrorMessage())){
+            response.setStatus(400);
         }
 
-        userService.saveNewUser(user);
+        return registrationResponse;
     }
 
     @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)

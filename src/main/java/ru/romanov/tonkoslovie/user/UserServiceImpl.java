@@ -1,5 +1,6 @@
 package ru.romanov.tonkoslovie.user;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +17,17 @@ import ru.romanov.tonkoslovie.security.AuthService;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
+import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -88,23 +94,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveNewUser(User user) {
+    public RegistrationResponse saveNewUser(User user) {
         Set<Role> baseRoles = new HashSet<>();
 
         baseRoles.add(Role.ROLE_USER);
         user.setRoles(baseRoles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        String token = UUID.randomUUID().toString();
-
-        EmailVerification verification = new EmailVerification();
-        verification.setUser(user);
-        verification.setToken(token);
-        verification.setExpiryDate(new Date());
-
         userRepository.save(user);
-        emailVerificationRepository.save(verification);
-        mailService.sendVerification(user.getEmail(), token);
+
+        try {
+            mailService.sendVerification(user);
+        } catch (Exception e) {
+            log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
+            return new RegistrationResponse("Возникла ошибка при отправке письма на электронную почту!");
+        }
+
+        return new RegistrationResponse();
     }
 
     @Override
