@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.word.Word;
 import ru.romanov.tonkoslovie.content.word.WordRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,19 +21,24 @@ public class WordController {
 
     @RequestMapping("/words")
     public List<Word> words(){
-        return wordRepository.findAll();
+        return new ArrayList<>(wordRepository.findAll());
     }
 
-    @RequestMapping(value = "/word", method = RequestMethod.POST)
+    @PostMapping(value = "/word")
     public void saveWord(@RequestBody Word word){
         wordRepository.save(word);
     }
 
-    @RequestMapping(value = "/word", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/word")
     public void deleteWord(@RequestParam Long id){
         if(wordRepository.exists(id)){
             wordRepository.delete(id);
         }
+    }
+
+    @GetMapping("/random")
+    public List<Word> getRandomWords(@RequestParam Integer limit){
+        return wordRepository.getRandomWords(limit);
     }
 
 }

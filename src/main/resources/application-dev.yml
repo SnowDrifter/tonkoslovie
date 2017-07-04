@@ -13,6 +13,9 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
 
 mail:
   host: http://88.198.165.206:8080
