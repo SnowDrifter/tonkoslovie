@@ -1,6 +1,5 @@
 package ru.romanov.tonkoslovie.content.text.web;
 
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.text.Text;
@@ -33,6 +32,11 @@ public class TextController {
     @GetMapping(value = "/text")
     public Text getText(@RequestParam Long id){
         return textRepository.getOne(id);
+    }
+
+    @GetMapping(value = "/texts/findByTitle")
+    public List<Text> findTextsByTitle(@RequestParam String title){
+        return textRepository.findByTitleContainingIgnoreCase(title);
     }
 
     @DeleteMapping(value = "/text")
