@@ -16,6 +16,8 @@ public class Lesson {
     @GeneratedValue
     private long id;
     private String title;
+    @Column(columnDefinition = "text")
+    private String text;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Text> relatedTexts;
 
