@@ -29,3 +29,6 @@ metrics:
 
 mail:
   host: http://localhost:8080
+
+media:
+  imageDirectory: /app/tonkoslovie/images
