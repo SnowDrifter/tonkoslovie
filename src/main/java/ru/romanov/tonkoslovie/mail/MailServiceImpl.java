@@ -15,6 +15,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -45,9 +47,12 @@ public class MailServiceImpl implements MailService {
                 .from(new InternetAddress("test@no-reply", "Test"))
                 .to(Lists.newArrayList(new InternetAddress(user.getEmail())))
                 .subject("Подтверждение регистрации")
-                .body(host + "/confirmRegistration?token=" + token)
+                .body("")
                 .encoding("UTF-8").build();
 
-        emailService.send(email);
+        final Map<String, Object> modelObject = new HashMap<>();
+        modelObject.put("link", host + "/confirmRegistration?token=" + token);
+
+        emailService.send(email, "confirmRegistration.html", modelObject);
     }
 }

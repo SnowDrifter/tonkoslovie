@@ -78,7 +78,7 @@
         <!-- Mail -->
         <dependency>
             <groupId>it.ozimov</groupId>
-            <artifactId>spring-boot-email-core</artifactId>
+            <artifactId>spring-boot-thymeleaf-email</artifactId>
             <version>0.6.2</version>
         </dependency>
 
