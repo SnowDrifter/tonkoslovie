@@ -2,10 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
-<div>
-    <h1><span th:text="${link}"/></h1>
-</div>
+<table class="body">
+    <tr>
+        <td>
+            <h3>Здравствуйте, <span th:text="${displayName}"></span>.</h3>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Спасибо за регистрацию на портале tonkoslovie.ru.
+            Для завершения регистрации, пожалуйста, перейдите по этой ссылке.
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a th:href="${link}">Подтвердить e-mail</a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Если вы не пытались зарегистрироваться на tonkoslovie.ru просто проигнорируйте это письмо
+        </td>
+    </tr>
+    <tr>
+        <td>
+            С уважением, служба поддержки tonkoslovie.ru
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>

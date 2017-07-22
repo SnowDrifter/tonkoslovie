@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
-import ru.romanov.tonkoslovie.mail.MailService;
+import ru.romanov.tonkoslovie.mail.EmailService;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.security.AuthService;
 import ru.romanov.tonkoslovie.user.entity.Role;
@@ -32,15 +32,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailService;
+    private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
     private final AuthService authService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService, EmailVerificationRepository emailVerificationRepository, AuthService authService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, EmailVerificationRepository emailVerificationRepository, AuthService authService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.mailService = mailService;
+        this.emailService = emailService;
         this.emailVerificationRepository = emailVerificationRepository;
         this.authService = authService;
     }
@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         try {
-            mailService.sendVerification(user);
+            emailService.sendVerification(user);
         } catch (Exception e) {
             log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
             return new RegistrationResponse("Возникла ошибка при отправке письма на электронную почту!");

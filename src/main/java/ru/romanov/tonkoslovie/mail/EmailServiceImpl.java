@@ -3,7 +3,6 @@ package ru.romanov.tonkoslovie.mail;
 import com.google.common.collect.Lists;
 import it.ozimov.springboot.mail.model.Email;
 import it.ozimov.springboot.mail.model.defaultimpl.DefaultEmail;
-import it.ozimov.springboot.mail.service.EmailService;
 import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,15 +19,15 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class MailServiceImpl implements MailService {
+public class EmailServiceImpl implements EmailService {
 
     @Value("${mail.host}")
     private String host;
-    private final EmailService emailService;
+    private final it.ozimov.springboot.mail.service.EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
 
     @Autowired
-    public MailServiceImpl(EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
+    public EmailServiceImpl(it.ozimov.springboot.mail.service.EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
         this.emailService = emailService;
         this.emailVerificationRepository = emailVerificationRepository;
     }
@@ -50,9 +49,10 @@ public class MailServiceImpl implements MailService {
                 .body("")
                 .encoding("UTF-8").build();
 
-        final Map<String, Object> modelObject = new HashMap<>();
-        modelObject.put("link", host + "/confirmRegistration?token=" + token);
+        final Map<String, Object> emailData = new HashMap<>();
+        emailData.put("displayName", user.getUsername());
+        emailData.put("link", host + "/confirmRegistration?token=" + token);
 
-        emailService.send(email, "confirmRegistration.html", modelObject);
+        emailService.send(email, "confirmRegistration.html", emailData);
     }
 }
