@@ -23,6 +23,11 @@ spring:
           auth: true
           starttls.enable: true
           starttls.required: true
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 128MB
+      max-request-size: 128MB
 
 metrics:
   influxdb.active: false
@@ -33,3 +38,4 @@ mail:
 
 media:
   imageDirectory: /app/tonkoslovie/images
+  soundDirectory: /app/tonkoslovie/sounds

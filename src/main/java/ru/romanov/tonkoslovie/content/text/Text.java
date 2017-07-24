@@ -26,5 +26,6 @@ public class Text {
     private String title;
     @Type(type = "TextPartJsonType")
     private List<TextPart> parts;
+    private String soundFileName;
 
 }

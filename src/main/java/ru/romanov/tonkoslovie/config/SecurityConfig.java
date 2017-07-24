@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationProvider();
     }
 
-    public RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+    private RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
         RequestHeaderAuthenticationFilter headerAuthenticationFilter = new RequestHeaderAuthenticationFilter();
         headerAuthenticationFilter.setPrincipalRequestHeader("Authorization");
         headerAuthenticationFilter.setExceptionIfHeaderMissing(false);
@@ -49,7 +49,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         headerAuthenticationFilter.setAuthenticationFailureHandler((request, response, exception) -> {
             request.getSession(true);
             response.sendError(403);
-            return;
         });
         headerAuthenticationFilter.afterPropertiesSet();
         return headerAuthenticationFilter;
