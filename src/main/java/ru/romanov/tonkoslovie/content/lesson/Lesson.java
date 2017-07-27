@@ -20,5 +20,6 @@ public class Lesson {
     private String text;
     @OneToMany(fetch = FetchType.EAGER)
     private List<Text> relatedTexts;
+    private String previewImage;
 
 }

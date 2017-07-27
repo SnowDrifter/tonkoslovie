@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SoundResponse {
+public class UploadResponse {
 
     private String fileName;
 
