@@ -20,23 +20,23 @@ public class LessonController {
     }
 
     @GetMapping("/lessons")
-    public List<Lesson> lessons(){
+    public List<Lesson> lessons() {
         return new ArrayList<>(lessonRepository.findAll());
     }
 
     @PostMapping(value = "/lesson")
-    public void saveLesson(@RequestBody Lesson lesson){
-        lessonRepository.save(lesson);
+    public Lesson saveLesson(@RequestBody Lesson lesson) {
+        return lessonRepository.save(lesson);
     }
 
     @GetMapping(value = "/lesson")
-    public Lesson getLesson(@RequestParam Long id){
+    public Lesson getLesson(@RequestParam Long id) {
         return lessonRepository.getOne(id);
     }
 
     @DeleteMapping(value = "/lesson")
-    public void deleteLesson(@RequestParam Long id){
-        if(lessonRepository.exists(id)){
+    public void deleteLesson(@RequestParam Long id) {
+        if (lessonRepository.exists(id)) {
             lessonRepository.delete(id);
         }
     }

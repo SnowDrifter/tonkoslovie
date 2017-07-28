@@ -20,28 +20,28 @@ public class TextController {
     }
 
     @GetMapping("/texts")
-    public List<Text> texts(){
+    public List<Text> texts() {
         return new ArrayList<>(textRepository.findAll());
     }
 
     @PostMapping(value = "/text")
-    public void saveText(@RequestBody Text text){
-        textRepository.save(text);
+    public Text saveText(@RequestBody Text text) {
+        return textRepository.save(text);
     }
 
     @GetMapping(value = "/text")
-    public Text getText(@RequestParam Long id){
+    public Text getText(@RequestParam Long id) {
         return textRepository.getOne(id);
     }
 
     @GetMapping(value = "/texts/findByTitle")
-    public List<Text> findTextsByTitle(@RequestParam String title){
+    public List<Text> findTextsByTitle(@RequestParam String title) {
         return textRepository.findByTitleContainingIgnoreCase(title);
     }
 
     @DeleteMapping(value = "/text")
-    public void deleteText(@RequestParam Long id){
-        if(textRepository.exists(id)){
+    public void deleteText(@RequestParam Long id) {
+        if (textRepository.exists(id)) {
             textRepository.delete(id);
         }
     }

@@ -20,24 +20,24 @@ public class WordController {
     }
 
     @RequestMapping("/words")
-    public List<Word> words(){
+    public List<Word> words() {
         return new ArrayList<>(wordRepository.findAll());
     }
 
     @PostMapping(value = "/word")
-    public void saveWord(@RequestBody Word word){
-        wordRepository.save(word);
+    public Word saveWord(@RequestBody Word word) {
+        return wordRepository.save(word);
     }
 
     @DeleteMapping(value = "/word")
-    public void deleteWord(@RequestParam Long id){
-        if(wordRepository.exists(id)){
+    public void deleteWord(@RequestParam Long id) {
+        if (wordRepository.exists(id)) {
             wordRepository.delete(id);
         }
     }
 
     @GetMapping("/random")
-    public List<Word> getRandomWords(@RequestParam Integer limit){
+    public List<Word> getRandomWords(@RequestParam Integer limit) {
         return wordRepository.getRandomWords(limit);
     }
 
