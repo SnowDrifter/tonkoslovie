@@ -33,13 +33,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public RegistrationResponse processRegistration(@RequestBody User user, HttpServletResponse response) {
-        RegistrationResponse registrationResponse = userService.saveNewUser(user);
-        if(StringUtils.hasText(registrationResponse.getErrorMessage())){
-            response.setStatus(400);
-        }
-
-        return registrationResponse;
+    public ResponseEntity<RegistrationResponse> processRegistration(@RequestBody User user) {
+        return userService.saveNewUser(user);
     }
 
     @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)

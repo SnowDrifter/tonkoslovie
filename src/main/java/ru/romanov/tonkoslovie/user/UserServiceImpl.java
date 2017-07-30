@@ -19,12 +19,10 @@ import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
+import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -94,9 +92,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegistrationResponse saveNewUser(User user) {
-        Set<Role> baseRoles = new HashSet<>();
+    public ResponseEntity<RegistrationResponse> saveNewUser(User user) {
+        List<ValidationError> validationErrors = new ArrayList<>();
+        if(userRepository.existsByEmail(user.getEmail())){
+            validationErrors.add(new ValidationError("email", "Пользователь с таким адресом электронной почты уже зарегестрирован"));
+        }
 
+        if(userRepository.existsByUsername(user.getUsername())){
+            validationErrors.add(new ValidationError("username", "Пользователь с таким никнеймом уже зарегестрирован"));
+        }
+
+        if(!validationErrors.isEmpty()) {
+            return new ResponseEntity<>(new RegistrationResponse(validationErrors), HttpStatus.BAD_REQUEST);
+        }
+
+        Set<Role> baseRoles = new HashSet<>();
         baseRoles.add(Role.ROLE_USER);
         user.setRoles(baseRoles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -107,10 +117,10 @@ public class UserServiceImpl implements UserService {
             emailService.sendVerification(user);
         } catch (Exception e) {
             log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
-            return new RegistrationResponse("Возникла ошибка при отправке письма на электронную почту!");
+            return new ResponseEntity<>(new RegistrationResponse("Возникла ошибка при отправке письма на электронную почту!"), HttpStatus.BAD_REQUEST);
         }
 
-        return new RegistrationResponse();
+        return ResponseEntity.ok().build();
     }
 
     @Override

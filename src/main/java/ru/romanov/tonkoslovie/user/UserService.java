@@ -14,7 +14,7 @@ public interface UserService extends UserDetailsService {
 
     User findByUsername(String username);
 
-    RegistrationResponse saveNewUser(User user);
+    ResponseEntity<RegistrationResponse> saveNewUser(User user);
 
     User update(User user);
 
