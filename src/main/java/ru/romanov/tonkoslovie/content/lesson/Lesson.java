@@ -20,7 +20,7 @@ public class Lesson {
     private String annotation;
     @Column(columnDefinition = "text")
     private String text;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Text> relatedTexts;
     private String previewImage;
 
