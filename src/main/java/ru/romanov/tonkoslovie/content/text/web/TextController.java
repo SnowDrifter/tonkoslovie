@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.content.text.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.text.Text;
 import ru.romanov.tonkoslovie.content.text.TextRepository;
@@ -30,8 +31,14 @@ public class TextController {
     }
 
     @GetMapping(value = "/text")
-    public Text getText(@RequestParam Long id) {
-        return textRepository.getOne(id);
+    public ResponseEntity<Text> getText(@RequestParam Long id) {
+        Text text = textRepository.findOne(id);
+
+        if (text != null) {
+            return ResponseEntity.ok(text);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(value = "/texts/findByTitle")

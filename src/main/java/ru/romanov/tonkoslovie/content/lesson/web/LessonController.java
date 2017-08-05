@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.content.lesson.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.lesson.Lesson;
 import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
@@ -30,8 +31,14 @@ public class LessonController {
     }
 
     @GetMapping(value = "/lesson")
-    public Lesson getLesson(@RequestParam Long id) {
-        return lessonRepository.getOne(id);
+    public ResponseEntity<Lesson> getLesson(@RequestParam Long id) {
+        Lesson lesson = lessonRepository.findOne(id);
+
+        if (lesson != null) {
+            return ResponseEntity.ok(lesson);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping(value = "/lesson")
