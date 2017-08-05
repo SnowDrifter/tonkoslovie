@@ -21,7 +21,7 @@ public class WordController {
 
     @RequestMapping("/words")
     public List<Word> words() {
-        return new ArrayList<>(wordRepository.findAll());
+        return new ArrayList<>(wordRepository.findAllByOrderByIdAsc());
     }
 
     @PostMapping(value = "/word")

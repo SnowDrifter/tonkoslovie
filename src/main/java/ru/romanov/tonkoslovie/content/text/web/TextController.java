@@ -22,7 +22,7 @@ public class TextController {
 
     @GetMapping("/texts")
     public List<Text> texts() {
-        return new ArrayList<>(textRepository.findAll());
+        return new ArrayList<>(textRepository.findAllByOrderByIdAsc());
     }
 
     @PostMapping(value = "/text")

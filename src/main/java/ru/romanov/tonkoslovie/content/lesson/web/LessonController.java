@@ -22,7 +22,7 @@ public class LessonController {
 
     @GetMapping("/lessons")
     public List<Lesson> lessons() {
-        return new ArrayList<>(lessonRepository.findAll());
+        return new ArrayList<>(lessonRepository.findAllByOrderByIdAsc());
     }
 
     @PostMapping(value = "/lesson")
