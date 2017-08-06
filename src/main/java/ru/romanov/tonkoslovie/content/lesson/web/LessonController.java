@@ -21,8 +21,12 @@ public class LessonController {
     }
 
     @GetMapping("/lessons")
-    public List<Lesson> lessons() {
-        return new ArrayList<>(lessonRepository.findAllByOrderByIdAsc());
+    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {
+        if(onlyPublished) {
+            return new ArrayList<>(lessonRepository.findByPublishedTrueOrderByIdAsc());
+        } else {
+            return new ArrayList<>(lessonRepository.findAllByOrderByIdAsc());
+        }
     }
 
     @PostMapping(value = "/lesson")

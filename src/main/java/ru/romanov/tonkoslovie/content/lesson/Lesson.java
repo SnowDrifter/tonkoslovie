@@ -23,5 +23,7 @@ public class Lesson {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Text> relatedTexts;
     private String previewImage;
+    @Column(columnDefinition = "boolean default false")
+    private boolean published;
 
 }

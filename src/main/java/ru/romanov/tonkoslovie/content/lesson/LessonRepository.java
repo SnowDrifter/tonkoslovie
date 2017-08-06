@@ -10,4 +10,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByOrderByIdAsc();
 
+    List<Lesson> findByPublishedTrueOrderByIdAsc();
+
 }
