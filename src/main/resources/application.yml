@@ -39,3 +39,7 @@ mail:
 media:
   imageDirectory: /app/tonkoslovie/images
   soundDirectory: /app/tonkoslovie/sounds
+
+redis:
+  host: localhost
+  port: 6379
