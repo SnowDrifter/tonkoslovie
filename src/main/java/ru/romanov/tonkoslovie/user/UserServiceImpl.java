@@ -24,8 +24,8 @@ import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Service
 @Slf4j
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         StringBuilder roles = new StringBuilder();
         user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
 
-        String token = authService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = authService.makeToken(user.getId(), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 
@@ -130,11 +130,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long countByUsername(String username) {
-        return userRepository.countByUsername(username);
-    }
-
-    @Override
     public boolean checkToken(String token) {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
@@ -145,6 +140,17 @@ public class UserServiceImpl implements UserService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public void logout(long userId) {
+        User user = userRepository.getOne(userId);
+
+        if(user != null) {
+            authService.logoutFromRedis(user.getToken());
+            user.setToken(null);
+            userRepository.save(user);
         }
     }
 

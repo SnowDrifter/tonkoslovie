@@ -18,7 +18,7 @@ public interface UserService extends UserDetailsService {
 
     User update(User user);
 
-    long countByUsername(String username);
-
     boolean checkToken(String token);
+
+    void logout(long userId);
 }

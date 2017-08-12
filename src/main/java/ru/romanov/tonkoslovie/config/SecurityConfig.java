@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +18,9 @@ import org.springframework.security.web.authentication.preauth.RequestHeaderAuth
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import ru.romanov.tonkoslovie.security.AuthService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
+import ru.romanov.tonkoslovie.user.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -26,19 +30,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/login", "/api/**", "/registration", "/confirmRegistration", "/test").permitAll().anyRequest().authenticated();
+        http.authorizeRequests()
+                .antMatchers("/api/user/**", "/api/content/**", "/test").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/api/media/**").permitAll()
+                .anyRequest().authenticated();
         http.csrf().disable();
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
     }
 
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider());
+    public void configure(AuthenticationManagerBuilder auth, JwtAuthenticationProvider authProvider) throws Exception {
+        auth.authenticationProvider(authProvider);
     }
 
     @Bean
-    public JwtAuthenticationProvider authProvider() {
-        return new JwtAuthenticationProvider();
+    public JwtAuthenticationProvider authProvider(AuthService authService, UserRepository userRepository, RedisTemplate<String, Object> redisTemplate) {
+        return new JwtAuthenticationProvider(authService, userRepository, redisTemplate);
     }
 
     private RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {

@@ -4,9 +4,10 @@ package ru.romanov.tonkoslovie.security;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.security.user.AuthUser;
@@ -17,13 +18,21 @@ import java.security.Key;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Value("${app.security.redis-prefix}")
+    private String redisSecurityPrefix;
     @Value("${auth.jwt.secret:test}")
     private String secret;
     private Key key;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    public AuthServiceImpl(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @PostConstruct
     public void init() {
@@ -42,13 +51,13 @@ public class AuthServiceImpl implements AuthService {
 
             return new AuthUser(Long.parseLong(authTokenParams.get("userId")), "ROLE_USER");
         } catch (Exception e) {
-            logger.error("Convert jwt exception: {}", e.toString());
+            log.error("Convert jwt exception: {}", e.toString());
         }
         return null;
     }
 
     @Override
-    public String makeToken(String userId, String roles, Map<String, Object> params) {
+    public String makeToken(long userId, String roles, Map<String, Object> params) {
         Map<String, Object> claims = new HashMap<>();
         if (StringUtils.hasText(roles)) {
             claims.put("roles", roles);
@@ -59,9 +68,27 @@ public class AuthServiceImpl implements AuthService {
             claims.putAll(params);
         }
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
+
+        saveToRedis(token, new AuthUser(userId, roles));
+
+        return token;
+    }
+
+    public boolean logoutFromRedis(String token) {
+        try {
+            redisTemplate.delete(redisSecurityPrefix + token);
+            return true;
+        } catch (Exception e) {
+            log.error("Redis logout error: {}", e.toString());
+        }
+        return false;
+    }
+
+    private void saveToRedis(String token, AuthUser user){
+        redisTemplate.boundValueOps(redisSecurityPrefix + token).set(user);
     }
 }

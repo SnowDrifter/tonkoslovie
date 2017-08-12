@@ -9,14 +9,16 @@ public interface AuthService {
 
     AuthUser convert(String token);
 
-    String makeToken(String userId, String roles, Map<String, Object> params);
+    String makeToken(long userId, String roles, Map<String, Object> params);
 
-    default String makeToken(String userId, String roles){
+    default String makeToken(long userId, String roles){
         return makeToken(userId, roles, null);
     }
 
-    default String makeToken(String userId){
+    default String makeToken(long userId){
         return makeToken(userId, null, null);
     }
+
+    boolean logoutFromRedis(String token);
 
 }
