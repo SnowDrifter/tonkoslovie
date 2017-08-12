@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         StringBuilder roles = new StringBuilder();
         user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
 
-        String token = authService.makeToken(user.getId(), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = authService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 

@@ -51,13 +51,14 @@ public class AuthServiceImpl implements AuthService {
 
             return new AuthUser(Long.parseLong(authTokenParams.get("userId")), "ROLE_USER");
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Convert jwt exception: {}", e.toString());
         }
         return null;
     }
 
     @Override
-    public String makeToken(long userId, String roles, Map<String, Object> params) {
+    public String makeToken(String userId, String roles, Map<String, Object> params) {
         Map<String, Object> claims = new HashMap<>();
         if (StringUtils.hasText(roles)) {
             claims.put("roles", roles);
@@ -73,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
-        saveToRedis(token, new AuthUser(userId, roles));
+        saveToRedis(token, new AuthUser(Long.valueOf(userId), roles));
 
         return token;
     }
@@ -88,7 +89,8 @@ public class AuthServiceImpl implements AuthService {
         return false;
     }
 
-    private void saveToRedis(String token, AuthUser user){
+    @Override
+    public void saveToRedis(String token, AuthUser user) {
         redisTemplate.boundValueOps(redisSecurityPrefix + token).set(user);
     }
 }

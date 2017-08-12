@@ -35,23 +35,25 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         String token = authentication.getPrincipal().toString().replace("Bearer ", "");
         log.debug("Auth token: {}", token);
 
-        AuthUser authCustomUser;
+        AuthUser authUser;
         if (Jwts.parser().isSigned(token)) {
-            authCustomUser = (AuthUser) redisTemplate.boundValueOps(redisSecurityPrefix + token).get();
+            authUser = (AuthUser) redisTemplate.boundValueOps(redisSecurityPrefix + token).get();
 
-            if(authCustomUser != null) {
-                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authCustomUser, authentication.getCredentials(), authCustomUser.getAuthorities());
+            if(authUser != null) {
+                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
                 result.setDetails(authentication.getDetails());
                 return result;
             }
 
             if (userRepository.existsByToken(token)) {
-                authCustomUser = authService.convert(token);
-                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authCustomUser, authentication.getCredentials(), authCustomUser.getAuthorities());
+                authUser = authService.convert(token);
+                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
                 result.setDetails(authentication.getDetails());
+
+                // Update redis
+                authService.saveToRedis(token, authUser);
                 return result;
             }
-
         } else {
             log.debug("Invalid token format");
         }
