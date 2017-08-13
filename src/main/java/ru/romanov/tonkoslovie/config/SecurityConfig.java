@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
         http.csrf().disable();
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
+        http.addFilter(corsFilter());
     }
 
     @Autowired
