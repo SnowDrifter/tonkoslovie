@@ -33,6 +33,7 @@ app:
   redis:
     host: localhost
     port: 6379
+    password: ${redis.password}
   security:
     redis-prefix: "auth:user:"
 
