@@ -79,6 +79,16 @@ public class AuthServiceImpl implements AuthService {
         return token;
     }
 
+    @Override
+    public void saveToRedis(String token, AuthUser user) {
+        try {
+            redisTemplate.boundValueOps(redisSecurityPrefix + token).set(user);
+        } catch (Exception e) {
+            log.error("Redis save error: {}", e.toString());
+        }
+    }
+
+    @Override
     public boolean logoutFromRedis(String token) {
         try {
             redisTemplate.delete(redisSecurityPrefix + token);
@@ -89,8 +99,4 @@ public class AuthServiceImpl implements AuthService {
         return false;
     }
 
-    @Override
-    public void saveToRedis(String token, AuthUser user) {
-        redisTemplate.boundValueOps(redisSecurityPrefix + token).set(user);
-    }
 }
