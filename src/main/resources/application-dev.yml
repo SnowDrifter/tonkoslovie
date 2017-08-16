@@ -19,3 +19,7 @@ spring:
 
 mail:
   host: http://88.198.165.206:8080
+
+app:
+  redis:
+    port: 6378
