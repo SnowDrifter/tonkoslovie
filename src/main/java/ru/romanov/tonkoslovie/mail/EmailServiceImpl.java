@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
         emailVerificationRepository.save(verification);
 
         Email email = DefaultEmail.builder()
-                .from(new InternetAddress("test@no-reply", "Test"))
+                .from(new InternetAddress("tonkoslovie@no-reply"))
                 .to(Lists.newArrayList(new InternetAddress(user.getEmail())))
                 .subject("Подтверждение регистрации")
                 .body("")

@@ -2,8 +2,6 @@ package ru.romanov.tonkoslovie.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,7 +22,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue
     private Long id;
-    @CollectionTable(name="roles")
+    @CollectionTable(name = "roles")
     @ElementCollection(fetch = FetchType.EAGER)
     @JsonIgnore
     private Set<Role> roles = new HashSet<>();

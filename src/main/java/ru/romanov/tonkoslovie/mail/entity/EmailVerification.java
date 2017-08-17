@@ -3,7 +3,10 @@ package ru.romanov.tonkoslovie.mail.entity;
 import lombok.Data;
 import ru.romanov.tonkoslovie.user.entity.User;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.util.Date;
 
 @Data

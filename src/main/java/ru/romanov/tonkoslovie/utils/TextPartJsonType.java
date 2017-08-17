@@ -37,6 +37,7 @@ public class TextPartJsonType implements UserType {
         if (o == null) {
             return o1 == null;
         }
+        
         return o.equals(o1);
     }
 
@@ -51,7 +52,8 @@ public class TextPartJsonType implements UserType {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
                 if (pGobject != null) {
-                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {});
+                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {
+                    });
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -67,12 +69,14 @@ public class TextPartJsonType implements UserType {
             preparedStatement.setNull(i, Types.NULL);
             return;
         }
+
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(o);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         PGobject pGobject = new PGobject();
         pGobject.setType("jsonb");
         pGobject.setValue(jsonString);
@@ -83,10 +87,12 @@ public class TextPartJsonType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         Object copy = null;
         try {
-            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {});
+            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return copy;
     }
 

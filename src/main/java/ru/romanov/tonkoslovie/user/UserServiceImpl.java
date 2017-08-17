@@ -10,8 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.EmailService;
+import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.security.AuthService;
 import ru.romanov.tonkoslovie.user.entity.Role;
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         user.setToken(token);
         userRepository.save(user);
 
-       return new ResponseEntity<>(new UserResponse(token, null), HttpStatus.OK);
+        return new ResponseEntity<>(new UserResponse(token, null), HttpStatus.OK);
     }
 
     @Override
@@ -94,15 +94,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<RegistrationResponse> saveNewUser(User user) {
         List<ValidationError> validationErrors = new ArrayList<>();
-        if(userRepository.existsByEmail(user.getEmail())){
+        if (userRepository.existsByEmail(user.getEmail())) {
             validationErrors.add(new ValidationError("email", "Пользователь с таким адресом электронной почты уже зарегестрирован"));
         }
 
-        if(userRepository.existsByUsername(user.getUsername())){
+        if (userRepository.existsByUsername(user.getUsername())) {
             validationErrors.add(new ValidationError("username", "Пользователь с таким никнеймом уже зарегестрирован"));
         }
 
-        if(!validationErrors.isEmpty()) {
+        if (!validationErrors.isEmpty()) {
             return new ResponseEntity<>(new RegistrationResponse(validationErrors), HttpStatus.BAD_REQUEST);
         }
 
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
     public void logout(long userId) {
         User user = userRepository.getOne(userId);
 
-        if(user != null) {
+        if (user != null) {
             authService.logoutFromRedis(user.getToken());
             user.setToken(null);
             userRepository.save(user);

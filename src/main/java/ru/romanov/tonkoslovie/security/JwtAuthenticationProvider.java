@@ -39,7 +39,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         if (Jwts.parser().isSigned(token)) {
             authUser = (AuthUser) redisTemplate.boundValueOps(redisSecurityPrefix + token).get();
 
-            if(authUser != null) {
+            if (authUser != null) {
                 PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
                 result.setDetails(authentication.getDetails());
                 return result;
