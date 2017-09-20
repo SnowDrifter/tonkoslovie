@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.content.text;
 
 import lombok.Data;
+import ru.romanov.tonkoslovie.content.text.web.ChoiceVariant;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ public class TextPart {
     private TextPartType type;
     private String data;
     private String placeholder;
-    private List<String> choiceVariants;
+    private List<ChoiceVariant> choiceVariants;
 
 }
