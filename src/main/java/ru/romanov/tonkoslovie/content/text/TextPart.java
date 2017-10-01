@@ -1,7 +1,6 @@
 package ru.romanov.tonkoslovie.content.text;
 
 import lombok.Data;
-import ru.romanov.tonkoslovie.content.text.web.ChoiceVariant;
 
 import java.util.List;
 

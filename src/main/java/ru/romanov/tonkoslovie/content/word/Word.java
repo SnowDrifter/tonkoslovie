@@ -13,7 +13,9 @@ public class Word {
     @Id
     @GeneratedValue
     private long id;
+
     private String russianText;
+
     private String polishText;
 
 }

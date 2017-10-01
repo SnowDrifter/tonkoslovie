@@ -10,7 +10,7 @@ import ru.romanov.tonkoslovie.utils.TextPartJsonType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity
@@ -23,9 +23,12 @@ public class Text {
     @Id
     @GeneratedValue
     private long id;
+
     private String title;
+
     @Type(type = "TextPartJsonType")
-    private List<TextPart> parts;
+    private Set<TextPart> parts;
+
     private String soundFileName;
 
 }

@@ -15,14 +15,20 @@ public class Lesson {
     @Id
     @GeneratedValue
     private long id;
+
     private String title;
+
     @Column(columnDefinition = "text")
     private String annotation;
+
     @Column(columnDefinition = "text")
     private String text;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Text> relatedTexts;
+
     private String previewImage;
+
     @Column(columnDefinition = "boolean default false")
     private boolean published;
 
