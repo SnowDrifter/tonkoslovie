@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 @EnableMetrics
-public class MatricsConfig extends MetricsConfigurerAdapter {
+public class MetricsConfig extends MetricsConfigurerAdapter {
 
     @Value("${metrics.influxdb.active:false}")
     private boolean influxdbActive;
@@ -37,7 +37,7 @@ public class MatricsConfig extends MetricsConfigurerAdapter {
             try {
                 InfluxDbReporter reporter = InfluxDbReporter
                         .forRegistry(metricRegistry)
-                        .build(new InfluxDbHttpSender("http", host, port, database, auth, TimeUnit.SECONDS, 1000, 1000));
+                        .build(new InfluxDbHttpSender("http", host, port, database, auth, TimeUnit.SECONDS, 1000, 1000, "tonkoslovie"));
                 reporter.start(10, TimeUnit.SECONDS);
             } catch (Exception e) {
                 e.printStackTrace();
