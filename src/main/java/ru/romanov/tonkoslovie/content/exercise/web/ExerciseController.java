@@ -7,7 +7,9 @@ import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.exercise.ExerciseRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/content")
@@ -32,7 +34,7 @@ public class ExerciseController {
 
 
     @GetMapping(value = "/exercise")
-    public ResponseEntity<Exercise> getLesson(@RequestParam Long id) {
+    public ResponseEntity<Exercise> getExercise(@RequestParam Long id) {
         Exercise exercise = exerciseRepository.findOne(id);
 
         if (exercise != null) {
@@ -42,8 +44,23 @@ public class ExerciseController {
         }
     }
 
+    @GetMapping(value = "/exercise/randomId")
+    public Map<String, Long> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
+        Long id;
+
+        if(excludeIds == null || excludeIds.isEmpty()) {
+            id = exerciseRepository.findRandomExerciseId();
+        } else {
+            id = exerciseRepository.findRandomExerciseIdExcludeIds(excludeIds);
+        }
+
+        return new HashMap<String, Long>() {{
+            put("id", id);
+        }};
+    }
+
     @DeleteMapping(value = "/exercise")
-    public void deleteLesson(@RequestParam Long id) {
+    public void deleteExercise(@RequestParam Long id) {
         if (exerciseRepository.exists(id)) {
             exerciseRepository.delete(id);
         }
