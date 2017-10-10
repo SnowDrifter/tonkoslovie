@@ -3,10 +3,7 @@ package ru.romanov.tonkoslovie.content.exercise;
 
 import lombok.Data;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -23,5 +20,8 @@ public class Exercise {
 
     @ElementCollection
     private List<String> answers;
+
+    @Column(columnDefinition = "text")
+    private String dictionary;
 
 }
