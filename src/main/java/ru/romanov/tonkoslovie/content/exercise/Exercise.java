@@ -2,12 +2,22 @@ package ru.romanov.tonkoslovie.content.exercise;
 
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+import ru.romanov.tonkoslovie.utils.StringListJsonType;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.List;
 
 @Data
 @Entity
+@TypeDefs(value = {
+        @TypeDef(name = "StringListJsonType", typeClass = StringListJsonType.class)
+})
 public class Exercise {
 
     @Id
@@ -18,7 +28,7 @@ public class Exercise {
 
     private String original;
 
-    @ElementCollection
+    @Type(type = "StringListJsonType")
     private List<String> answers;
 
     @Column(columnDefinition = "text")

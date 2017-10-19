@@ -7,7 +7,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
-import ru.romanov.tonkoslovie.content.text.TextPart;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,7 +17,7 @@ import java.sql.Types;
 import java.util.List;
 
 
-public class TextPartJsonType implements UserType {
+public class StringListJsonType implements UserType {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -37,7 +36,7 @@ public class TextPartJsonType implements UserType {
         if (o == null) {
             return o1 == null;
         }
-        
+
         return o.equals(o1);
     }
 
@@ -52,7 +51,7 @@ public class TextPartJsonType implements UserType {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
                 if (pGobject != null) {
-                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {
+                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<String>>() {
                     });
                 }
             } catch (IOException e) {
@@ -87,7 +86,7 @@ public class TextPartJsonType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         Object copy = null;
         try {
-            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {
+            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<String>>() {
             });
         } catch (IOException e) {
             e.printStackTrace();
