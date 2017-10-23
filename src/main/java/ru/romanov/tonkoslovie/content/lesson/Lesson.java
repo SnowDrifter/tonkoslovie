@@ -22,7 +22,7 @@ public class Lesson {
     private String annotation;
 
     @Column(columnDefinition = "text")
-    private String text;
+    private String content;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Text> texts;
