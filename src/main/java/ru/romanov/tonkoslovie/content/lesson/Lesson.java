@@ -25,7 +25,7 @@ public class Lesson {
     private String text;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Text> relatedTexts;
+    private List<Text> texts;
 
     private String previewImage;
 

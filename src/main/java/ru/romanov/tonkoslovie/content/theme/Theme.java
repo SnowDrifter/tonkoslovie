@@ -22,4 +22,7 @@ public class Theme {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Exercise> exercises;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean published;
+
 }

@@ -3,11 +3,15 @@ package ru.romanov.tonkoslovie.content.theme.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.romanov.tonkoslovie.content.exercise.Exercise;
+import ru.romanov.tonkoslovie.content.exercise.ExerciseRepository;
 import ru.romanov.tonkoslovie.content.theme.Theme;
 import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,14 +36,25 @@ public class ThemeController {
     }
 
     @GetMapping(value = "/theme")
-    public ResponseEntity<Theme> getTheme(@RequestParam Long id) {
+    @Transactional
+    public ResponseEntity<Theme> getTheme(@RequestParam Long id,
+                                          @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
+                                          @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
         Theme theme = themeRepository.findOne(id);
 
-        if (theme != null) {
-            return ResponseEntity.ok(theme);
-        } else {
-            return ResponseEntity.badRequest().build();
+        if (theme == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        List<Exercise> exercises = theme.getExercises();
+        if (randomExercises) {
+            Collections.shuffle(exercises);
+        }
+
+        exercises.subList(0, Math.min(exercises.size(), exercisesCount));
+        theme.setExercises(exercises);
+
+        return ResponseEntity.ok(theme);
     }
 
     @DeleteMapping(value = "/theme")

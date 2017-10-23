@@ -24,6 +24,8 @@ public class Exercise {
     @GeneratedValue
     private long id;
 
+    private String title;
+
     private ExerciseType type;
 
     private String original;
@@ -33,5 +35,8 @@ public class Exercise {
 
     @Column(columnDefinition = "text")
     private String dictionary;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean published;
 
 }

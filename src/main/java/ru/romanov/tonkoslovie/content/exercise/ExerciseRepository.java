@@ -17,4 +17,6 @@ public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
     List<Exercise> findAllByOrderByIdAsc();
 
+    List<Exercise> findByTitleContainingIgnoreCase(String title);
+
 }

@@ -59,6 +59,11 @@ public class ExerciseController {
         }};
     }
 
+    @GetMapping(value = "/exercises/findByTitle")
+    public List<Exercise> findTextsByTitle(@RequestParam String title) {
+        return exerciseRepository.findByTitleContainingIgnoreCase(title);
+    }
+
     @DeleteMapping(value = "/exercise")
     public void deleteExercise(@RequestParam Long id) {
         if (exerciseRepository.exists(id)) {
