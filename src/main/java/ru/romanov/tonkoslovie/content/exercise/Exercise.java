@@ -33,6 +33,8 @@ public class Exercise {
     @Type(type = "StringListJsonType")
     private List<String> answers;
 
+    private String answerRegex;
+
     @Column(columnDefinition = "text")
     private String dictionary;
 
