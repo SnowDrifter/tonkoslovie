@@ -10,4 +10,6 @@ public interface ThemeRepository extends JpaRepository<Theme, Long> {
 
     List<Theme> findAllByOrderByIdAsc();
 
+    List<Theme> findByPublishedTrueOrderByIdAsc();
+
 }

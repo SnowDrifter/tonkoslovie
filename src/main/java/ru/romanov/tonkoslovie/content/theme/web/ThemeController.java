@@ -26,8 +26,12 @@ public class ThemeController {
     }
 
     @GetMapping("/themes")
-    public List<Theme> themes() {
-        return new ArrayList<>(themeRepository.findAllByOrderByIdAsc());
+    public List<Theme> themes(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {
+        if (onlyPublished) {
+            return new ArrayList<>(themeRepository.findByPublishedTrueOrderByIdAsc());
+        } else {
+            return new ArrayList<>(themeRepository.findAllByOrderByIdAsc());
+        }
     }
 
     @PostMapping(value = "/theme")
