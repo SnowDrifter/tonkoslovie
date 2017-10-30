@@ -55,7 +55,7 @@ public class ThemeController {
             Collections.shuffle(exercises);
         }
 
-        exercises.subList(0, Math.min(exercises.size(), exercisesCount));
+        exercises = exercises.subList(0, Math.min(exercises.size(), exercisesCount));
         theme.setExercises(exercises);
 
         return ResponseEntity.ok(theme);
