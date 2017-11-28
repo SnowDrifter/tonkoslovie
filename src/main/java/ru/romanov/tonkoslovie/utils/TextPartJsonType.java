@@ -1,6 +1,5 @@
 package ru.romanov.tonkoslovie.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;

@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.exercise.Exercise;
-import ru.romanov.tonkoslovie.content.exercise.ExerciseRepository;
 import ru.romanov.tonkoslovie.content.theme.Theme;
 import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
 

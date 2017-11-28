@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.7.RELEASE</version>
+        <version>1.5.8.RELEASE</version>
     </parent>
 
     <properties>
@@ -86,7 +86,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.7.1</version>
+            <version>2.7.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tomcat</groupId>
@@ -105,15 +105,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
-            <version>5.2.11.Final</version>
+            <version>5.2.12.Final</version>
         </dependency>
 
         <!-- Database -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.193</version>
-        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -131,14 +126,14 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.8.0</version>
+            <version>0.9.0</version>
         </dependency>
 
         <!-- HTTP -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.9.0</version>
+            <version>3.9.1</version>
         </dependency>
 
         <!-- Metrics -->
