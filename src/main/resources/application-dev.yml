@@ -7,8 +7,6 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost/tonkoslovie
     driver-class-name: org.postgresql.Driver
-    username: postgres
-    password: 1234
   jpa:
     show-sql: false
     hibernate:
