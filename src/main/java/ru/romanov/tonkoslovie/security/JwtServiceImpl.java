@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${auth.jwt.secret:test}")
+    @Value("${auth.jwt.secret}")
     private String secret;
     private Key key;
     private static final String JWT_USER_ID_KEY = "userId";
@@ -38,13 +38,12 @@ public class JwtServiceImpl implements JwtService {
         try {
             Jwt authToken = Jwts.parser().setSigningKey(key).parse(token);
             Map<String, String> authTokenParams = (Map<String, String>) authToken.getBody();
-            if (authTokenParams.containsKey("roles")) {
+            if (authTokenParams.containsKey(JWT_ROLES_KEY)) {
                 return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), authTokenParams.get(JWT_ROLES_KEY));
             }
 
             return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), DEFAULT_USER_ROLE);
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Convert jwt exception: {}", e.toString());
         }
         return null;

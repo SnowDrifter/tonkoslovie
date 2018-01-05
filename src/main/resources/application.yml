@@ -31,11 +31,9 @@ spring:
       max-file-size: 128MB
       max-request-size: 128MB
 
-app:
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    password: ${redis.password}
+redis:
+  host: 127.0.0.1
+  port: 6379
 
 metrics:
   influxdb.active: false

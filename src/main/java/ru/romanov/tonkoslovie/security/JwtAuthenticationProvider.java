@@ -29,9 +29,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         if (Jwts.parser().isSigned(token)) {
             authUser = jwtService.convert(token);
 
-            PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
-            result.setDetails(authentication.getDetails());
-            return result;
+            if(authUser != null) {
+                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
+                result.setDetails(authentication.getDetails());
+                return result;
+            }
         } else {
             log.debug("Invalid token format");
         }
