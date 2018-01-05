@@ -20,5 +20,4 @@ public interface UserService extends UserDetailsService {
 
     boolean checkToken(String token);
 
-    void logout(long userId);
 }

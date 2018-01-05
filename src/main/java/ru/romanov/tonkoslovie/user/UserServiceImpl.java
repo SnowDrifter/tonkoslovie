@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.mail.EmailService;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
-import ru.romanov.tonkoslovie.security.AuthService;
+import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
@@ -32,15 +32,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
-    private final AuthService authService;
+    private final JwtService jwtService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, EmailVerificationRepository emailVerificationRepository, AuthService authService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, EmailVerificationRepository emailVerificationRepository, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.emailVerificationRepository = emailVerificationRepository;
-        this.authService = authService;
+        this.jwtService = jwtService;
     }
 
     @PostConstruct
@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
         StringBuilder roles = new StringBuilder();
         user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
 
-        String token = authService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 
@@ -140,17 +140,6 @@ public class UserServiceImpl implements UserService {
             return true;
         } else {
             return false;
-        }
-    }
-
-    @Override
-    public void logout(long userId) {
-        User user = userRepository.getOne(userId);
-
-        if (user != null) {
-            authService.logoutFromRedis(user.getToken());
-            user.setToken(null);
-            userRepository.save(user);
         }
     }
 

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,9 +17,8 @@ import org.springframework.security.web.authentication.preauth.RequestHeaderAuth
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import ru.romanov.tonkoslovie.security.AuthService;
+import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
-import ru.romanov.tonkoslovie.user.UserRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -45,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public JwtAuthenticationProvider authProvider(AuthService authService, UserRepository userRepository, RedisTemplate<String, Object> redisTemplate) {
-        return new JwtAuthenticationProvider(authService, userRepository, redisTemplate);
+    public JwtAuthenticationProvider authProvider(JwtService jwtService) {
+        return new JwtAuthenticationProvider(jwtService);
     }
 
     private RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {

@@ -45,14 +45,4 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication != null) {
-            AuthUser userPrincipal = (AuthUser) authentication.getPrincipal();
-            long userId = userPrincipal.getUserId();
-            userService.logout(userId);
-        }
-    }
 }

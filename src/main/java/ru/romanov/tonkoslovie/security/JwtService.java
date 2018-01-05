@@ -5,7 +5,7 @@ import ru.romanov.tonkoslovie.security.user.AuthUser;
 
 import java.util.Map;
 
-public interface AuthService {
+public interface JwtService {
 
     AuthUser convert(String token);
 
@@ -18,9 +18,5 @@ public interface AuthService {
     default String makeToken(String userId) {
         return makeToken(userId, null, null);
     }
-
-    boolean logoutFromRedis(String token);
-
-    void saveToRedis(String token, AuthUser user);
 
 }

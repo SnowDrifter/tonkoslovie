@@ -5,9 +5,7 @@ import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.security.user.AuthUser;
@@ -20,19 +18,14 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class AuthServiceImpl implements AuthService {
+public class JwtServiceImpl implements JwtService {
 
-    @Value("${app.security.redis-prefix}")
-    private String redisSecurityPrefix;
     @Value("${auth.jwt.secret:test}")
     private String secret;
     private Key key;
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    @Autowired
-    public AuthServiceImpl(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+    private static final String JWT_USER_ID_KEY = "userId";
+    private static final String JWT_ROLES_KEY = "roles";
+    private static final String DEFAULT_USER_ROLE = "ROLE_USER";
 
     @PostConstruct
     public void init() {
@@ -46,10 +39,10 @@ public class AuthServiceImpl implements AuthService {
             Jwt authToken = Jwts.parser().setSigningKey(key).parse(token);
             Map<String, String> authTokenParams = (Map<String, String>) authToken.getBody();
             if (authTokenParams.containsKey("roles")) {
-                return new AuthUser(Long.parseLong(authTokenParams.get("userId")), authTokenParams.get("roles"));
+                return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), authTokenParams.get(JWT_ROLES_KEY));
             }
 
-            return new AuthUser(Long.parseLong(authTokenParams.get("userId")), "ROLE_USER");
+            return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), DEFAULT_USER_ROLE);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Convert jwt exception: {}", e.toString());
@@ -61,42 +54,17 @@ public class AuthServiceImpl implements AuthService {
     public String makeToken(String userId, String roles, Map<String, Object> params) {
         Map<String, Object> claims = new HashMap<>();
         if (StringUtils.hasText(roles)) {
-            claims.put("roles", roles);
+            claims.put(JWT_ROLES_KEY, roles);
         }
 
-        claims.put("userId", userId);
+        claims.put(JWT_USER_ID_KEY, userId);
         if (params != null) {
             claims.putAll(params);
         }
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
-
-        saveToRedis(token, new AuthUser(Long.valueOf(userId), roles));
-
-        return token;
     }
-
-    @Override
-    public void saveToRedis(String token, AuthUser user) {
-        try {
-            redisTemplate.boundValueOps(redisSecurityPrefix + token).set(user);
-        } catch (Exception e) {
-            log.error("Redis save error: {}", e.toString());
-        }
-    }
-
-    @Override
-    public boolean logoutFromRedis(String token) {
-        try {
-            redisTemplate.delete(redisSecurityPrefix + token);
-            return true;
-        } catch (Exception e) {
-            log.error("Redis logout error: {}", e.toString());
-        }
-        return false;
-    }
-
 }

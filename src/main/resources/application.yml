@@ -36,9 +36,6 @@ app:
     host: 127.0.0.1
     port: 6379
     password: ${redis.password}
-  security:
-    redis-prefix: "auth:user:"
-
 
 metrics:
   influxdb.active: false
