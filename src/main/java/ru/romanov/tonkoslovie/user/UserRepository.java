@@ -10,6 +10,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findFirstByUsername(String username);
 
+    User findFirstByEmail(String email);
+
     Long countByUsername(String username);
 
     @Query("select count(u)>0 from User u where token = ?1")

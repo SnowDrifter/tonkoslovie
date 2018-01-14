@@ -45,3 +45,36 @@ mail:
 media:
   imageDirectory: /app/tonkoslovie/images
   soundDirectory: /app/tonkoslovie/sounds
+
+security:
+  oauth2:
+    successRedirectUrl: http://localhost:3000/
+
+google:
+  client:
+    clientId: ${oauth.google.clientId}
+    clientSecret: ${oauth.google.secret}
+    accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+    userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+    clientAuthenticationScheme: form
+    scope:
+      - openid
+      - email
+      - profile
+  resource:
+    userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+
+facebook:
+  client:
+    clientId: ${oauth.facebook.clientId}
+    clientSecret: ${oauth.facebook.secret}
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    scope:
+      - email
+      - user_about_me
+  resource:
+    userInfoUri: https://graph.facebook.com/me

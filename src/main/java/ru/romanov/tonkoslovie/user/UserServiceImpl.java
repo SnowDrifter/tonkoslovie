@@ -106,9 +106,7 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(new RegistrationResponse(validationErrors), HttpStatus.BAD_REQUEST);
         }
 
-        Set<Role> baseRoles = new HashSet<>();
-        baseRoles.add(Role.ROLE_USER);
-        user.setRoles(baseRoles);
+        user.setRoles(Collections.singleton(Role.ROLE_USER));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
