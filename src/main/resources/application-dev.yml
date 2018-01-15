@@ -20,3 +20,7 @@ mail:
 
 redis:
   port: 6378
+
+security:
+  oauth2:
+    successRedirectUrl: http://88.198.165.206:3000/
