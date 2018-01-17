@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 25
+      idle-timeout: 10000
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:postgresql://localhost/tonkoslovie
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
+
+mail:
+  host: http://88.198.165.206:8080
+
+redis:
+  port: 6378
+
+security:
+  oauth2:
+    successRedirectUrl: http://tonkoslovie.ru/
