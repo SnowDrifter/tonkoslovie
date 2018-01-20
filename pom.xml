@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.8.RELEASE</version>
+        <version>1.5.9.RELEASE</version>
     </parent>
 
     <properties>
@@ -90,7 +90,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.7.4</version>
+            <version>2.7.6</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.tomcat</groupId>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>3.2.5</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.ryantenney.metrics</groupId>
@@ -159,7 +159,7 @@
         <dependency>
             <groupId>com.izettle</groupId>
             <artifactId>metrics-influxdb</artifactId>
-            <version>1.1.9</version>
+            <version>1.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.codahale.metrics</groupId>
@@ -176,7 +176,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.18</version>
+            <version>1.16.20</version>
         </dependency>
         <dependency>
             <groupId>net.coobird</groupId>
