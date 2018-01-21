@@ -150,13 +150,20 @@ public class UserServiceImpl implements UserService {
     private User updateFields(User user) {
         User oldUser = userRepository.getOne(user.getId());
 
-        if (user.getFirstName() != null) {
+        if (StringUtils.hasText(user.getFirstName())) {
             oldUser.setFirstName(user.getFirstName());
         }
 
-        if (user.getLastName() != null) {
+        if (StringUtils.hasText(user.getLastName())) {
             oldUser.setLastName(user.getLastName());
         }
+
+        if (StringUtils.hasText(user.getUsername())) {
+            oldUser.setUsername(user.getUsername());
+        }
+
+        oldUser.setRoles(user.getRoles());
+        oldUser.setEnabled(user.isEnabled());
 
         return oldUser;
     }

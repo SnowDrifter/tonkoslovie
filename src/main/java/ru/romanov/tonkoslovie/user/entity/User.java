@@ -1,6 +1,6 @@
 package ru.romanov.tonkoslovie.user.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +19,7 @@ import java.util.Set;
                 @Index(name = "tokenIndex", columnList = "token")
         }
 )
-@JsonIgnoreProperties({"password, token"})
+@JsonIgnoreProperties({"password" , "token", "authorities"})
 public class User implements UserDetails {
 
     @Id
@@ -27,7 +27,6 @@ public class User implements UserDetails {
     private Long id;
     @CollectionTable(name = "roles")
     @ElementCollection(fetch = FetchType.EAGER)
-    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
     private String username;
     private String password;
