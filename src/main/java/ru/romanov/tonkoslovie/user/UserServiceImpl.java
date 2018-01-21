@@ -108,6 +108,7 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(Collections.singleton(Role.ROLE_USER));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setCreationDate(new Date());
 
         userRepository.save(user);
 

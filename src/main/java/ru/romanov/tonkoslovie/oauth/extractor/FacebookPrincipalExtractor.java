@@ -8,6 +8,7 @@ import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -34,6 +35,7 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
             user.setFirstName((String) map.get("last_name"));
             user.setRoles(Collections.singleton(Role.ROLE_USER));
             user.setPassword(UUID.randomUUID().toString());
+            user.setCreationDate(new Date());
             user.setEnabled(true);
             userRepository.save(user);
         }
