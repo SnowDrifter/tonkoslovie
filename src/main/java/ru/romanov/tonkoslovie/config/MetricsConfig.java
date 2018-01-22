@@ -2,7 +2,9 @@ package ru.romanov.tonkoslovie.config;
 
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
+import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
@@ -31,9 +33,11 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
 
     @Override
     public void configureReporters(MetricRegistry metricRegistry) {
-        if (influxdbActive) {
-            metricRegistry.register("jvm.memory", new MemoryUsageGaugeSet());
+        metricRegistry.register("jvm.garbage-collector", new GarbageCollectorMetricSet());
+        metricRegistry.register("jvm.memory", new MemoryUsageGaugeSet());
+        metricRegistry.register("jvm.thread-states", new ThreadStatesGaugeSet());
 
+        if (influxdbActive) {
             try {
                 InfluxDbReporter reporter = InfluxDbReporter
                         .forRegistry(metricRegistry)
