@@ -74,11 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/api/user/**", "/api/oauth/**").permitAll()
-                .antMatchers(HttpMethod.GET,  "/api/content/**").permitAll()
+                .antMatchers("/api/user/login", "/api/user/registration", "/api/user/confirmRegistration", "/api/oauth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/content/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/content/**").hasRole("ADMIN")
                 .antMatchers("/api/media/**").hasRole("ADMIN")
+                .antMatchers("/api/user/users").hasRole("ADMIN")
+                .antMatchers("/api/user").hasRole("ADMIN")
+                .antMatchers("/api/user/update").hasRole("ADMIN")
                 .anyRequest().authenticated();
         http.csrf().disable();
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
