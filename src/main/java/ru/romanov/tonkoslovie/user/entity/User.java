@@ -19,7 +19,7 @@ import java.util.Set;
                 @Index(name = "tokenIndex", columnList = "token")
         }
 )
-@JsonIgnoreProperties({"password" , "token", "authorities"})
+@JsonIgnoreProperties({"password" , "token", "authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired"})
 public class User implements UserDetails {
 
     @Id
