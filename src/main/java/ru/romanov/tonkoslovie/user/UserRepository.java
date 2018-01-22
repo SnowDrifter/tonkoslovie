@@ -5,8 +5,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.romanov.tonkoslovie.user.entity.User;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    List<User> findAllByOrderByIdAsc();
 
     User findFirstByUsername(String username);
 

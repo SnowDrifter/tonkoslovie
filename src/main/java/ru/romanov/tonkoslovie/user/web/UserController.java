@@ -48,7 +48,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<User> users() {
-        return userRepository.findAll();
+        return userRepository.findAllByOrderByIdAsc();
     }
 
     @GetMapping
