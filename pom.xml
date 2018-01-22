@@ -171,6 +171,11 @@
             <artifactId>metrics-jvm</artifactId>
             <version>3.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-jetty9</artifactId>
+            <version>3.1.2</version>
+        </dependency>
 
         <!-- Other -->
         <dependency>

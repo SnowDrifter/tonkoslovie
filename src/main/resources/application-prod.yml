@@ -24,3 +24,7 @@ redis:
 security:
   oauth2:
     successRedirectUrl: http://tonkoslovie.ru/
+
+metrics:
+  influxdb:
+    active: true
