@@ -16,14 +16,14 @@ spring:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
 
 mail:
-  host: http://88.198.165.206:8080
+  host: https://tonkoslovie.ru/
 
 redis:
   port: 6378
 
 security:
   oauth2:
-    successRedirectUrl: http://tonkoslovie.ru/
+    successRedirectUrl: https://tonkoslovie.ru/
 
 metrics:
   influxdb:
