@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "\"user\"",
         indexes = {
-                @Index(name = "tokenIndex", columnList = "token")
+                @Index(name = "emailIndex", columnList = "email")
         }
 )
 @JsonIgnoreProperties({"password" , "token", "authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired"})
