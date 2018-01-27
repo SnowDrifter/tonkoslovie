@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     @Transactional
     public void createRoot() {
-        User root = findByUsername("root");
+        User root = userRepository.findFirstByEmail("root");
 
         if (root == null) {
             root = new User();
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
             root.setPassword(passwordEncoder.encode("1q2w3e4r"));
             root.setRoles(new HashSet<>(Arrays.asList(Role.values())));
             root.setEnabled(true);
-            root.setEmail("mail@mail.mail");
+            root.setEmail("root");
             userRepository.save(root);
         }
     }
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserResponse> login(UserRequest request) {
-        User user = userRepository.findFirstByUsername(request.getUsername());
+        User user = userRepository.findFirstByEmail(request.getEmail());
         if (user == null) {
             return new ResponseEntity<>(new UserResponse(null, "Пользователь не найден"), HttpStatus.BAD_REQUEST);
         }
@@ -82,24 +82,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        if (StringUtils.hasText(username)) {
-            return userRepository.findFirstByUsername(username);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public ResponseEntity<RegistrationResponse> saveNewUser(User user) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (userRepository.existsByEmail(user.getEmail())) {
             validationErrors.add(new ValidationError("email", "Пользователь с таким адресом электронной почты уже зарегестрирован"));
-        }
-
-        if (userRepository.existsByUsername(user.getUsername())) {
-            validationErrors.add(new ValidationError("username", "Пользователь с таким никнеймом уже зарегестрирован"));
         }
 
         if (!validationErrors.isEmpty()) {
@@ -143,8 +129,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findFirstByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findFirstByEmail(email);
     }
 
     private User updateFields(User user) {
