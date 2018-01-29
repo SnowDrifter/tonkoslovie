@@ -22,7 +22,6 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
@@ -53,7 +52,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Client
-@EnableAuthorizationServer
 @ComponentScan(basePackages = "ru.romanov")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -78,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.authorizeRequests()
                 .antMatchers("/api/user/login", "/api/user/registration", "/api/user/confirmRegistration", "/api/oauth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
@@ -88,7 +87,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user").hasRole("ADMIN")
                 .antMatchers("/api/user/update").hasRole("ADMIN")
                 .anyRequest().authenticated();
+
         http.csrf().disable();
+
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
         http.addFilter(corsFilter());
         http.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);

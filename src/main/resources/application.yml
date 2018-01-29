@@ -96,4 +96,8 @@ vk:
     scope: email
     grant-type: authorization_code
   resource:
-    userInfoUri: https://api.vk.com/method/users.get
+    userInfoUri: https://api.vk.com/method/users.get?fields=sex,photo_max_orig,friend_status,relatives,relation
+
+server:
+  session:
+    tracking-modes: cookie
