@@ -34,6 +34,9 @@ import org.springframework.web.filter.CorsFilter;
 import ru.romanov.tonkoslovie.oauth.ClientResources;
 import ru.romanov.tonkoslovie.oauth.extractor.FacebookPrincipalExtractor;
 import ru.romanov.tonkoslovie.oauth.extractor.GooglePrincipalExtractor;
+import ru.romanov.tonkoslovie.oauth.extractor.VkPrincipalExtractor;
+import ru.romanov.tonkoslovie.oauth.vk.VkCustomFilter;
+import ru.romanov.tonkoslovie.oauth.vk.VkUserInfoTokenService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
 import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.User;
@@ -61,13 +64,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final GooglePrincipalExtractor googlePrincipalExtractor;
     private final FacebookPrincipalExtractor facebookPrincipalExtractor;
+    private final VkPrincipalExtractor vkPrincipalExtractor;
 
     @Autowired
-    public SecurityConfig(OAuth2ClientContext oauth2ClientContext, JwtService jwtService, GooglePrincipalExtractor googlePrincipalExtractor, FacebookPrincipalExtractor facebookPrincipalExtractor) {
+    public SecurityConfig(OAuth2ClientContext oauth2ClientContext, JwtService jwtService, GooglePrincipalExtractor googlePrincipalExtractor, FacebookPrincipalExtractor facebookPrincipalExtractor, VkPrincipalExtractor vkPrincipalExtractor) {
         this.oauth2ClientContext = oauth2ClientContext;
         this.jwtService = jwtService;
         this.googlePrincipalExtractor = googlePrincipalExtractor;
         this.facebookPrincipalExtractor = facebookPrincipalExtractor;
+        this.vkPrincipalExtractor = vkPrincipalExtractor;
     }
 
     @Override
@@ -140,6 +145,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    @ConfigurationProperties("vk")
+    public ClientResources vk() {
+        return new ClientResources(vkPrincipalExtractor);
+    }
+
+    @Bean
     @ConfigurationProperties("google")
     public ClientResources google() {
         return new ClientResources(googlePrincipalExtractor);
@@ -153,11 +164,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private Filter ssoFilter() {
         List<Filter> filters = new ArrayList<>();
+        filters.add(vkSsoFilter(vk(), "/api/oauth/login/vk"));
         filters.add(ssoFilter(google(), "/api/oauth/login/google"));
         filters.add(ssoFilter(facebook(), "/api/oauth/login/facebook"));
 
         CompositeFilter filter = new CompositeFilter();
         filter.setFilters(filters);
+        return filter;
+    }
+
+    private Filter vkSsoFilter(ClientResources client, String path) {
+        VkCustomFilter filter = new VkCustomFilter(path);
+
+        OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+        filter.setRestTemplate(template);
+        VkUserInfoTokenService tokenServices = new VkUserInfoTokenService(client.getResource().getUserInfoUri(), client.getClient().getClientId());
+        tokenServices.setRestTemplate(template);
+        tokenServices.setPrincipalExtractor(client.getPrincipalExtractor());
+        filter.setTokenServices(tokenServices);
+
+        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                User user = (User) authentication.getPrincipal();
+
+                StringBuilder roles = new StringBuilder();
+                user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+
+                String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+
+                this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
+                super.onAuthenticationSuccess(request, response, authentication);
+            }
+        });
+
         return filter;
     }
 

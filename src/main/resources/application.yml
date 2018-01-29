@@ -83,3 +83,17 @@ facebook:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: https://graph.facebook.com/me?fields=first_name,last_name,email
+
+vk:
+  client:
+    clientId: ${oauth.vk.clientId}
+    clientSecret: ${oauth.vk.secret}
+    accessTokenUri: https://oauth.vk.com/access_token
+    userAuthorizationUri: https://oauth.vk.com/authorize
+    tokenName: code
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+    scope: email
+    grant-type: authorization_code
+  resource:
+    userInfoUri: https://api.vk.com/method/users.get
