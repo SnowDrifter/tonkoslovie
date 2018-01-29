@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class AuthUser implements UserDetails {
     public AuthUser(long userId, String roles) {
         this.userId = userId;
         this.authorities = Stream.of(roles.split(","))
+                .map(String::trim)
                 .map(AuthGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
