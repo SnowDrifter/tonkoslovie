@@ -40,7 +40,7 @@ public class GooglePrincipalExtractor implements PrincipalExtractor {
             user.setEnabled(true);
 
             SocialMedia socialMedia = new SocialMedia();
-            socialMedia.setGoogleId((Long) map.get("sub"));
+            socialMedia.setGoogleId((String) map.get("sub"));
             socialMedia.setGooglePhoto((String) map.get("picture"));
             user.setSocialMedia(socialMedia);
 

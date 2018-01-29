@@ -17,7 +17,7 @@ public class SocialMedia {
 
     private Long facebookId;
 
-    private Long googleId;
+    private String googleId;
     private String googlePhoto;
 
 }
