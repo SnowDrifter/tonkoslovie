@@ -96,7 +96,7 @@ vk:
     scope: email
     grant-type: authorization_code
   resource:
-    userInfoUri: https://api.vk.com/method/users.get?fields=sex,photo_max_orig,friend_status,relatives,relation
+    userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner
 
 server:
   session:

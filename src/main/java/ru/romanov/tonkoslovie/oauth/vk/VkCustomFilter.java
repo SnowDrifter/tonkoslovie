@@ -49,7 +49,10 @@ public class VkCustomFilter extends AbstractAuthenticationProcessingFilter {
         }
 
         try {
-            String userInfoEndpointUrl = tokenServices.getUserInfoEndpointUrl() + "&uids=" + accessToken.getAdditionalInformation().get("user_id").toString();
+            String userInfoEndpointUrl = tokenServices.getUserInfoEndpointUrl() +
+                    "&uids=" + accessToken.getAdditionalInformation().get("user_id").toString() +
+                    "&access_token=" + accessToken.getValue();
+
             tokenServices.setUserInfoEndpointUrl(userInfoEndpointUrl);
 
             OAuth2Authentication result = tokenServices.loadAuthentication(accessToken);

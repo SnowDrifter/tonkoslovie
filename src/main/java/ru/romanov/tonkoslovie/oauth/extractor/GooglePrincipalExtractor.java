@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.stereotype.Component;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.entity.Role;
+import ru.romanov.tonkoslovie.user.entity.SocialMedia;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.Collections;
@@ -37,6 +38,12 @@ public class GooglePrincipalExtractor implements PrincipalExtractor {
             user.setPassword(UUID.randomUUID().toString());
             user.setCreationDate(new Date());
             user.setEnabled(true);
+
+            SocialMedia socialMedia = new SocialMedia();
+            socialMedia.setGoogleId((Long) map.get("sub"));
+            socialMedia.setGooglePhoto((String) map.get("picture"));
+            user.setSocialMedia(socialMedia);
+
             userRepository.save(user);
         }
 

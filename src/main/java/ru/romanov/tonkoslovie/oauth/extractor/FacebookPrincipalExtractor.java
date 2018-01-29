@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.Principal
 import org.springframework.stereotype.Component;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.entity.Role;
+import ru.romanov.tonkoslovie.user.entity.SocialMedia;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.Collections;
@@ -37,6 +38,11 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
             user.setPassword(UUID.randomUUID().toString());
             user.setCreationDate(new Date());
             user.setEnabled(true);
+
+            SocialMedia socialMedia = new SocialMedia();
+            socialMedia.setFacebookId((Long) map.get("id"));
+            user.setSocialMedia(socialMedia);
+
             userRepository.save(user);
         }
 
