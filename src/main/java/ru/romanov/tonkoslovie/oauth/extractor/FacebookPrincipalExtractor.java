@@ -40,7 +40,7 @@ public class FacebookPrincipalExtractor implements PrincipalExtractor {
             user.setEnabled(true);
 
             SocialMedia socialMedia = new SocialMedia();
-            socialMedia.setFacebookId((Long) map.get("id"));
+            socialMedia.setFacebookId((String) map.get("id"));
             user.setSocialMedia(socialMedia);
 
             userRepository.save(user);

@@ -15,7 +15,7 @@ public class SocialMedia {
     private Integer vkRelationPartner;
 
 
-    private Long facebookId;
+    private String facebookId;
 
     private String googleId;
     private String googlePhoto;
