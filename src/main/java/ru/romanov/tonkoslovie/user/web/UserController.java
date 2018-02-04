@@ -39,11 +39,7 @@ public class UserController {
 
     @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
     public void confirmRegistration(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
-        if (userService.checkToken(token)) {
-            response.sendRedirect("https://yandex.ru");
-        } else {
-            response.sendRedirect("https://google.ru");
-        }
+        userService.confirmRegistration(token, response);
     }
 
     @GetMapping("/users")

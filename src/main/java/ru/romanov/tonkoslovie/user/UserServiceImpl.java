@@ -2,6 +2,7 @@ package ru.romanov.tonkoslovie.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,12 +23,16 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Value("${app.host}")
+    private String applicationHost;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -115,16 +120,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean checkToken(String token) {
+    public void confirmRegistration(String token, HttpServletResponse response) throws IOException {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
         if (verification != null) {
             User user = verification.getUser();
             user.setEnabled(true);
+
+            StringBuilder roles = new StringBuilder();
+            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+
+            String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
             userRepository.save(user);
-            return true;
+
+            response.sendRedirect(applicationHost  +"/registration/success?token=" + authToken);
         } else {
-            return false;
+            response.sendRedirect(applicationHost  +"/registration/error");
         }
     }
 

@@ -8,6 +8,9 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public interface UserService extends UserDetailsService {
 
     ResponseEntity<UserResponse> login(UserRequest request);
@@ -16,6 +19,6 @@ public interface UserService extends UserDetailsService {
 
     User update(User user);
 
-    boolean checkToken(String token);
+    void confirmRegistration(String token, HttpServletResponse response) throws IOException;
 
 }

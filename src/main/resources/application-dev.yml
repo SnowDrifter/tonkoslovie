@@ -1,3 +1,6 @@
+app:
+  host: http://88.198.165.206:3000
+
 spring:
   datasource:
     hikari:
