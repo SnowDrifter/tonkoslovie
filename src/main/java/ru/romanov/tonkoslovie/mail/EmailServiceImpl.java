@@ -7,6 +7,7 @@ import it.ozimov.springboot.mail.service.exception.CannotSendEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.user.entity.User;
 
@@ -50,8 +51,13 @@ public class EmailServiceImpl implements EmailService {
                 .encoding("UTF-8").build();
 
         final Map<String, Object> emailData = new HashMap<>();
-        emailData.put("displayName", user.getUsername());
-        emailData.put("link", host + "/confirmRegistration?token=" + token);
+        emailData.put("link", host + "/api/user/confirmRegistration?token=" + token);
+
+        if (StringUtils.hasText(user.getUsername())) {
+            emailData.put("displayName", user.getUsername());
+        } else if (StringUtils.hasText(user.getFirstName())) {
+            emailData.put("displayName", user.getFirstName());
+        }
 
         emailService.send(email, "confirmRegistration.html", emailData);
     }

@@ -5,34 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
-<table class="body">
-    <tr>
-        <td>
-            <h3>Здравствуйте, <span th:text="${displayName}"></span>.</h3>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Спасибо за регистрацию на портале tonkoslovie.ru.
-            Для завершения регистрации, пожалуйста, перейдите по этой ссылке.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <a th:href="${link}">Подтвердить e-mail</a>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Если вы не пытались зарегистрироваться на tonkoslovie.ru просто проигнорируйте это письмо
-        </td>
-    </tr>
-    <tr>
-        <td>
-            С уважением, команда tonkoslovie.ru
-        </td>
-    </tr>
-</table>
+    <div th:with="condition=${displayName!=null}" th:remove="tag">
+        <h3 th:if="${condition}">Здравствуйте, <span th:text="${displayName}"></span>!</h3>
+        <h3 th:unless="${condition}" class="xxx">Здравствуйте!</h3>
+    </div>
 
+    <p>Спасибо за регистрацию на портале tonkoslovie.ru.
+        Для завершения регистрации, пожалуйста, перейдите по этой ссылке:  <a th:href="@{${link}}">подтвердить e-mail</a></p>
+
+    <p>Если вы не пытались зарегистрироваться на tonkoslovie.ru просто проигнорируйте это письмо.</p>
+
+    <br/>
+    <p> С уважением, команда tonkoslovie.ru!</p>
 </body>
 </html>

@@ -31,8 +31,8 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Value("${app.host}")
-    private String applicationHost;
+    @Value("${app.siteHost}")
+    private String siteHost;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
@@ -133,9 +133,9 @@ public class UserServiceImpl implements UserService {
             String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
             userRepository.save(user);
 
-            response.sendRedirect(applicationHost  +"/registration/success?token=" + authToken);
+            response.sendRedirect(siteHost +"/registration/success?token=" + authToken);
         } else {
-            response.sendRedirect(applicationHost  +"/registration/error");
+            response.sendRedirect(siteHost +"/registration/error");
         }
     }
 
