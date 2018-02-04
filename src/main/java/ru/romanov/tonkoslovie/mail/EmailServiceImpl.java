@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${mail.host}")
+    @Value("${app.host}")
     private String host;
     private final it.ozimov.springboot.mail.service.EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;

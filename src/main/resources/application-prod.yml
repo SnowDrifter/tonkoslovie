@@ -18,9 +18,6 @@ spring:
       hibernate:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
 
-mail:
-  host: https://tonkoslovie.ru/
-
 redis:
   port: 6378
 
