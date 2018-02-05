@@ -103,12 +103,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        try {
-            emailService.sendVerification(user);
-        } catch (Exception e) {
-            log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
-            return new ResponseEntity<>(new RegistrationResponse("Возникла ошибка при отправке письма на электронную почту!"), HttpStatus.BAD_REQUEST);
-        }
+        new Thread(() -> emailService.sendVerification(user)).start();
 
         return ResponseEntity.ok().build();
     }
