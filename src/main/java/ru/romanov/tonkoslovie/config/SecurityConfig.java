@@ -183,20 +183,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setRestTemplate(template);
         tokenServices.setPrincipalExtractor(client.getPrincipalExtractor());
         filter.setTokenServices(tokenServices);
-
-        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                User user = (User) authentication.getPrincipal();
-
-                StringBuilder roles = new StringBuilder();
-                user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
-
-                String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
-
-                this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
-        });
+        filter.setAuthenticationSuccessHandler(new OauthAuthenticationSuccessHandler());
 
         return filter;
     }
@@ -210,21 +197,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setRestTemplate(template);
         tokenServices.setPrincipalExtractor(client.getPrincipalExtractor());
         filter.setTokenServices(tokenServices);
-
-        filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler() {
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                User user = (User) authentication.getPrincipal();
-
-                StringBuilder roles = new StringBuilder();
-                user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
-
-                String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
-
-                this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
-                super.onAuthenticationSuccess(request, response, authentication);
-            }
-        });
+        filter.setAuthenticationSuccessHandler(new OauthAuthenticationSuccessHandler());
 
         return filter;
+    }
+
+    class OauthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+            User user = (User) authentication.getPrincipal();
+
+            StringBuilder roles = new StringBuilder();
+            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+
+            String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+
+            this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
+            super.onAuthenticationSuccess(request, response, authentication);
+        }
     }
 }
