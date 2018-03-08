@@ -36,7 +36,7 @@ public class LessonController {
 
     @GetMapping(value = "/lesson")
     public ResponseEntity<Lesson> getLesson(@RequestParam Long id) {
-        Lesson lesson = lessonRepository.findOne(id);
+        Lesson lesson = lessonRepository.getOne(id);
 
         if (lesson != null) {
             return ResponseEntity.ok(lesson);
@@ -47,8 +47,8 @@ public class LessonController {
 
     @DeleteMapping(value = "/lesson")
     public void deleteLesson(@RequestParam Long id) {
-        if (lessonRepository.exists(id)) {
-            lessonRepository.delete(id);
+        if (lessonRepository.existsById(id)) {
+            lessonRepository.deleteById(id);
         }
     }
 }

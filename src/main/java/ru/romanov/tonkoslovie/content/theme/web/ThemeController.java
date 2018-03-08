@@ -43,7 +43,7 @@ public class ThemeController {
     public ResponseEntity<Theme> getTheme(@RequestParam Long id,
                                           @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
                                           @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
-        Theme theme = themeRepository.findOne(id);
+        Theme theme = themeRepository.getOne(id);
 
         if (theme == null) {
             return ResponseEntity.notFound().build();
@@ -62,8 +62,8 @@ public class ThemeController {
 
     @DeleteMapping(value = "/theme")
     public void deleteTheme(@RequestParam Long id) {
-        if (themeRepository.exists(id)) {
-            themeRepository.delete(id);
+        if (themeRepository.existsById(id)) {
+            themeRepository.deleteById(id);
         }
     }
 

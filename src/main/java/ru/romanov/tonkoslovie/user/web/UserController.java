@@ -49,7 +49,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<User> getUser(@RequestParam Long id) {
-        User user = userRepository.findOne(id);
+        User user = userRepository.getOne(id);
 
         if (user != null) {
             return ResponseEntity.ok(user);

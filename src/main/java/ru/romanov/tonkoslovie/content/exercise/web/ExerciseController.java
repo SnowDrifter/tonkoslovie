@@ -35,7 +35,7 @@ public class ExerciseController {
 
     @GetMapping(value = "/exercise")
     public ResponseEntity<Exercise> getExercise(@RequestParam Long id) {
-        Exercise exercise = exerciseRepository.findOne(id);
+        Exercise exercise = exerciseRepository.getOne(id);
 
         if (exercise != null) {
             return ResponseEntity.ok(exercise);
@@ -66,8 +66,8 @@ public class ExerciseController {
 
     @DeleteMapping(value = "/exercise")
     public void deleteExercise(@RequestParam Long id) {
-        if (exerciseRepository.exists(id)) {
-            exerciseRepository.delete(id);
+        if (exerciseRepository.existsById(id)) {
+            exerciseRepository.deleteById(id);
         }
     }
 

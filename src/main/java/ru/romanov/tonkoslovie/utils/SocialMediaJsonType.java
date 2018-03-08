@@ -2,7 +2,7 @@ package ru.romanov.tonkoslovie.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
 import ru.romanov.tonkoslovie.user.entity.SocialMedia;
@@ -34,7 +34,7 @@ public class SocialMediaJsonType implements UserType {
         if (o == null) {
             return o1 == null;
         }
-        
+
         return o.equals(o1);
     }
 
@@ -44,7 +44,7 @@ public class SocialMediaJsonType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet resultSet, String[] strings, SessionImplementor sessionImplementor, Object o) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
         if (strings[0] != null) {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
@@ -60,7 +60,7 @@ public class SocialMediaJsonType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement preparedStatement, Object o, int i, SessionImplementor sessionImplementor) throws HibernateException, SQLException {
+    public void nullSafeSet(PreparedStatement preparedStatement, Object o, int i, SharedSessionContractImplementor sharedSessionContractImplementor) throws HibernateException, SQLException {
         if (o == null) {
             preparedStatement.setNull(i, Types.NULL);
             return;
@@ -83,7 +83,7 @@ public class SocialMediaJsonType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         Object copy = null;
         try {
-            copy = mapper.readValue(mapper.writeValueAsBytes(o),  SocialMedia.class);
+            copy = mapper.readValue(mapper.writeValueAsBytes(o), SocialMedia.class);
         } catch (IOException e) {
             e.printStackTrace();
         }

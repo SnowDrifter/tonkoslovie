@@ -128,9 +128,9 @@ public class UserServiceImpl implements UserService {
             String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
             userRepository.save(user);
 
-            response.sendRedirect(siteHost +"/registration/success?token=" + authToken);
+            response.sendRedirect(siteHost + "/registration/success?token=" + authToken);
         } else {
-            response.sendRedirect(siteHost +"/registration/error");
+            response.sendRedirect(siteHost + "/registration/error");
         }
     }
 

@@ -21,6 +21,8 @@ spring:
     properties:
       hibernate:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
+        temp:
+          use_jdbc_metadata_defaults: false
   mail:
     host: smtp.gmail.com
     port: 587

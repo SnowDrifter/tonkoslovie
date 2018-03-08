@@ -31,8 +31,8 @@ public class WordController {
 
     @DeleteMapping(value = "/word")
     public void deleteWord(@RequestParam Long id) {
-        if (wordRepository.exists(id)) {
-            wordRepository.delete(id);
+        if (wordRepository.existsById(id)) {
+            wordRepository.deleteById(id);
         }
     }
 

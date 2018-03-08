@@ -32,7 +32,7 @@ public class TextController {
 
     @GetMapping(value = "/text")
     public ResponseEntity<Text> getText(@RequestParam Long id) {
-        Text text = textRepository.findOne(id);
+        Text text = textRepository.getOne(id);
 
         if (text != null) {
             return ResponseEntity.ok(text);
@@ -48,8 +48,8 @@ public class TextController {
 
     @DeleteMapping(value = "/text")
     public void deleteText(@RequestParam Long id) {
-        if (textRepository.exists(id)) {
-            textRepository.delete(id);
+        if (textRepository.existsById(id)) {
+            textRepository.deleteById(id);
         }
     }
 
