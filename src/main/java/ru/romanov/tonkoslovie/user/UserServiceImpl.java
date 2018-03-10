@@ -21,13 +21,14 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
+import ru.romanov.tonkoslovie.utils.UserHelper;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 
 @Slf4j
 @Service
@@ -78,10 +79,7 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(new UserResponse(null, "Неправильный пароль"), HttpStatus.BAD_REQUEST);
         }
 
-        StringBuilder roles = new StringBuilder();
-        user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
-
-        String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 
@@ -124,10 +122,7 @@ public class UserServiceImpl implements UserService {
             User user = verification.getUser();
             user.setEnabled(true);
 
-            StringBuilder roles = new StringBuilder();
-            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
-
-            String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
+            String authToken = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
             userRepository.save(user);
 
             response.sendRedirect(siteHost + "/registration/success?token=" + authToken);

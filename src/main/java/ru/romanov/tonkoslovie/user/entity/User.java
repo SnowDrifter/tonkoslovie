@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 
 @Data
 @Entity
@@ -59,7 +59,7 @@ public class User implements UserDetails {
     public User(long id, String roles) {
         this.id = id;
 
-        this.roles = Stream.of(roles.split(ROLES_DELIMETER))
+        this.roles = Stream.of(roles.split(ROLES_DELIMITER))
                 .map(String::trim)
                 .map(Role::valueOf)
                 .collect(Collectors.toSet());

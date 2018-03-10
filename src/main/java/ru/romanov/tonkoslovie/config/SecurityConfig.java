@@ -39,6 +39,7 @@ import ru.romanov.tonkoslovie.oauth.vk.VkUserInfoTokenService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
 import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.User;
+import ru.romanov.tonkoslovie.utils.UserHelper;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -49,7 +50,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 
 @Configuration
 @EnableWebSecurity
@@ -208,10 +209,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
             User user = (User) authentication.getPrincipal();
 
-            StringBuilder roles = new StringBuilder();
-            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
-
-            String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
+            String token = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
 
             this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
             super.onAuthenticationSuccess(request, response, authentication);
