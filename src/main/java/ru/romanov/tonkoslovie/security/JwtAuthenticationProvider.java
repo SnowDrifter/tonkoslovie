@@ -7,7 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
-import ru.romanov.tonkoslovie.security.user.AuthUser;
+import ru.romanov.tonkoslovie.user.entity.User;
 
 @Slf4j
 @Service
@@ -25,12 +25,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         String token = authentication.getPrincipal().toString().replace("Bearer ", "");
         log.debug("Auth token: {}", token);
 
-        AuthUser authUser;
+        User user;
         if (Jwts.parser().isSigned(token)) {
-            authUser = jwtService.convert(token);
+            user = jwtService.convert(token);
 
-            if(authUser != null) {
-                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(authUser, authentication.getCredentials(), authUser.getAuthorities());
+            if(user != null) {
+                PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(user, authentication.getCredentials(), user.getAuthorities());
                 result.setDetails(authentication.getDetails());
                 return result;
             }

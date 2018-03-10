@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import ru.romanov.tonkoslovie.security.user.AuthUser;
+import ru.romanov.tonkoslovie.user.entity.User;
 
 import javax.annotation.PostConstruct;
 import javax.crypto.spec.SecretKeySpec;
@@ -34,15 +34,15 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public AuthUser convert(String token) {
+    public User convert(String token) {
         try {
             Jwt authToken = Jwts.parser().setSigningKey(key).parse(token);
             Map<String, String> authTokenParams = (Map<String, String>) authToken.getBody();
             if (authTokenParams.containsKey(JWT_ROLES_KEY)) {
-                return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), authTokenParams.get(JWT_ROLES_KEY));
+                return new User(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), authTokenParams.get(JWT_ROLES_KEY));
             }
 
-            return new AuthUser(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), DEFAULT_USER_ROLE);
+            return new User(Long.parseLong(authTokenParams.get(JWT_USER_ID_KEY)), DEFAULT_USER_ROLE);
         } catch (Exception e) {
             log.error("Convert jwt exception: {}", e.toString());
         }

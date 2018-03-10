@@ -16,6 +16,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
 
 @Data
 @Entity
@@ -27,7 +31,7 @@ import java.util.Set;
 @TypeDefs(value = {
         @TypeDef(name = "SocialMediaJsonType", typeClass = SocialMediaJsonType.class)
 })
-@JsonIgnoreProperties({"token", "authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired"})
+@JsonIgnoreProperties({"token", "authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired", "handler", "hibernateLazyInitializer"})
 public class User implements UserDetails {
 
     @Id
@@ -48,6 +52,18 @@ public class User implements UserDetails {
     private String token;
     @Type(type = "SocialMediaJsonType")
     private SocialMedia socialMedia;
+
+    public User() {
+    }
+
+    public User(long id, String roles) {
+        this.id = id;
+
+        this.roles = Stream.of(roles.split(ROLES_DELIMETER))
+                .map(String::trim)
+                .map(Role::valueOf)
+                .collect(Collectors.toSet());
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

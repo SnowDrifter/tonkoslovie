@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
+
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
@@ -77,9 +79,9 @@ public class UserServiceImpl implements UserService {
         }
 
         StringBuilder roles = new StringBuilder();
-        user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+        user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
 
-        String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 
@@ -123,9 +125,9 @@ public class UserServiceImpl implements UserService {
             user.setEnabled(true);
 
             StringBuilder roles = new StringBuilder();
-            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
 
-            String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+            String authToken = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
             userRepository.save(user);
 
             response.sendRedirect(siteHost + "/registration/success?token=" + authToken);

@@ -49,6 +49,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMETER;
+
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Client
@@ -207,9 +209,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             User user = (User) authentication.getPrincipal();
 
             StringBuilder roles = new StringBuilder();
-            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(", "));
+            user.getAuthorities().forEach(role -> roles.append(role.getAuthority()).append(ROLES_DELIMETER));
 
-            String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 2), Collections.singletonMap("s", System.currentTimeMillis()));
+            String token = jwtService.makeToken(String.valueOf(user.getId()), roles.substring(0, roles.length() - 1), Collections.singletonMap("s", System.currentTimeMillis()));
 
             this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
             super.onAuthenticationSuccess(request, response, authentication);

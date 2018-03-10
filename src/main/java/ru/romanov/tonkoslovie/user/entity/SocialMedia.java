@@ -14,7 +14,6 @@ public class SocialMedia {
     private Integer vkRelation;
     private Integer vkRelationPartner;
 
-
     private String facebookId;
 
     private String googleId;

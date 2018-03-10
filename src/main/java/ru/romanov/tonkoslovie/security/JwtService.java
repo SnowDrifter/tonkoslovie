@@ -1,13 +1,13 @@
 package ru.romanov.tonkoslovie.security;
 
 
-import ru.romanov.tonkoslovie.security.user.AuthUser;
+import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.Map;
 
 public interface JwtService {
 
-    AuthUser convert(String token);
+    User convert(String token);
 
     String makeToken(String userId, String roles, Map<String, Object> params);
 
