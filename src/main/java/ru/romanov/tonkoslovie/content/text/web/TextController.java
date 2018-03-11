@@ -8,6 +8,7 @@ import ru.romanov.tonkoslovie.content.text.TextRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/content")
@@ -32,10 +33,10 @@ public class TextController {
 
     @GetMapping(value = "/text")
     public ResponseEntity<Text> getText(@RequestParam Long id) {
-        Text text = textRepository.getOne(id);
+        Optional<Text> text = textRepository.findById(id);
 
-        if (text != null) {
-            return ResponseEntity.ok(text);
+        if (text.isPresent()) {
+            return ResponseEntity.ok(text.get());
         } else {
             return ResponseEntity.badRequest().build();
         }

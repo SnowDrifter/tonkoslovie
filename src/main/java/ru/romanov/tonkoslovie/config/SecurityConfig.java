@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 
 @Configuration
 @EnableWebSecurity
@@ -108,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationProvider(jwtService);
     }
 
-    private RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) throws Exception {
+    private RequestHeaderAuthenticationFilter headerAuthenticationFilter(AuthenticationManager authenticationManager) {
         RequestHeaderAuthenticationFilter headerAuthenticationFilter = new RequestHeaderAuthenticationFilter();
         headerAuthenticationFilter.setPrincipalRequestHeader("Authorization");
         headerAuthenticationFilter.setExceptionIfHeaderMissing(false);

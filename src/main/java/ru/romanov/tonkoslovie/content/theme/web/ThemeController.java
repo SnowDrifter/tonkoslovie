@@ -12,6 +12,7 @@ import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/content")
@@ -43,11 +44,13 @@ public class ThemeController {
     public ResponseEntity<Theme> getTheme(@RequestParam Long id,
                                           @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
                                           @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
-        Theme theme = themeRepository.getOne(id);
+        Optional<Theme> themeOptional = themeRepository.findById(id);
 
-        if (theme == null) {
+        if (!themeOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
+
+        Theme theme = themeOptional.get();
 
         List<Exercise> exercises = theme.getExercises();
         if (randomExercises) {

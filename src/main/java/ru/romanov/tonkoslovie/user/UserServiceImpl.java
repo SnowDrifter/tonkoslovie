@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 
 @Slf4j
 @Service

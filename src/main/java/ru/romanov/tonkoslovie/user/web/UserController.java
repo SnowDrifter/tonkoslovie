@@ -13,6 +13,7 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
@@ -49,10 +50,10 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<User> getUser(@RequestParam Long id) {
-        User user = userRepository.getOne(id);
+        Optional<User> user = userRepository.findById(id);
 
-        if (user != null) {
-            return ResponseEntity.ok(user);
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get());
         } else {
             return ResponseEntity.badRequest().build();
         }

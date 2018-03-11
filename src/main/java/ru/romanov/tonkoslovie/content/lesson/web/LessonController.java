@@ -8,6 +8,7 @@ import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/content")
@@ -36,10 +37,10 @@ public class LessonController {
 
     @GetMapping(value = "/lesson")
     public ResponseEntity<Lesson> getLesson(@RequestParam Long id) {
-        Lesson lesson = lessonRepository.getOne(id);
+        Optional<Lesson> lesson = lessonRepository.findById(id);
 
-        if (lesson != null) {
-            return ResponseEntity.ok(lesson);
+        if (lesson.isPresent()) {
+            return ResponseEntity.ok(lesson.get());
         } else {
             return ResponseEntity.badRequest().build();
         }

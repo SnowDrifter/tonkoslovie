@@ -1,5 +1,6 @@
 package ru.romanov.tonkoslovie.content.exercise.web;
 
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -7,9 +8,9 @@ import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.exercise.ExerciseRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/content")
@@ -35,17 +36,17 @@ public class ExerciseController {
 
     @GetMapping(value = "/exercise")
     public ResponseEntity<Exercise> getExercise(@RequestParam Long id) {
-        Exercise exercise = exerciseRepository.getOne(id);
+        Optional<Exercise> exercise = exerciseRepository.findById(id);
 
-        if (exercise != null) {
-            return ResponseEntity.ok(exercise);
+        if (exercise.isPresent()) {
+            return ResponseEntity.ok(exercise.get());
         } else {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping(value = "/exercise/randomId")
-    public Map<String, Long> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
+    public Map<String, Object> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
         Long id;
 
         if(excludeIds == null || excludeIds.isEmpty()) {
@@ -54,9 +55,7 @@ public class ExerciseController {
             id = exerciseRepository.findRandomExerciseIdExcludeIds(excludeIds);
         }
 
-        return new HashMap<String, Long>() {{
-            put("id", id);
-        }};
+        return ImmutableMap.of("id", id);
     }
 
     @GetMapping(value = "/exercises/findByTitle")
