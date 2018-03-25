@@ -35,7 +35,7 @@ spring:
           auth: true
           starttls.enable: true
           starttls.required: true
-  http:
+  servlet:
     multipart:
       enabled: true
       max-file-size: 128MB
@@ -94,13 +94,13 @@ vk:
     clientSecret: ${oauth.vk.secret}
     accessTokenUri: https://oauth.vk.com/access_token
     userAuthorizationUri: https://oauth.vk.com/authorize
-    tokenName: code
+    tokenName: access_token
     authenticationScheme: query
     clientAuthenticationScheme: form
     scope: email
     grant-type: authorization_code
   resource:
-    userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner
+    userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner&v=5.73
 
 server:
   servlet:
