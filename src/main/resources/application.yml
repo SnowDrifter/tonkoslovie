@@ -103,5 +103,13 @@ vk:
     userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner
 
 server:
-  session:
-    tracking-modes: cookie
+  servlet:
+    session:
+      tracking-modes: cookie
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"
+  level:
+    root: info
+    com.zaxxer.hikari: info
