@@ -9,11 +9,13 @@ import com.izettle.metrics.influxdb.InfluxDbHttpSender;
 import com.izettle.metrics.influxdb.InfluxDbReporter;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Configuration
 @EnableMetrics
 public class MetricsConfig extends MetricsConfigurerAdapter {
@@ -41,10 +43,10 @@ public class MetricsConfig extends MetricsConfigurerAdapter {
             try {
                 InfluxDbReporter reporter = InfluxDbReporter
                         .forRegistry(metricRegistry)
-                        .build(new InfluxDbHttpSender("http", host, port, database, auth, TimeUnit.SECONDS, 1000, 1000, "tonkoslovie"));
+                        .build(new InfluxDbHttpSender("http", host, port, database, auth, TimeUnit.SECONDS, 1000, 1000, "tonkoslovie."));
                 reporter.start(10, TimeUnit.SECONDS);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("InfluxDbReporter creating error, message={}", e.getMessage());
             }
         }
 
