@@ -3,21 +3,11 @@ app:
   siteHost: http://localhost:3000
 
 spring:
-  datasource:
-    hikari:
-      minimum-idle: 1
-      maximum-pool-size: 5
-      idle-timeout: 10000
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:h2:mem:test;MODE=PostgreSQL
-    driver-class-name: org.h2.Driver
-    username: ${database.username}
-    password: ${database.password}
   jpa:
     open-in-view: true
     show-sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
       use-new-id-generator-mappings: true
     properties:
       hibernate:
@@ -40,6 +30,17 @@ spring:
       enabled: true
       max-file-size: 128MB
       max-request-size: 128MB
+
+hikari:
+  datasource:
+    driverClassName: org.h2.Driver
+    jdbcUrl: jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: ${database.username}
+    password: ${database.password}
+    minimumIdle: 1
+    maximumPoolSize: 5
+    idleTimeout: 10000
+    autoCommit: false
 
 redis:
   host: 127.0.0.1

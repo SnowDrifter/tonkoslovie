@@ -1,12 +1,4 @@
 spring:
-  datasource:
-    hikari:
-      minimum-idle: 1
-      maximum-pool-size: 25
-      idle-timeout: 10000
-    type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost/tonkoslovie
-    driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: false
     hibernate:
@@ -15,10 +7,7 @@ spring:
       hibernate:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
 
-metrics:
-  influxdb:
-    active: false
-    host: 127.0.0.1
-    port: 8086
-    database: tonkoslovie
-    auth: admin:admin
+hikari:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    jdbcUrl: jdbc:postgresql://localhost/tonkoslovie
