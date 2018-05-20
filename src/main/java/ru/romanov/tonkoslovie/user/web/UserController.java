@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.UserService;
+import ru.romanov.tonkoslovie.user.annotation.CurrentUserId;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
@@ -49,8 +50,8 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<User> getUser(@RequestParam Long id) {
-        Optional<User> user = userRepository.findById(id);
+    public ResponseEntity<User> getUser(@CurrentUserId Long userId) {
+        Optional<User> user = userRepository.findById(userId);
 
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
