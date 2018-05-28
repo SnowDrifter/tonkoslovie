@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.*;
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -31,7 +33,13 @@ public class UserController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) {
-        return userService.login(request);
+        UserResponse response = userService.login(request);
+
+        if(StringUtils.isEmpty(response.getErrorMessage())) {
+            return new ResponseEntity<>(response, OK);
+        } else {
+            return new ResponseEntity<>(response, BAD_REQUEST);
+        }
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)

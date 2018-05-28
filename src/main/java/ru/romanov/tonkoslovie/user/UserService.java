@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public interface UserService extends UserDetailsService {
 
-    ResponseEntity<UserResponse> login(UserRequest request);
+    UserResponse login(UserRequest request);
 
     ResponseEntity<RegistrationResponse> saveNewUser(User user);
 

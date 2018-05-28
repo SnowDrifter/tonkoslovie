@@ -68,21 +68,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<UserResponse> login(UserRequest request) {
+    public UserResponse login(UserRequest request) {
         User user = userRepository.findFirstByEmail(request.getEmail());
         if (user == null) {
-            return new ResponseEntity<>(new UserResponse(null, "Пользователь не найден"), HttpStatus.BAD_REQUEST);
+            return new UserResponse(null, "Пользователь не найден");
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            return new ResponseEntity<>(new UserResponse(null, "Неправильный пароль"), HttpStatus.BAD_REQUEST);
+            return new UserResponse(null, "Неправильный пароль");
         }
 
         String token = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
         user.setToken(token);
         userRepository.save(user);
 
-        return new ResponseEntity<>(new UserResponse(token, null), HttpStatus.OK);
+        return new UserResponse(token, null);
     }
 
     @Override
