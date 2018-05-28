@@ -108,8 +108,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
-        user = updateFields(user);
+    public User update(long userId, UserRequest request) {
+        if(!userRepository.existsById(userId)) {
+            return null; // TODO: temp stub
+        }
+
+        User user = userRepository.getOne(userId);
+
+        if (StringUtils.hasText(request.getFirstName())) {
+            user.setFirstName(request.getFirstName());
+        }
+
+        if (StringUtils.hasText(request.getLastName())) {
+            user.setLastName(request.getLastName());
+        }
+
+        if (StringUtils.hasText(request.getUsername())) {
+            user.setUsername(request.getUsername());
+        }
+
         return userRepository.save(user);
     }
 
@@ -135,24 +152,4 @@ public class UserServiceImpl implements UserService {
         return userRepository.findFirstByEmail(email);
     }
 
-    private User updateFields(User user) {
-        User oldUser = userRepository.getOne(user.getId());
-
-        if (StringUtils.hasText(user.getFirstName())) {
-            oldUser.setFirstName(user.getFirstName());
-        }
-
-        if (StringUtils.hasText(user.getLastName())) {
-            oldUser.setLastName(user.getLastName());
-        }
-
-        if (StringUtils.hasText(user.getUsername())) {
-            oldUser.setUsername(user.getUsername());
-        }
-
-        oldUser.setRoles(user.getRoles());
-        oldUser.setEnabled(user.isEnabled());
-
-        return oldUser;
-    }
 }

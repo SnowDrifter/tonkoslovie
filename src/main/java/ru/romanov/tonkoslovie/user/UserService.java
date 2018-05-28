@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<RegistrationResponse> saveNewUser(User user);
 
-    User update(User user);
+    User update(long userId, UserRequest request);
 
     void confirmRegistration(String token, HttpServletResponse response) throws IOException;
 
