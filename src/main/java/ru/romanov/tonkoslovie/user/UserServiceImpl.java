@@ -3,8 +3,6 @@ package ru.romanov.tonkoslovie.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +15,8 @@ import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
+import ru.romanov.tonkoslovie.user.exception.ValidationException;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
-import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 import ru.romanov.tonkoslovie.utils.UserHelper;
@@ -86,14 +84,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<RegistrationResponse> saveNewUser(User user) {
+    public void saveNewUser(User user) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (userRepository.existsByEmail(user.getEmail())) {
             validationErrors.add(new ValidationError("email", "Пользователь с таким адресом электронной почты уже зарегестрирован"));
         }
 
         if (!validationErrors.isEmpty()) {
-            return new ResponseEntity<>(new RegistrationResponse(validationErrors), HttpStatus.BAD_REQUEST);
+            throw new ValidationException(validationErrors);
         }
 
         user.setRoles(Collections.singleton(Role.ROLE_USER));
@@ -103,8 +101,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         new Thread(() -> emailService.sendVerification(user)).start();
-
-        return ResponseEntity.ok().build();
     }
 
     @Override

@@ -2,13 +2,13 @@ package ru.romanov.tonkoslovie.user.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.UserService;
 import ru.romanov.tonkoslovie.user.annotation.CurrentUserId;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
-import ru.romanov.tonkoslovie.user.web.response.RegistrationResponse;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,8 +43,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public ResponseEntity<RegistrationResponse> processRegistration(@RequestBody User user) {
-        return userService.saveNewUser(user);
+    public void processRegistration(@RequestBody User user) {
+        userService.saveNewUser(user);
     }
 
     @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
