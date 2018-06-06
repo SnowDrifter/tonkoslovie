@@ -105,8 +105,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(long userId, UserRequest request) {
-        if(!userRepository.existsById(userId)) {
-            return null; // TODO: temp stub
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("Пользователь не найден");
         }
 
         User user = userRepository.getOne(userId);
