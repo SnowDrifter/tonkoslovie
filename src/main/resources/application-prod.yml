@@ -17,9 +17,6 @@ hikari:
     jdbcUrl: jdbc:postgresql://localhost/tonkoslovie
     maximumPoolSize: 25
 
-redis:
-  port: 6378
-
 security:
   oauth2:
     successRedirectUrl: https://tonkoslovie.ru/

@@ -14,6 +14,18 @@ spring:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
         temp:
           use_jdbc_metadata_defaults: false
+  redis:
+    host: ${REDIS_HOST:localhost}
+    password: ${REDIS_PASSWORD}
+    jedis:
+      pool:
+        max-idle: ${REDIS_MAX_IDLE:3}
+        max-active: ${REDIS_MAX_TOTAL:10}
+
+  data:
+    redis:
+      repositories:
+        enabled: false
 
   mail:
     host: smtp.gmail.com
@@ -53,11 +65,6 @@ hikari:
     maximumPoolSize: 5
     idleTimeout: 10000
     autoCommit: false
-
-redis:
-  host: 127.0.0.1
-  port: 6379
-  password: ${REDIS_PASSWORD}
 
 metrics:
   influxdb:

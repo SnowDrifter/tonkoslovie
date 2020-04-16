@@ -16,9 +16,6 @@ hikari:
     driverClassName: org.postgresql.Driver
     jdbcUrl: jdbc:postgresql://localhost/tonkoslovie
 
-redis:
-  port: 6378
-
 security:
   oauth2:
     successRedirectUrl: http://88.198.165.206:3000/
