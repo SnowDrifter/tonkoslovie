@@ -14,29 +14,41 @@ spring:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
         temp:
           use_jdbc_metadata_defaults: false
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${mail.username}
-    password: ${mail.password}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
           auth: true
           starttls.enable: true
           starttls.required: true
+
   servlet:
     multipart:
       enabled: true
       max-file-size: 128MB
       max-request-size: 128MB
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#        exclude:
+  metrics:
+    tags:
+      application: durak-app
+
 hikari:
   datasource:
     driverClassName: org.h2.Driver
-    jdbcUrl: jdbc:h2:mem:test;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    username: ${database.username}
-    password: ${database.password}
+    jdbcUrl: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     minimumIdle: 1
     maximumPoolSize: 5
     idleTimeout: 10000
@@ -45,6 +57,7 @@ hikari:
 redis:
   host: 127.0.0.1
   port: 6379
+  password: ${REDIS_PASSWORD}
 
 metrics:
   influxdb:
@@ -52,7 +65,7 @@ metrics:
     host: 127.0.0.1
     port: 8086
     database: tonkoslovie
-    auth: ${influx.auth}
+    auth: ${INFLUX_AUTH}
   console: false
 
 media:
@@ -63,10 +76,13 @@ security:
   oauth2:
     successRedirectUrl: http://localhost:3000/
 
+jwt:
+  secret: ${JWT_SECRET}
+
 google:
   client:
-    clientId: ${oauth.google.clientId}
-    clientSecret: ${oauth.google.secret}
+    clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+    clientSecret: ${OAUTH_GOOGLE_SECRET}
     accessTokenUri: https://www.googleapis.com/oauth2/v4/token
     userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
     clientAuthenticationScheme: form
@@ -79,8 +95,8 @@ google:
 
 facebook:
   client:
-    clientId: ${oauth.facebook.clientId}
-    clientSecret: ${oauth.facebook.secret}
+    clientId: ${OAUTH_FB_CLIENT_ID}
+    clientSecret: ${OAUTH_FB_SECRET}
     accessTokenUri: https://graph.facebook.com/oauth/access_token
     userAuthorizationUri: https://www.facebook.com/dialog/oauth
     tokenName: oauth_token
@@ -91,8 +107,8 @@ facebook:
 
 vk:
   client:
-    clientId: ${oauth.vk.clientId}
-    clientSecret: ${oauth.vk.secret}
+    clientId: ${OAUTH_VK_CLIENT_ID}
+    clientSecret: ${OAUTH_VK_SECRET}
     accessTokenUri: https://oauth.vk.com/access_token
     userAuthorizationUri: https://oauth.vk.com/authorize
     tokenName: access_token

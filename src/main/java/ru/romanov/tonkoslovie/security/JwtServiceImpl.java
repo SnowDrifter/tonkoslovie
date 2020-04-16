@@ -20,7 +20,7 @@ import java.util.Map;
 @Service
 public class JwtServiceImpl implements JwtService {
 
-    @Value("${auth.jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
     private Key key;
     private static final String JWT_USER_ID_KEY = "userId";
