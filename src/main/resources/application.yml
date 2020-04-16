@@ -3,6 +3,19 @@ app:
   siteHost: http://localhost:3000
 
 spring:
+  datasource:
+    url: jdbc:postgresql://${DB_SERVER}:5432/${DB_DATABASE}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: ${DB_MIN_POOL_SIZE:3}
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:2000}
+      validation-timeout: ${DB_VALIDATION_TIMEOUT:2000}
+      auto-commit: false
+
   jpa:
     open-in-view: true
     show-sql: false
@@ -14,6 +27,7 @@ spring:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
         temp:
           use_jdbc_metadata_defaults: false
+
   redis:
     host: ${REDIS_HOST:localhost}
     password: ${REDIS_PASSWORD}
@@ -44,27 +58,6 @@ spring:
       enabled: true
       max-file-size: 128MB
       max-request-size: 128MB
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-#        exclude:
-  metrics:
-    tags:
-      application: durak-app
-
-hikari:
-  datasource:
-    driverClassName: org.h2.Driver
-    jdbcUrl: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    minimumIdle: 1
-    maximumPoolSize: 5
-    idleTimeout: 10000
-    autoCommit: false
 
 metrics:
   influxdb:
