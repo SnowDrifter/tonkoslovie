@@ -124,6 +124,22 @@ server:
     session:
       tracking-modes: cookie
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  server:
+    port: 8085
+  metrics:
+    export:
+      influx:
+        enabled: ${INFLUX_ENABLED:false}
+        db: tonkoslovie
+        uri: ${INFLUX_URI}
+        password: ${INFLUX_PASSWORD}
+        step: 10s
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"

@@ -80,7 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers("/api/user/login", "/api/user/registration", "/api/user/confirmRegistration", "/api/oauth/**").permitAll()
+                .antMatchers("/api/user/login", "/api/user/registration", "/api/user/confirmRegistration", "/api/oauth/**", "/actuator/health").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/content/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/content/**").hasRole("ADMIN")
