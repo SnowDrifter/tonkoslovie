@@ -137,7 +137,8 @@ management:
         enabled: ${INFLUX_ENABLED:false}
         db: tonkoslovie
         uri: ${INFLUX_URI}
-        password: ${INFLUX_PASSWORD}
+        user-name: ${INFLUX_USER}
+        password: ${INFLUXDB_USER_PASSWORD}
         step: 10s
 
 logging:
