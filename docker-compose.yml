@@ -1,12 +1,44 @@
 version: '2.3'
 
 services:
+  application:
+    container_name: tonkoslovie_application
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_SERVER=postgres
+      - DB_DATABASE=tonkoslovie
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-1234}
+      - REDIS_HOST=redis
+      - INFLUX_ENABLED=true
+      - INFLUX_URI=http://influxdb:8086
+      - INFLUXDB_USER=${INFLUXDB_USER:-admin}
+      - INFLUXDB_USER_PASSWORD=${INFLUXDB_PASSWORD:-1234}
+      - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
+      - OAUTH_GOOGLE_SECRET=${OAUTH_GOOGLE_SECRET}
+      - OAUTH_FB_CLIENT_ID=${OAUTH_FB_CLIENT_ID}
+      - OAUTH_FB_SECRET=${OAUTH_FB_SECRET}
+      - OAUTH_VK_CLIENT_ID=${OAUTH_VK_CLIENT_ID}
+      - OAUTH_VK_SECRET=${OAUTH_VK_SECRET}
+      - JWT_SECRET=${JWT_SECRET:1234}
+    ports:
+      - 8081:8080
+    healthcheck:
+        test: ["CMD-SHELL", "curl -f localhost:8085/actuator/health || false"]
+        interval: 10s
+        timeout: 3s
+        retries: 5
+
   postgres:
     image: postgres:11-alpine
     container_name: tonkoslovie_postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=1234
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-1234}
       - POSTGRES_DB=tonkoslovie
     ports:
       - 5432:5432
@@ -19,11 +51,8 @@ services:
   redis:
     image: redis:5-alpine
     container_name: tonkoslovie_redis
-    ports:
-      - 6379:6379
-    command: redis-server --requirepass 1234
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli","ping"]
+      test: ["CMD-SHELL", "redis-cli", "ping"]
       interval: 10s
       timeout: 3s
       retries: 5
@@ -34,12 +63,9 @@ services:
     ports:
       - 8086:8086
     environment:
-      - INFLUXDB_DB=tonkoslovie
       - INFLUXDB_HTTP_AUTH_ENABLED=true
-      - INFLUXDB_ADMIN_USER=${INFLUXDB_ADMIN_USER:-admin}
-      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_ADMIN_PASSWORD:-1234}
-      - INFLUXDB_USER=${INFLUXDB_USER:-user}
-      - INFLUXDB_USER_PASSWORD=${INFLUXDB_USER_PASSWORD:-1234}
+      - INFLUXDB_ADMIN_USER=${INFLUXDB_USER:-admin}
+      - INFLUXDB_ADMIN_PASSWORD=${INFLUXDB_PASSWORD:-1234}
       - INFLUXDB_HTTP_LOG_ENABLED=false
     healthcheck:
       test: ["CMD-SHELL", "ln -sf /bin/busybox /bin/wget && /bin/wget -q -Y off http://localhost:8086/metrics -O /dev/null > /dev/null 2>&1"]

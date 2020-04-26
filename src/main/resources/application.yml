@@ -32,7 +32,6 @@ spring:
 
   redis:
     host: ${REDIS_HOST:localhost}
-    password: ${REDIS_PASSWORD}
     jedis:
       pool:
         max-idle: ${REDIS_MAX_IDLE:3}
@@ -127,11 +126,11 @@ management:
   metrics:
     export:
       influx:
-        enabled: ${INFLUX_ENABLED:false}
+        enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
-        uri: ${INFLUX_URI}
-        user-name: ${INFLUX_USER}
-        password: ${INFLUXDB_USER_PASSWORD}
+        uri: ${INFLUXDB_URI}
+        user-name: ${INFLUXDB_USER}
+        password: ${INFLUXDB_PASSWORD}
         step: 10s
 
 logging:
