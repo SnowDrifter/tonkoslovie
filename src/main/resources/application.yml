@@ -61,15 +61,6 @@ spring:
       max-file-size: 128MB
       max-request-size: 128MB
 
-metrics:
-  influxdb:
-    active: false
-    host: 127.0.0.1
-    port: 8086
-    database: tonkoslovie
-    auth: ${INFLUX_AUTH}
-  console: false
-
 media:
   imageDirectory: /app/tonkoslovie/images
   soundDirectory: /app/tonkoslovie/sounds
