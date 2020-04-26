@@ -14,8 +14,8 @@ services:
       - DB_USER=${POSTGRES_USER:-postgres}
       - DB_PASSWORD=${POSTGRES_PASSWORD:-1234}
       - REDIS_HOST=redis
-      - INFLUX_ENABLED=true
-      - INFLUX_URI=http://influxdb:8086
+      - INFLUXDB_ENABLED=true
+      - INFLUXDB_URI=http://influxdb:8086
       - INFLUXDB_USER=${INFLUXDB_USER:-admin}
       - INFLUXDB_USER_PASSWORD=${INFLUXDB_PASSWORD:-1234}
       - OAUTH_GOOGLE_CLIENT_ID=${OAUTH_GOOGLE_CLIENT_ID}
@@ -59,7 +59,7 @@ services:
 
   influxdb:
     image: influxdb:1.7-alpine
-    container_name: tonkoslovie_influx
+    container_name: tonkoslovie_influxdb
     ports:
       - 8086:8086
     environment:
