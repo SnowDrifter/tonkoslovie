@@ -2,20 +2,6 @@ app:
   host: http://88.198.165.206:8080
   siteHost: http://88.198.165.206:3000
 
-spring:
-  jpa:
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
-
-hikari:
-  datasource:
-    driverClassName: org.postgresql.Driver
-    jdbcUrl: jdbc:postgresql://localhost/tonkoslovie
-
 security:
   oauth2:
     successRedirectUrl: http://88.198.165.206:3000/

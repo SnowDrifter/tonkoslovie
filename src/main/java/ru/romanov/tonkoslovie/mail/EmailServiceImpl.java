@@ -34,7 +34,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendVerification(User user) {
-        String token = UUID.randomUUID().toString();
+        UUID token = UUID.randomUUID();
 
         EmailVerification verification = new EmailVerification();
         verification.setUser(user);

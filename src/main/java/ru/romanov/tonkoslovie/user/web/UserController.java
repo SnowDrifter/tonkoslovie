@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
-    public void confirmRegistration(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
+    public void confirmRegistration(@RequestParam("token") UUID token, HttpServletResponse response) throws IOException {
         userService.confirmRegistration(token, response);
     }
 

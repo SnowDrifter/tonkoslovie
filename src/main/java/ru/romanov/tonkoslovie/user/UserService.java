@@ -8,6 +8,7 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.UUID;
 
 public interface UserService extends UserDetailsService {
 
@@ -17,6 +18,6 @@ public interface UserService extends UserDetailsService {
 
     User update(long userId, UserRequest request);
 
-    void confirmRegistration(String token, HttpServletResponse response) throws IOException;
+    void confirmRegistration(UUID token, HttpServletResponse response) throws IOException;
 
 }

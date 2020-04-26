@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -19,6 +20,6 @@ public class EmailVerification {
     @OneToOne
     private User user;
     private Date expiryDate;
-    private String token;
+    private UUID token;
 
 }

@@ -1,0 +1,51 @@
+databaseChangeLog:
+    - changeSet:
+        id: hibernate_sequence
+        author: romanov
+        changes:
+        - createSequence:
+            sequenceName: hibernate_sequence
+            cacheSize: 1
+            dataType: int8
+            incrementBy: 1
+            minValue: 1
+            maxValue: 9223372036854775807
+
+    - changeSet:
+        id: user_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create user table
+              sql: CREATE TABLE "public"."user" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "creation_date" timestamp(6),
+                   "email" varchar(255),
+                   "enabled" bool DEFAULT false,
+                   "first_name" varchar(255),
+                   "last_name" varchar(255),
+                   "password" varchar(255),
+                   "roles" varchar(255),
+                   "social_media" jsonb,
+                   "token" varchar(255),
+                   "username" varchar(255)
+                   ) WITH (OIDS=FALSE);
+          - sql:
+              comment: Create email index
+              sql: CREATE INDEX "user_email_index" ON "public"."user" USING btree ("email")
+
+    - changeSet:
+        id: email_verification_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create email verification table char(36)
+              sql: CREATE TABLE "public"."email_verification" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "expiry_date" timestamp(6),
+                   "token" uuid,
+                   "user_id" int8
+                   ) WITH (OIDS=FALSE);
+          - sql:
+              comment: Create token index
+              sql: CREATE INDEX "email_verification_token_index" ON "public"."email_verification" USING btree ("token")

@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
             root = new User();
             root.setUsername("root");
             root.setPassword(passwordEncoder.encode("1q2w3e4r"));
-            root.setRoles(new HashSet<>(Arrays.asList(Role.values())));
+            root.setRoles(Set.of(Role.values()));
             root.setEnabled(true);
             root.setEmail("root");
             userRepository.save(root);
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmRegistration(String token, HttpServletResponse response) throws IOException {
+    public void confirmRegistration(UUID token, HttpServletResponse response) throws IOException {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
         if (verification != null) {

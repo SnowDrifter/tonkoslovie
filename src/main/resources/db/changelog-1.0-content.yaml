@@ -1,0 +1,96 @@
+databaseChangeLog:
+    - changeSet:
+        id: lesson_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create lesson table
+              sql: CREATE TABLE "public"."lesson" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "annotation" text,
+                   "content" text,
+                   "preview_image" varchar(255),
+                   "published" bool DEFAULT false,
+                   "title" varchar(255)
+                   ) WITH (OIDS=FALSE);
+
+    - changeSet:
+        id: text_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create text table
+              sql: CREATE TABLE "public"."text" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "parts" jsonb,
+                   "sound_file_name" varchar(255),
+                   "title" varchar(255)
+                   ) WITH (OIDS=FALSE);
+
+    - changeSet:
+        id: lesson_texts_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create lesson texts table
+              sql: CREATE TABLE "public"."lesson_texts" (
+                   "lesson_id" int8 NOT NULL,
+                   "texts_id" int8 NOT NULL,
+                   FOREIGN KEY ("lesson_id") REFERENCES "public"."lesson" ("id"),
+                   FOREIGN KEY ("texts_id") REFERENCES "public"."text" ("id")
+                   ) WITH (OIDS=FALSE);
+
+    - changeSet:
+        id: theme_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create theme table
+              sql: CREATE TABLE "public"."theme" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "published" bool DEFAULT false,
+                   "title" varchar(255)
+                   ) WITH (OIDS=FALSE);
+
+
+    - changeSet:
+        id: excercise_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create excercise table
+              sql: CREATE TABLE "public"."exercise" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "answer_regex" varchar(255),
+                   "answers" jsonb,
+                   "dictionary" text,
+                   "original" varchar(255),
+                   "published" bool DEFAULT false,
+                   "title" varchar(255),
+                   "type" int4
+                   ) WITH (OIDS=FALSE);
+
+    - changeSet:
+        id: theme_exercises_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create theme exercises table
+              sql: CREATE TABLE "public"."theme_exercises" (
+                   "theme_id" int8 NOT NULL,
+                   "exercises_id" int8 NOT NULL,
+                   FOREIGN KEY ("theme_id") REFERENCES "public"."theme" ("id"),
+                   FOREIGN KEY ("exercises_id") REFERENCES "public"."exercise" ("id")
+                   ) WITH (OIDS=FALSE);
+
+    - changeSet:
+        id: word_table
+        author: romanov
+        changes:
+          - sql:
+              comment: Create word table
+              sql: CREATE TABLE "public"."word" (
+                   "id" int8 NOT NULL PRIMARY KEY,
+                   "polish_text" varchar(255),
+                   "russian_text" varchar(255)
+                   ) WITH (OIDS=FALSE);

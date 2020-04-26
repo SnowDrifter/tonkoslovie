@@ -17,16 +17,18 @@ spring:
       auto-commit: false
 
   jpa:
-    open-in-view: true
+    open-in-view: false
     show-sql: false
     hibernate:
-      ddl-auto: update
-      use-new-id-generator-mappings: true
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
         temp:
           use_jdbc_metadata_defaults: false
+
+  liquibase:
+    change-log: classpath:db/changelog-master.yaml
 
   redis:
     host: ${REDIS_HOST:localhost}
