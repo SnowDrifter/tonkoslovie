@@ -80,7 +80,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers("/api/user/login", "/api/user/registration", "/api/user/confirmRegistration", "/api/oauth/**", "/actuator/health").permitAll()
+                .antMatchers("/api/user/login",
+                        "/api/user/registration",
+                        "/api/user/confirmRegistration",
+                        "/api/oauth/**",
+                        "/actuator/health").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/content/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/content/**").hasRole("ADMIN")
@@ -98,7 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configure(AuthenticationManagerBuilder auth, JwtAuthenticationProvider authProvider) throws Exception {
+    public void configure(AuthenticationManagerBuilder auth, JwtAuthenticationProvider authProvider) {
         auth.authenticationProvider(authProvider);
     }
 
@@ -141,8 +145,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(filter);
+        FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>(filter);
         registration.setOrder(-100);
         return registration;
     }
