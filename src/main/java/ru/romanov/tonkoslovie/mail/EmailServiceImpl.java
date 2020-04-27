@@ -1,36 +1,31 @@
 package ru.romanov.tonkoslovie.mail;
 
-import com.google.common.collect.Lists;
-import it.ozimov.springboot.mail.model.Email;
-import it.ozimov.springboot.mail.model.defaultimpl.DefaultEmail;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.user.entity.User;
 
-import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
 
     @Value("${app.host}")
     private String host;
-    private final it.ozimov.springboot.mail.service.EmailService emailService;
+    private final JavaMailSender emailSender;
+    private final TemplateEngine templateEngine;
     private final EmailVerificationRepository emailVerificationRepository;
-
-    @Autowired
-    public EmailServiceImpl(it.ozimov.springboot.mail.service.EmailService emailService, EmailVerificationRepository emailVerificationRepository) {
-        this.emailService = emailService;
-        this.emailVerificationRepository = emailVerificationRepository;
-    }
 
     @Override
     public void sendVerification(User user) {
@@ -42,24 +37,24 @@ public class EmailServiceImpl implements EmailService {
         verification.setExpiryDate(new Date());
         emailVerificationRepository.save(verification);
 
+
         try {
-            Email email = DefaultEmail.builder()
-                    .from(new InternetAddress("tonkoslovie@no-reply"))
-                    .to(Lists.newArrayList(new InternetAddress(user.getEmail())))
-                    .subject("Подтверждение регистрации")
-                    .body("")
-                    .encoding("UTF-8").build();
+            MimeMessage mimeMessage = emailSender.createMimeMessage();
+            MimeMessageHelper message = new MimeMessageHelper(mimeMessage, "UTF-8");
+            message.setSubject("Подтверждение регистрации");
+            message.setFrom("tonkoslovie@no-reply", "tonkoslovie@no-reply");
+            message.setTo(user.getEmail());
 
-            final Map<String, Object> emailData = new HashMap<>();
-            emailData.put("link", host + "/api/user/confirmRegistration?token=" + token);
-
+            Context context = new Context();
+            context.setVariable("link", host + "/api/user/confirmRegistration?token=" + token);
             if (StringUtils.hasText(user.getUsername())) {
-                emailData.put("displayName", user.getUsername());
-            } else if (StringUtils.hasText(user.getFirstName())) {
-                emailData.put("displayName", user.getFirstName());
+                context.setVariable("displayName", user.getUsername());
             }
 
-            emailService.send(email, "confirmRegistration.html", emailData);
+            String htmlContent = templateEngine.process("confirmRegistration.html", context);
+            message.setText(htmlContent, true);
+
+            emailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
         }
