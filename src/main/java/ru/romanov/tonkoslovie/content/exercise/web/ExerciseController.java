@@ -38,18 +38,15 @@ public class ExerciseController {
     public ResponseEntity<Exercise> getExercise(@RequestParam Long id) {
         Optional<Exercise> exercise = exerciseRepository.findById(id);
 
-        if (exercise.isPresent()) {
-            return ResponseEntity.ok(exercise.get());
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return exercise.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping(value = "/exercise/randomId")
     public Map<String, Object> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
         Long id;
 
-        if(excludeIds == null || excludeIds.isEmpty()) {
+        if (excludeIds == null || excludeIds.isEmpty()) {
             id = exerciseRepository.findRandomExerciseId();
         } else {
             id = exerciseRepository.findRandomExerciseIdExcludeIds(excludeIds);

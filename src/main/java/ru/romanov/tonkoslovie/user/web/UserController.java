@@ -62,11 +62,8 @@ public class UserController {
     public ResponseEntity<User> getUser(@CurrentUserId Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/update")

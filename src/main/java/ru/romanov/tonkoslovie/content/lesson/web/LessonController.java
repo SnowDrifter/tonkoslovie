@@ -39,11 +39,8 @@ public class LessonController {
     public ResponseEntity<Lesson> getLesson(@RequestParam Long id) {
         Optional<Lesson> lesson = lessonRepository.findById(id);
 
-        if (lesson.isPresent()) {
-            return ResponseEntity.ok(lesson.get());
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return lesson.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping(value = "/lesson")

@@ -35,11 +35,8 @@ public class TextController {
     public ResponseEntity<Text> getText(@RequestParam Long id) {
         Optional<Text> text = textRepository.findById(id);
 
-        if (text.isPresent()) {
-            return ResponseEntity.ok(text.get());
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return text.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping(value = "/texts/findByTitle")
