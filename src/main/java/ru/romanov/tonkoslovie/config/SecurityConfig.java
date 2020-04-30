@@ -211,7 +211,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
             User user = (User) authentication.getPrincipal();
 
-            String token = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
+            String token = jwtService.makeToken(user.getId(), user.getRoles());
 
             this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
             super.onAuthenticationSuccess(request, response, authentication);

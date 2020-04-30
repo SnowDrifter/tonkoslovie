@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
             return new UserResponse(null, "Неправильный пароль");
         }
 
-        String token = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
+        String token = jwtService.makeToken(user.getId(), user.getRoles());
         user.setToken(token);
         userRepository.save(user);
 
@@ -134,10 +134,10 @@ public class UserServiceImpl implements UserService {
             User user = verification.getUser();
             user.setEnabled(true);
 
-            String authToken = jwtService.makeToken(String.valueOf(user.getId()), UserHelper.convertRoles(user.getRoles()), Collections.singletonMap("s", System.currentTimeMillis()));
+            String jwtToken = jwtService.makeToken(user.getId(), user.getRoles());
             userRepository.save(user);
 
-            response.sendRedirect(siteHost + "/registration/success?token=" + authToken);
+            response.sendRedirect(siteHost + "/registration/success?token=" + jwtToken);
         } else {
             response.sendRedirect(siteHost + "/registration/error");
         }
