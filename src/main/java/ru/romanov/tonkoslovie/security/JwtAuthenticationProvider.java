@@ -1,8 +1,7 @@
 package ru.romanov.tonkoslovie.security;
 
-import io.jsonwebtoken.Jwts;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
@@ -11,25 +10,20 @@ import ru.romanov.tonkoslovie.user.entity.User;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtService jwtService;
-
-    @Autowired
-    public JwtAuthenticationProvider(JwtService jwtService) {
-        this.jwtService = jwtService;
-    }
 
     @Override
     public Authentication authenticate(Authentication authentication) {
         String token = authentication.getPrincipal().toString().replace("Bearer ", "");
         log.debug("Auth token: {}", token);
 
-        User user;
-        if (Jwts.parser().isSigned(token)) {
-            user = jwtService.convert(token);
+        if (jwtService.isValid(token)) {
+            User user = jwtService.convert(token);
 
-            if(user != null) {
+            if (user != null) {
                 PreAuthenticatedAuthenticationToken result = new PreAuthenticatedAuthenticationToken(user, authentication.getCredentials(), user.getAuthorities());
                 result.setDetails(authentication.getDetails());
                 return result;

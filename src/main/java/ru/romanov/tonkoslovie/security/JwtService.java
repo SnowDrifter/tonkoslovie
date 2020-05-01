@@ -17,4 +17,6 @@ public interface JwtService {
         return makeToken(userId, roles, null);
     }
 
+    boolean isValid(String token);
+
 }

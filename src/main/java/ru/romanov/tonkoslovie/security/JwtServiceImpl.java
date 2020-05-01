@@ -66,4 +66,9 @@ public class JwtServiceImpl implements JwtService {
                 .signWith(key)
                 .compact();
     }
+
+    @Override
+    public boolean isValid(String token) {
+        return jwtParser.isSigned(token);
+    }
 }
