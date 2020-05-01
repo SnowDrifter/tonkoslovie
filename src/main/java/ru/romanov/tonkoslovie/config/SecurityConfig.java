@@ -39,7 +39,6 @@ import ru.romanov.tonkoslovie.oauth.vk.VkUserInfoTokenService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
 import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.User;
-import ru.romanov.tonkoslovie.utils.UserHelper;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -47,7 +46,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
