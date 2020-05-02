@@ -1,12 +1,11 @@
 package ru.romanov.tonkoslovie.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -23,7 +21,6 @@ import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.CorsFilter;
 import ru.romanov.tonkoslovie.oauth.ClientResources;
+import ru.romanov.tonkoslovie.oauth.OauthAuthenticationSuccessHandler;
 import ru.romanov.tonkoslovie.oauth.extractor.FacebookPrincipalExtractor;
 import ru.romanov.tonkoslovie.oauth.extractor.GooglePrincipalExtractor;
 import ru.romanov.tonkoslovie.oauth.extractor.VkPrincipalExtractor;
@@ -38,13 +36,8 @@ import ru.romanov.tonkoslovie.oauth.vk.VkCustomFilter;
 import ru.romanov.tonkoslovie.oauth.vk.VkUserInfoTokenService;
 import ru.romanov.tonkoslovie.security.JwtAuthenticationProvider;
 import ru.romanov.tonkoslovie.security.JwtService;
-import ru.romanov.tonkoslovie.user.entity.User;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,26 +45,14 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableOAuth2Client
-@ComponentScan(basePackages = "ru.romanov")
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${security.oauth2.successRedirectUrl}")
-    private String successOauthRedirectUrl;
-
     private final OAuth2ClientContext oauth2ClientContext;
-    private final JwtService jwtService;
     private final GooglePrincipalExtractor googlePrincipalExtractor;
     private final FacebookPrincipalExtractor facebookPrincipalExtractor;
     private final VkPrincipalExtractor vkPrincipalExtractor;
-
-    @Autowired
-    public SecurityConfig(OAuth2ClientContext oauth2ClientContext, JwtService jwtService, GooglePrincipalExtractor googlePrincipalExtractor, FacebookPrincipalExtractor facebookPrincipalExtractor, VkPrincipalExtractor vkPrincipalExtractor) {
-        this.oauth2ClientContext = oauth2ClientContext;
-        this.jwtService = jwtService;
-        this.googlePrincipalExtractor = googlePrincipalExtractor;
-        this.facebookPrincipalExtractor = facebookPrincipalExtractor;
-        this.vkPrincipalExtractor = vkPrincipalExtractor;
-    }
+    private final OauthAuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -186,7 +167,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setRestTemplate(template);
         tokenServices.setPrincipalExtractor(client.getPrincipalExtractor());
         filter.setTokenServices(tokenServices);
-        filter.setAuthenticationSuccessHandler(new OauthAuthenticationSuccessHandler());
+        filter.setAuthenticationSuccessHandler(oauthAuthenticationSuccessHandler);
 
         return filter;
     }
@@ -200,19 +181,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         tokenServices.setRestTemplate(template);
         tokenServices.setPrincipalExtractor(client.getPrincipalExtractor());
         filter.setTokenServices(tokenServices);
-        filter.setAuthenticationSuccessHandler(new OauthAuthenticationSuccessHandler());
+        filter.setAuthenticationSuccessHandler(oauthAuthenticationSuccessHandler);
 
         return filter;
-    }
-
-    class OauthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-            User user = (User) authentication.getPrincipal();
-
-            String token = jwtService.makeToken(user.getId(), user.getRoles());
-
-            this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
-            super.onAuthenticationSuccess(request, response, authentication);
-        }
     }
 }
