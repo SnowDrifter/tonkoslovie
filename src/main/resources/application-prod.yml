@@ -1,7 +1,3 @@
 app:
   host: https://tonkoslovie.ru
   siteHost: https://tonkoslovie.ru
-
-security:
-  oauth2:
-    successRedirectUrl: https://tonkoslovie.ru/

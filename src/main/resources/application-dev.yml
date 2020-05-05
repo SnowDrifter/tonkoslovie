@@ -1,7 +1,3 @@
 app:
   host: http://88.198.165.206:8080
   siteHost: http://88.198.165.206:3000
-
-security:
-  oauth2:
-    successRedirectUrl: http://88.198.165.206:3000/

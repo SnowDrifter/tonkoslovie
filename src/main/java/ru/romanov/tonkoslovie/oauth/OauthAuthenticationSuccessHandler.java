@@ -17,8 +17,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OauthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${security.oauth2.successRedirectUrl}")
-    private String successOauthRedirectUrl;
+    @Value("${app.siteHost}")
+    private String siteHost;
 
     private final JwtService jwtService;
 
@@ -28,7 +28,7 @@ public class OauthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
         String token = jwtService.makeToken(user.getId(), user.getRoles());
 
-        this.setDefaultTargetUrl(successOauthRedirectUrl + "?token=" + token);
+        this.setDefaultTargetUrl(siteHost + "?token=" + token);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 

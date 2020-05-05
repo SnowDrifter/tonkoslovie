@@ -60,56 +60,55 @@ spring:
       max-file-size: 128MB
       max-request-size: 128MB
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${OAUTH_GOOGLE_CLIENT_ID}
+            clientSecret: ${OAUTH_GOOGLE_SECRET}
+            authorizationGrantType: authorization_code
+            redirectUri: "{baseUrl}/api/oauth/login/callback/{registrationId}"
+            scope:
+              - openid
+              - email
+              - profile
+          facebook:
+            clientId: ${OAUTH_FB_CLIENT_ID}
+            clientSecret: ${OAUTH_FB_SECRET}
+            authorizationGrantType: authorization_code
+            redirectUri: "{baseUrl}/api/oauth/login/callback/{registrationId}"
+            scope:
+              - email
+              - public_profile
+          vk:
+            clientId: ${OAUTH_VK_CLIENT_ID}
+            clientSecret: ${OAUTH_VK_SECRET}
+            authorizationGrantType: authorization_code
+            client-authentication-method: post
+            redirectUri: "{baseUrl}/api/oauth/login/callback/{registrationId}"
+            scope: email
+        provider:
+          google:
+            tokenUri: https://www.googleapis.com/oauth2/v4/token
+            authorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+            userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+          facebook:
+            tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
+            authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
+            userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)
+          vk:
+            userNameAttribute: user_id
+            tokenUri: https://oauth.vk.com/access_token
+            authorizationUri: https://oauth.vk.com/authorize
+            userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner&v=5.92
+
 media:
   imageDirectory: /app/tonkoslovie/images
   soundDirectory: /app/tonkoslovie/sounds
 
-security:
-  oauth2:
-    successRedirectUrl: http://localhost:3000/
-
 jwt:
   secret: ${JWT_SECRET}
-
-google:
-  client:
-    clientId: ${OAUTH_GOOGLE_CLIENT_ID}
-    clientSecret: ${OAUTH_GOOGLE_SECRET}
-    accessTokenUri: https://www.googleapis.com/oauth2/v4/token
-    userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
-    clientAuthenticationScheme: form
-    scope:
-      - openid
-      - email
-      - profile
-  resource:
-    userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
-
-facebook:
-  client:
-    clientId: ${OAUTH_FB_CLIENT_ID}
-    clientSecret: ${OAUTH_FB_SECRET}
-    accessTokenUri: https://graph.facebook.com/oauth/access_token
-    userAuthorizationUri: https://www.facebook.com/dialog/oauth
-    tokenName: oauth_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-  resource:
-    userInfoUri: https://graph.facebook.com/me?fields=first_name,last_name,email
-
-vk:
-  client:
-    clientId: ${OAUTH_VK_CLIENT_ID}
-    clientSecret: ${OAUTH_VK_SECRET}
-    accessTokenUri: https://oauth.vk.com/access_token
-    userAuthorizationUri: https://oauth.vk.com/authorize
-    tokenName: access_token
-    authenticationScheme: query
-    clientAuthenticationScheme: form
-    scope: email
-    grant-type: authorization_code
-  resource:
-    userInfoUri: https://api.vk.com/method/users.get?fields=bdate,sex,photo_max_orig,friend_status,relation,relation_partner&v=5.73
 
 server:
   servlet:
@@ -126,7 +125,7 @@ management:
   metrics:
     export:
       influx:
-        enabled: ${INFLUXDB_ENABLED:false}
+        enabled: false
         db: tonkoslovie
         uri: ${INFLUXDB_URI}
         user-name: ${INFLUXDB_USER}
@@ -138,4 +137,5 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"
   level:
     root: info
+    org.springframework.security: debug
     com.zaxxer.hikari: info
