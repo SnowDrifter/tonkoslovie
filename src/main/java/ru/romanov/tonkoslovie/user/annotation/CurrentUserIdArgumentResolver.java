@@ -27,15 +27,15 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
 
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             log.debug("Authentication is null or anonymous");
-            return -1L;
+            return null;
         }
 
         try {
             return ((User) authentication.getPrincipal()).getId();
         } catch (Exception e) {
-            log.debug("User id extraction error, message={}", e.getMessage());
+            log.error("User id extraction error, {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
-        return -1L;
+        return null;
     }
 }
