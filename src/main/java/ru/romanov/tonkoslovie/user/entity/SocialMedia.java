@@ -1,18 +1,15 @@
 package ru.romanov.tonkoslovie.user.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SocialMedia {
 
     private Integer vkId;
-    private String vkBirthDate;
-    private Integer vkSex;
     private String vkPhoto;
-    private Integer vkFriendStatus;
-    private Integer vkRelation;
-    private Integer vkRelationPartner;
 
     private String facebookId;
 
