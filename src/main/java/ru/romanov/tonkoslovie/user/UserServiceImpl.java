@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserResponse login(UserRequest request) {
         User user = userRepository.findFirstByEmail(request.getEmail());
         if (user == null) {
@@ -76,9 +76,6 @@ public class UserServiceImpl implements UserService {
         }
 
         String token = jwtService.makeToken(user.getId(), user.getRoles());
-        user.setToken(token);
-        userRepository.save(user);
-
         return new UserResponse(token, null);
     }
 

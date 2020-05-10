@@ -27,7 +27,6 @@ databaseChangeLog:
                    "password" varchar(255),
                    "roles" varchar(255),
                    "social_media" jsonb,
-                   "token" varchar(255),
                    "username" varchar(255)
                    ) WITH (OIDS=FALSE);
           - sql:

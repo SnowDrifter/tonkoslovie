@@ -29,7 +29,7 @@ import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
 @TypeDefs(value = {
         @TypeDef(name = "SocialMediaJsonType", typeClass = SocialMediaJsonType.class)
 })
-@JsonIgnoreProperties({"token", "authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired", "handler", "hibernateLazyInitializer"})
+@JsonIgnoreProperties({"authorities", "accountNonLocked", "credentialsNonExpired", "accountNonExpired", "handler", "hibernateLazyInitializer"})
 public class User implements UserDetails {
 
     @Id
@@ -47,7 +47,6 @@ public class User implements UserDetails {
     private String lastName;
     @Column(columnDefinition = "boolean default false")
     private boolean enabled;
-    private String token;
     @Type(type = "SocialMediaJsonType")
     private SocialMedia socialMedia;
 
