@@ -125,7 +125,7 @@ management:
   metrics:
     export:
       influx:
-        enabled: false
+        enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
         uri: ${INFLUXDB_URI}
         user-name: ${INFLUXDB_USER}
