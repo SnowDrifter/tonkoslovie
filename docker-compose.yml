@@ -2,9 +2,8 @@ version: '2.3'
 
 services:
   application:
+    image: tonkoslovie_application
     container_name: tonkoslovie_application
-    build:
-      context: .
     depends_on:
       postgres:
         condition: service_healthy
