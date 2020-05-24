@@ -47,12 +47,12 @@ public class EmailServiceImpl implements EmailService {
             message.setTo(user.getEmail());
 
             Context context = new Context();
-            context.setVariable("link", host + "/api/user/confirmRegistration?token=" + token);
+            context.setVariable("link", host + "/api/user/registration/confirm?token=" + token);
             if (StringUtils.hasText(user.getUsername())) {
                 context.setVariable("displayName", user.getUsername());
             }
 
-            String htmlContent = templateEngine.process("confirmRegistration.html", context);
+            String htmlContent = templateEngine.process("confirm-registration.html", context);
             message.setText(htmlContent, true);
 
             emailSender.send(mimeMessage);

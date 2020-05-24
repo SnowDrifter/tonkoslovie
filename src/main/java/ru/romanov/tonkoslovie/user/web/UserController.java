@@ -48,7 +48,7 @@ public class UserController {
         userService.saveNewUser(user);
     }
 
-    @RequestMapping(value = "/confirmRegistration", method = RequestMethod.GET)
+    @RequestMapping(value = "/registration/confirm", method = RequestMethod.GET)
     public void confirmRegistration(@RequestParam("token") UUID token, HttpServletResponse response) throws IOException {
         userService.confirmRegistration(token, response);
     }

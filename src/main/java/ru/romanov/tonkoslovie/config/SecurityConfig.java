@@ -50,8 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/api/user/login",
-                        "/api/user/registration",
-                        "/api/user/confirmRegistration",
+                        "/api/user/registration/**",
                         "/api/oauth/**",
                         "/actuator/health").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
