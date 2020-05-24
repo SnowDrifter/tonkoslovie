@@ -32,7 +32,20 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @GetMapping
+    public ResponseEntity<User> getUser(@CurrentUserId Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        return user.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @GetMapping("/users")
+    public List<User> users() {
+        return userRepository.findAllByOrderByIdAsc();
+    }
+
+    @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) {
         UserResponse response = userService.login(request);
 
@@ -43,27 +56,14 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @PostMapping("/registration")
     public void processRegistration(@RequestBody User user) {
         userService.saveNewUser(user);
     }
 
-    @RequestMapping(value = "/registration/confirm", method = RequestMethod.GET)
+    @GetMapping("/registration/confirm")
     public void confirmRegistration(@RequestParam("token") UUID token, HttpServletResponse response) throws IOException {
         userService.confirmRegistration(token, response);
-    }
-
-    @GetMapping("/users")
-    public List<User> users() {
-        return userRepository.findAllByOrderByIdAsc();
-    }
-
-    @GetMapping
-    public ResponseEntity<User> getUser(@CurrentUserId Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-
-        return user.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PostMapping("/update")

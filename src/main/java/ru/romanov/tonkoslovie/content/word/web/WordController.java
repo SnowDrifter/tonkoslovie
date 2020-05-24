@@ -19,7 +19,7 @@ public class WordController {
         this.wordRepository = wordRepository;
     }
 
-    @RequestMapping("/words")
+    @GetMapping("/words")
     public List<Word> words() {
         return new ArrayList<>(wordRepository.findAllByOrderByIdAsc());
     }
