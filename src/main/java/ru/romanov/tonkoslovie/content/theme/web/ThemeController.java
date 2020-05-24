@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.theme.web;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +15,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/content")
 public class ThemeController {
 
     private final ThemeRepository themeRepository;
-
-    @Autowired
-    public ThemeController(ThemeRepository themeRepository) {
-        this.themeRepository = themeRepository;
-    }
 
     @GetMapping("/themes")
     public List<Theme> themes(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {

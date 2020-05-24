@@ -1,6 +1,6 @@
 package ru.romanov.tonkoslovie.content.text.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.text.Text;
@@ -11,15 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/content")
 public class TextController {
 
     private final TextRepository textRepository;
-
-    @Autowired
-    public TextController(TextRepository textRepository) {
-        this.textRepository = textRepository;
-    }
 
     @GetMapping("/texts")
     public List<Text> texts() {

@@ -1,34 +1,28 @@
 package ru.romanov.tonkoslovie.media.web;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.tonkoslovie.media.MediaService;
 
-import java.io.IOException;
-
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/media/sound")
 public class SoundController {
 
     private final MediaService mediaService;
 
-    @Autowired
-    public SoundController(MediaService mediaService) {
-        this.mediaService = mediaService;
-    }
-
     @PostMapping
-    public ResponseEntity uploadSound(@RequestParam MultipartFile file) throws IOException {
+    public ResponseEntity uploadSound(@RequestParam MultipartFile file) {
         return mediaService.saveSound(file);
     }
 
     @DeleteMapping
-    public ResponseEntity deleteSound(@RequestParam String fileName) throws IOException {
+    public ResponseEntity deleteSound(@RequestParam String fileName) {
         return mediaService.deleteSound(fileName);
     }
 

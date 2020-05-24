@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +28,7 @@ import java.util.*;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     @Value("${app.siteHost}")
@@ -37,15 +38,6 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
     private final JwtService jwtService;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService, EmailVerificationRepository emailVerificationRepository, JwtService jwtService) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.emailService = emailService;
-        this.emailVerificationRepository = emailVerificationRepository;
-        this.jwtService = jwtService;
-    }
 
     @PostConstruct
     @Transactional

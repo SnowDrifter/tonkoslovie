@@ -1,6 +1,6 @@
 package ru.romanov.tonkoslovie.content.lesson.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.lesson.Lesson;
@@ -11,15 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/content")
 public class LessonController {
 
     private final LessonRepository lessonRepository;
-
-    @Autowired
-    public LessonController(LessonRepository lessonRepository) {
-        this.lessonRepository = lessonRepository;
-    }
 
     @GetMapping("/lessons")
     public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {

@@ -1,6 +1,6 @@
 package ru.romanov.tonkoslovie.content.word.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.word.Word;
 import ru.romanov.tonkoslovie.content.word.WordRepository;
@@ -9,15 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/content")
 public class WordController {
 
     private final WordRepository wordRepository;
-
-    @Autowired
-    public WordController(WordRepository wordRepository) {
-        this.wordRepository = wordRepository;
-    }
 
     @GetMapping("/words")
     public List<Word> words() {
