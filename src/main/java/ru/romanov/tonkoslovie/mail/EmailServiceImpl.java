@@ -13,6 +13,7 @@ import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import javax.mail.internet.MimeMessage;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Value("${app.host}")
     private String host;
+
     private final JavaMailSender emailSender;
     private final TemplateEngine templateEngine;
     private final EmailVerificationRepository emailVerificationRepository;
@@ -34,9 +36,8 @@ public class EmailServiceImpl implements EmailService {
         EmailVerification verification = new EmailVerification();
         verification.setUser(user);
         verification.setToken(token);
-        verification.setExpiryDate(new Date());
+        verification.setExpirationDate(calculateExpirationDate());
         emailVerificationRepository.save(verification);
-
 
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -58,5 +59,11 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             log.error("Sending email error, message: {}, email: {}", e.getMessage(), user.getEmail());
         }
+    }
+
+    private Date calculateExpirationDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 24);
+        return calendar.getTime();
     }
 }

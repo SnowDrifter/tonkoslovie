@@ -19,7 +19,7 @@ public class EmailVerification {
     private Long id;
     @OneToOne
     private User user;
-    private Date expiryDate;
+    private Date expirationDate;
     private UUID token;
 
 }

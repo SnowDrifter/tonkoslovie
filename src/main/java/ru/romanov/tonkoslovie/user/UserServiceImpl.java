@@ -126,13 +126,12 @@ public class UserServiceImpl implements UserService {
     public void confirmRegistration(UUID token, HttpServletResponse response) throws IOException {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
-        if (verification != null) {
+        if (verification != null && verification.getExpirationDate().after(new Date())) {
             User user = verification.getUser();
             user.setEnabled(true);
-
-            String jwtToken = jwtService.makeToken(user.getId(), user.getRoles());
             userRepository.save(user);
 
+            String jwtToken = jwtService.makeToken(user.getId(), user.getRoles());
             response.sendRedirect(siteHost + "/registration/success?token=" + jwtToken);
         } else {
             response.sendRedirect(siteHost + "/registration/error");
