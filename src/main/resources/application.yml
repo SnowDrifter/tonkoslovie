@@ -137,4 +137,5 @@ logging:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"
   level:
     root: info
-    com.zaxxer.hikari: info
+    org.eclipse.jetty: warn
+    liquibase: warn
