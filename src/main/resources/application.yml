@@ -104,8 +104,8 @@ spring:
             userInfoUri: https://api.vk.com/method/users.get?fields=photo_max_orig&v=5.92
 
 media:
-  imageDirectory: /app/tonkoslovie/images
-  soundDirectory: /app/tonkoslovie/sounds
+  imageDirectory: ./data/images
+  soundDirectory: ./data/sounds
 
 jwt:
   secret: ${JWT_SECRET}
