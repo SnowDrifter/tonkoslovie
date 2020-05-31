@@ -27,7 +27,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <imageName>tonkoslovie_application:${project.version}</imageName>
+                    <imageName>tonkoslovie_application</imageName>
                 </configuration>
             </plugin>
         </plugins>
