@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.tonkoslovie.media.MediaService;
+import ru.romanov.tonkoslovie.media.web.response.UploadResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -15,12 +16,18 @@ public class ImageController {
 
     @PostMapping
     public ResponseEntity uploadImage(@RequestParam MultipartFile file) {
-        return mediaService.saveImage(file);
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String fileName = mediaService.saveImage(file);
+        return ResponseEntity.ok(new UploadResponse(fileName));
     }
 
     @DeleteMapping
     public ResponseEntity deleteImage(@RequestParam String fileName) {
-        return mediaService.deleteImage(fileName);
+        mediaService.deleteImage(fileName);
+        return ResponseEntity.ok().build();
     }
 
 }

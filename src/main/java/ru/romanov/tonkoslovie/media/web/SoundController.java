@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.tonkoslovie.media.MediaService;
+import ru.romanov.tonkoslovie.media.web.response.UploadResponse;
 
 @Slf4j
 @RestController
@@ -18,12 +19,18 @@ public class SoundController {
 
     @PostMapping
     public ResponseEntity uploadSound(@RequestParam MultipartFile file) {
-        return mediaService.saveSound(file);
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        String fileName = mediaService.saveSound(file);
+        return ResponseEntity.ok(new UploadResponse(fileName));
     }
 
     @DeleteMapping
     public ResponseEntity deleteSound(@RequestParam String fileName) {
-        return mediaService.deleteSound(fileName);
+        mediaService.deleteSound(fileName);
+        return ResponseEntity.ok().build();
     }
 
 }

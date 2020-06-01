@@ -1,20 +1,19 @@
 package ru.romanov.tonkoslovie.media;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.romanov.tonkoslovie.media.web.response.UploadResponse;
+import ru.romanov.tonkoslovie.exception.FileUploadException;
 import ru.romanov.tonkoslovie.utils.MediaUtils;
 
+import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -27,85 +26,70 @@ public class MediaServiceImpl implements MediaService {
     @Value("${media.soundDirectory}")
     private String soundDirectory;
 
+    @PostConstruct
+    public void init() {
+        checkDirectory(imageDirectory);
+        checkDirectory(soundDirectory);
+    }
+
     @Override
-    public ResponseEntity saveImage(MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public String saveImage(MultipartFile file) {
         try {
-            Path directory = Paths.get(imageDirectory);
-            if (Files.notExists(directory)) {
-                Files.createDirectories(directory);
-            }
-
             String fileName = UUID.randomUUID().toString().substring(0, 8) + "_" + file.getOriginalFilename();
 
             Files.write(Paths.get(imageDirectory, fileName), file.getBytes());
 
-            for (String resize : MediaUtils.AVAILABLE_RESIZES) {
-                int height = Integer.valueOf(resize.split("_")[0]);
-                int weight = Integer.valueOf(resize.split("_")[1]);
+            for (String resize : MediaUtils.AVAILABLE_SIZES) {
+                int height = Integer.parseInt(resize.split("_")[0]);
+                int weight = Integer.parseInt(resize.split("_")[1]);
 
                 Thumbnails.of(ImageIO.read(new ByteArrayInputStream(file.getBytes())))
                         .size(height, weight)
                         .toFile(imageDirectory + "/" + resize + "-" + fileName);
             }
 
-            return ResponseEntity.ok(new UploadResponse(fileName));
-        } catch (IOException e) {
-            log.error("Error save file, message={}", e);
-            return ResponseEntity.badRequest().build();
+            return fileName;
+        } catch (Exception e) {
+            log.error("Error save image. {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            throw new FileUploadException(e);
         }
     }
 
     @Override
-    public ResponseEntity saveSound(MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public String saveSound(MultipartFile file) {
         try {
-            Path directory = Paths.get(soundDirectory);
-            if (Files.notExists(directory)) {
-                Files.createDirectories(directory);
-            }
-
             String fileName = UUID.randomUUID().toString().substring(0, 8) + "_" + file.getOriginalFilename();
 
             Files.write(Paths.get(soundDirectory, fileName), file.getBytes());
-
-            return ResponseEntity.ok(new UploadResponse(fileName));
+            return fileName;
         } catch (IOException e) {
-            log.error("Error save file, message={}", e.getMessage());
-            return ResponseEntity.badRequest().build();
+            log.error("Error save sound. {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            throw new FileUploadException(e);
         }
     }
 
     @Override
-    public ResponseEntity deleteImage(String fileName) {
-        boolean delete = new File(imageDirectory + "/" + fileName).delete();
-        if (!delete) {
-            return ResponseEntity.badRequest().build();
+    public void deleteImage(String fileName) {
+        deleteFile(imageDirectory, fileName);
+        for (String resize : MediaUtils.AVAILABLE_SIZES) {
+            deleteFile(imageDirectory, resize + "-" + fileName);
         }
-
-        for (String resize : MediaUtils.AVAILABLE_RESIZES) {
-            delete = new File(imageDirectory + "/" + resize + "-" + fileName).delete();
-            if (!delete) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
-        return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity deleteSound(String fileName) {
-        File file = new File(soundDirectory + "/" + fileName);
-        if (file.delete()) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.badRequest().build();
+    public void deleteSound(String fileName) {
+        deleteFile(soundDirectory, fileName);
+    }
+
+    @SneakyThrows
+    private void deleteFile(String directory, String name) {
+        Files.deleteIfExists(Paths.get(directory, name));
+    }
+
+    @SneakyThrows
+    private void checkDirectory(String directory) {
+        if (Files.notExists(Paths.get(directory))) {
+            Files.createDirectory(Paths.get(directory));
         }
     }
 }

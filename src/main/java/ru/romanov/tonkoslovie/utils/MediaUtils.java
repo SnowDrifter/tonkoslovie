@@ -6,10 +6,10 @@ import java.util.Set;
 
 public class MediaUtils {
 
-    public static final Set<String> AVAILABLE_RESIZES = new HashSet<>();
+    public static final Set<String> AVAILABLE_SIZES = new HashSet<>();
 
     static {
-        AVAILABLE_RESIZES.add("200_200");
+        AVAILABLE_SIZES.add("200_200");
     }
 
 }
