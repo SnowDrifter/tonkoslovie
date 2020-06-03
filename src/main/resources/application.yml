@@ -23,7 +23,7 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: ru.romanov.tonkoslovie.utils.JsonPostgresDialect
+        dialect: ru.romanov.tonkoslovie.hibernate.JsonPostgresDialect
         temp:
           use_jdbc_metadata_defaults: false
 

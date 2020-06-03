@@ -10,7 +10,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.romanov.tonkoslovie.utils.SocialMediaJsonType;
+import ru.romanov.tonkoslovie.hibernate.SocialMediaJsonType;
 
 import javax.persistence.*;
 import java.util.Collection;

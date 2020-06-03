@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.utils;
+package ru.romanov.tonkoslovie.hibernate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

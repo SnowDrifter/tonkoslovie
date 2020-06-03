@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import ru.romanov.tonkoslovie.utils.TextPartJsonType;
+import ru.romanov.tonkoslovie.hibernate.TextPartJsonType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

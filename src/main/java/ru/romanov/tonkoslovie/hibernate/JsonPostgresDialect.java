@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.utils;
+package ru.romanov.tonkoslovie.hibernate;
 
 import org.hibernate.dialect.PostgreSQL9Dialect;
 

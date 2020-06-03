@@ -1,11 +1,12 @@
-package ru.romanov.tonkoslovie.utils;
+package ru.romanov.tonkoslovie.hibernate;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
-import ru.romanov.tonkoslovie.user.entity.SocialMedia;
+import ru.romanov.tonkoslovie.content.text.TextPart;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -13,9 +14,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.List;
 
 
-public class SocialMediaJsonType implements UserType {
+public class TextPartJsonType implements UserType {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -34,7 +36,7 @@ public class SocialMediaJsonType implements UserType {
         if (o == null) {
             return o1 == null;
         }
-
+        
         return o.equals(o1);
     }
 
@@ -49,7 +51,8 @@ public class SocialMediaJsonType implements UserType {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
                 if (pGobject != null) {
-                    return mapper.readValue(pGobject.getValue(), SocialMedia.class);
+                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {
+                    });
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -83,7 +86,8 @@ public class SocialMediaJsonType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         Object copy = null;
         try {
-            copy = mapper.readValue(mapper.writeValueAsBytes(o), SocialMedia.class);
+            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
