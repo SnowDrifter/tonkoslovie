@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.exercise.ExerciseRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +35,7 @@ public class ExerciseController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping(value = "/exercise/randomId")
+    @GetMapping(value = "/exercise/random_id")
     public Map<String, Object> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
         Long id;
 
@@ -51,8 +48,8 @@ public class ExerciseController {
         return ImmutableMap.of("id", id);
     }
 
-    @GetMapping(value = "/exercises/findByTitle")
-    public List<Exercise> findTextsByTitle(@RequestParam String title) {
+    @GetMapping(value = "/exercises/find")
+    public List<Exercise> findExercises(@RequestParam String title) {
         return exerciseRepository.findByTitleContainingIgnoreCase(title);
     }
 

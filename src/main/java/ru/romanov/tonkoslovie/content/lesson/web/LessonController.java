@@ -18,7 +18,7 @@ public class LessonController {
     private final LessonRepository lessonRepository;
 
     @GetMapping("/lessons")
-    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {
+    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "true") boolean onlyPublished) {
         if (onlyPublished) {
             return new ArrayList<>(lessonRepository.findByPublishedTrueOrderByIdAsc());
         } else {

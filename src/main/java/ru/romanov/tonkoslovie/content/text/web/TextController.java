@@ -35,8 +35,8 @@ public class TextController {
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @GetMapping(value = "/texts/findByTitle")
-    public List<Text> findTextsByTitle(@RequestParam String title) {
+    @GetMapping(value = "/texts/find")
+    public List<Text> findTexts(@RequestParam String title) {
         return textRepository.findByTitleContainingIgnoreCase(title);
     }
 
