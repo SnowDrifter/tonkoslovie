@@ -2,13 +2,13 @@ package ru.romanov.tonkoslovie.hibernate;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
 import ru.romanov.tonkoslovie.content.text.TextPart;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +17,7 @@ import java.sql.Types;
 import java.util.List;
 
 
+@Slf4j
 public class TextPartJsonType implements UserType {
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -36,7 +37,7 @@ public class TextPartJsonType implements UserType {
         if (o == null) {
             return o1 == null;
         }
-        
+
         return o.equals(o1);
     }
 
@@ -54,8 +55,8 @@ public class TextPartJsonType implements UserType {
                     return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {
                     });
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error("Jsonb read error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
             }
         }
 
@@ -72,8 +73,8 @@ public class TextPartJsonType implements UserType {
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(o);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Jsonb write error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
         PGobject pGobject = new PGobject();
@@ -88,8 +89,8 @@ public class TextPartJsonType implements UserType {
         try {
             copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {
             });
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Jsonb deep copy error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
         return copy;

@@ -1,13 +1,13 @@
 package ru.romanov.tonkoslovie.hibernate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
 import ru.romanov.tonkoslovie.user.entity.SocialMedia;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 
+@Slf4j
 public class SocialMediaJsonType implements UserType {
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -51,8 +52,8 @@ public class SocialMediaJsonType implements UserType {
                 if (pGobject != null) {
                     return mapper.readValue(pGobject.getValue(), SocialMedia.class);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                log.error("Jsonb read error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
             }
         }
 
@@ -69,8 +70,8 @@ public class SocialMediaJsonType implements UserType {
         String jsonString = null;
         try {
             jsonString = mapper.writeValueAsString(o);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Jsonb write error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
         PGobject pGobject = new PGobject();
@@ -84,8 +85,8 @@ public class SocialMediaJsonType implements UserType {
         Object copy = null;
         try {
             copy = mapper.readValue(mapper.writeValueAsBytes(o), SocialMedia.class);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("Jsonb deep copy error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
         return copy;
