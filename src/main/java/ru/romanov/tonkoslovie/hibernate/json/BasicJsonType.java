@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.hibernate.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -18,6 +18,7 @@ import java.sql.Types;
 public abstract class BasicJsonType<T> implements UserType {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+    private final TypeToken<T> typeToken = new TypeToken<>(getClass()) {};
 
     @Override
     public int[] sqlTypes() {
@@ -49,7 +50,7 @@ public abstract class BasicJsonType<T> implements UserType {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
                 if (pGobject != null) {
-                    return MAPPER.readValue(pGobject.getValue(), new TypeReference<T>() {});
+                    return MAPPER.readValue(pGobject.getValue(), typeToken.getRawType());
                 }
             } catch (Exception e) {
                 log.error("Jsonb read error. Class: {}. {}: {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage());
@@ -81,14 +82,12 @@ public abstract class BasicJsonType<T> implements UserType {
 
     @Override
     public Object deepCopy(Object o) throws HibernateException {
-        Object copy = null;
         try {
-            copy = MAPPER.readValue(MAPPER.writeValueAsBytes(o), new TypeReference<T>() {});
+            return MAPPER.readValue(MAPPER.writeValueAsBytes(o), typeToken.getRawType());
         } catch (Exception e) {
             log.error("Jsonb deep copy error. Class: {}. {}: {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage());
+            return null;
         }
-
-        return copy;
     }
 
     @Override
