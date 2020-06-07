@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import ru.romanov.tonkoslovie.hibernate.TextPartJsonType;
+import ru.romanov.tonkoslovie.hibernate.json.TextPartListJsonType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "TextPartJsonType", typeClass = TextPartJsonType.class)
+        @TypeDef(name = "TextPartListJsonType", typeClass = TextPartListJsonType.class)
 })
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Text {
@@ -26,7 +26,7 @@ public class Text {
 
     private String title;
 
-    @Type(type = "TextPartJsonType")
+    @Type(type = "TextPartListJsonType")
     private List<TextPart> parts;
 
     private String soundFileName;

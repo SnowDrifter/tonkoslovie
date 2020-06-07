@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.hibernate;
+package ru.romanov.tonkoslovie.hibernate.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,20 +7,17 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.postgresql.util.PGobject;
-import ru.romanov.tonkoslovie.content.text.TextPart;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
-
 
 @Slf4j
-public class TextPartJsonType implements UserType {
+public abstract class BasicJsonType<T> implements UserType {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Override
     public int[] sqlTypes() {
@@ -52,11 +49,10 @@ public class TextPartJsonType implements UserType {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);
                 if (pGobject != null) {
-                    return mapper.readValue(pGobject.getValue(), new TypeReference<List<TextPart>>() {
-                    });
+                    return MAPPER.readValue(pGobject.getValue(), new TypeReference<T>() {});
                 }
             } catch (Exception e) {
-                log.error("Jsonb read error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
+                log.error("Jsonb read error. Class: {}. {}: {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage());
             }
         }
 
@@ -72,9 +68,9 @@ public class TextPartJsonType implements UserType {
 
         String jsonString = null;
         try {
-            jsonString = mapper.writeValueAsString(o);
+            jsonString = MAPPER.writeValueAsString(o);
         } catch (Exception e) {
-            log.error("Jsonb write error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            log.error("Jsonb write error. Class: {}. {}: {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage());
         }
 
         PGobject pGobject = new PGobject();
@@ -87,10 +83,9 @@ public class TextPartJsonType implements UserType {
     public Object deepCopy(Object o) throws HibernateException {
         Object copy = null;
         try {
-            copy = mapper.readValue(mapper.writeValueAsBytes(o), new TypeReference<List<TextPart>>() {
-            });
+            copy = MAPPER.readValue(MAPPER.writeValueAsBytes(o), new TypeReference<T>() {});
         } catch (Exception e) {
-            log.error("Jsonb deep copy error. {}: {}", e.getClass().getSimpleName(), e.getMessage());
+            log.error("Jsonb deep copy error. Class: {}. {}: {}", this.getClass().getSimpleName(), e.getClass().getSimpleName(), e.getMessage());
         }
 
         return copy;

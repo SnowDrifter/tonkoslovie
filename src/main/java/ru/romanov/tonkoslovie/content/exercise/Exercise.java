@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import ru.romanov.tonkoslovie.hibernate.StringListJsonType;
+import ru.romanov.tonkoslovie.hibernate.json.StringListJsonType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
