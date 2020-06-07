@@ -39,7 +39,7 @@ public class MediaServiceImpl implements MediaService {
 
             Files.write(Paths.get(imageDirectory, fileName), file.getBytes());
 
-            for (String resize : MediaUtils.AVAILABLE_SIZES) {
+            for (String resize : MediaUtils.getAvailableSizes()) {
                 int height = Integer.parseInt(resize.split("_")[0]);
                 int weight = Integer.parseInt(resize.split("_")[1]);
 
@@ -71,7 +71,7 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public void deleteImage(String fileName) {
         deleteFile(imageDirectory, fileName);
-        for (String resize : MediaUtils.AVAILABLE_SIZES) {
+        for (String resize : MediaUtils.getAvailableSizes()) {
             deleteFile(imageDirectory, resize + "-" + fileName);
         }
     }
