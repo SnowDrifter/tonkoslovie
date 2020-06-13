@@ -9,11 +9,8 @@ import java.util.List;
 @Repository
 public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
 
-    @Query(value = "select id from exercise where id not in ?1 order by random() limit 1", nativeQuery = true)
+    @Query(value = "select id from exercise where ((?1) is null or id not in (?1)) order by random() limit 1", nativeQuery = true)
     Long findRandomExerciseIdExcludeIds(List<Long> excludeIds);
-
-    @Query(value = "select id from exercise order by random() limit 1", nativeQuery = true)
-    Long findRandomExerciseId();
 
     List<Exercise> findAllByOrderByIdAsc();
 

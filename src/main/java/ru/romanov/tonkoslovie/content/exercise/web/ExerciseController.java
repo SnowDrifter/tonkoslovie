@@ -26,7 +26,6 @@ public class ExerciseController {
         return exerciseRepository.save(exercise);
     }
 
-
     @GetMapping(value = "/exercise")
     public ResponseEntity<Exercise> getExercise(@RequestParam Long id) {
         Optional<Exercise> exercise = exerciseRepository.findById(id);
@@ -37,14 +36,11 @@ public class ExerciseController {
 
     @GetMapping(value = "/exercise/random_id")
     public Map<String, Object> getRandomExerciseId(@RequestParam(required = false) List<Long> excludeIds) {
-        Long id;
-
-        if (excludeIds == null || excludeIds.isEmpty()) {
-            id = exerciseRepository.findRandomExerciseId();
-        } else {
-            id = exerciseRepository.findRandomExerciseIdExcludeIds(excludeIds);
+        if (excludeIds == null) {
+            excludeIds = new ArrayList<>();
         }
 
+        Long id = exerciseRepository.findRandomExerciseIdExcludeIds(excludeIds);
         return ImmutableMap.of("id", id);
     }
 
