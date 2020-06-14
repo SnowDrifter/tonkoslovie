@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.theme.Theme;
 import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
+import ru.romanov.tonkoslovie.user.entity.Role;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,11 +26,11 @@ public class ThemeController {
     private final ThemeRepository themeRepository;
 
     @GetMapping("/themes")
-    public List<Theme> themes(@RequestParam(required = false, defaultValue = "true") Boolean onlyPublished) {
-        if (onlyPublished) {
-            return new ArrayList<>(themeRepository.findByPublishedTrueOrderByIdAsc());
-        } else {
+    public List<Theme> themes(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+        if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
             return new ArrayList<>(themeRepository.findAllByOrderByIdAsc());
+        } else {
+            return new ArrayList<>(themeRepository.findByPublishedTrueOrderByIdAsc());
         }
     }
 

@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.lesson.Lesson;
 import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,11 +21,11 @@ public class LessonController {
     private final LessonRepository lessonRepository;
 
     @GetMapping("/lessons")
-    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "true") boolean onlyPublished) {
-        if (onlyPublished) {
-            return new ArrayList<>(lessonRepository.findByPublishedTrueOrderByIdAsc());
-        } else {
+    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+        if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
             return new ArrayList<>(lessonRepository.findAllByOrderByIdAsc());
+        } else {
+            return new ArrayList<>(lessonRepository.findByPublishedTrueOrderByIdAsc());
         }
     }
 
