@@ -2,6 +2,7 @@ package ru.romanov.tonkoslovie.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,9 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Value("${app.siteHost}")
+    private String siteHost;
 
     private final CustomOAuth2AuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
     private final CustomOidcUserService oidcUserService;
@@ -112,8 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-        config.addAllowedOrigin("*");
+        config.addAllowedOrigin(siteHost);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
