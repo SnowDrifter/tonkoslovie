@@ -18,19 +18,14 @@ public class SoundController {
     private final MediaService mediaService;
 
     @PostMapping
-    public ResponseEntity uploadSound(@RequestParam MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public ResponseEntity<UploadResponse> uploadSound(@RequestParam MultipartFile file) {
         String fileName = mediaService.saveSound(file);
         return ResponseEntity.ok(new UploadResponse(fileName));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteSound(@RequestParam String fileName) {
+    public void deleteSound(@RequestParam String fileName) {
         mediaService.deleteSound(fileName);
-        return ResponseEntity.ok().build();
     }
 
 }

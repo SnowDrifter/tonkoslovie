@@ -34,6 +34,10 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public String saveImage(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("file is empty");
+        }
+
         try {
             String fileName = UUID.randomUUID().toString().substring(0, 8) + "_" + file.getOriginalFilename();
 
@@ -57,6 +61,10 @@ public class MediaServiceImpl implements MediaService {
 
     @Override
     public String saveSound(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("file is empty");
+        }
+
         try {
             String fileName = UUID.randomUUID().toString().substring(0, 8) + "_" + file.getOriginalFilename();
 

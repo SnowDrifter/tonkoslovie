@@ -15,19 +15,14 @@ public class ImageController {
     private final MediaService mediaService;
 
     @PostMapping
-    public ResponseEntity uploadImage(@RequestParam MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-
+    public ResponseEntity<UploadResponse> uploadImage(@RequestParam MultipartFile file) {
         String fileName = mediaService.saveImage(file);
         return ResponseEntity.ok(new UploadResponse(fileName));
     }
 
     @DeleteMapping
-    public ResponseEntity deleteImage(@RequestParam String fileName) {
+    public void deleteImage(@RequestParam String fileName) {
         mediaService.deleteImage(fileName);
-        return ResponseEntity.ok().build();
     }
 
 }
