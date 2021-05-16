@@ -4,5 +4,10 @@ services:
   sonarqube:
     image: sonarqube
     container_name: tonkoslovie_sonarqube
+    volumes:
+    - ./docker_volumes/sonarqube/conf:/opt/sonarqube/conf
+    - ./docker_volumes/sonarqube/data:/opt/sonarqube/data
+    - ./docker_volumes/sonarqube/logs:/opt/sonarqube/logs
+    - ./docker_volumes/sonarqube/extensions:/opt/sonarqube/extensions
     ports:
       - 9001:9000
