@@ -1,0 +1,8 @@
+version: '2.3'
+
+services:
+  sonarqube:
+    image: sonarqube
+    container_name: tonkoslovie_sonarqube
+    ports:
+      - 9001:9000
