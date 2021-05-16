@@ -19,7 +19,7 @@ public class TextController {
 
     @GetMapping("/texts")
     public List<Text> texts() {
-        return new ArrayList<>(textRepository.findAllByOrderByIdAsc());
+        return textRepository.findAllByOrderByTitleAsc();
     }
 
     @PostMapping(value = "/text")

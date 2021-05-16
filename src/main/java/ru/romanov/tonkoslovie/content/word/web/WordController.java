@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.word.Word;
 import ru.romanov.tonkoslovie.content.word.WordRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -17,7 +16,7 @@ public class WordController {
 
     @GetMapping("/words")
     public List<Word> words() {
-        return new ArrayList<>(wordRepository.findAllByOrderByIdAsc());
+        return wordRepository.findAllByOrderByIdAsc();
     }
 
     @PostMapping(value = "/word")

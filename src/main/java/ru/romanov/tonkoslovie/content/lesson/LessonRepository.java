@@ -8,8 +8,8 @@ import java.util.List;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
-    List<Lesson> findAllByOrderByIdAsc();
+    List<Lesson> findAllByOrderByTitleAsc();
 
-    List<Lesson> findByPublishedTrueOrderByIdAsc();
+    List<Lesson> findByPublishedTrueOrderByTitleAsc();
 
 }

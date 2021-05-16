@@ -10,6 +10,6 @@ public interface TextRepository extends JpaRepository<Text, Long> {
 
     List<Text> findByTitleContainingIgnoreCase(String title);
 
-    List<Text> findAllByOrderByIdAsc();
+    List<Text> findAllByOrderByTitleAsc();
 
 }

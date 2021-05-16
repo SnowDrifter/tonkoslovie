@@ -7,7 +7,6 @@ import ru.romanov.tonkoslovie.content.lesson.Lesson;
 import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +22,9 @@ public class LessonController {
     @GetMapping("/lessons")
     public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
         if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            return new ArrayList<>(lessonRepository.findAllByOrderByIdAsc());
+            return lessonRepository.findAllByOrderByTitleAsc();
         } else {
-            return new ArrayList<>(lessonRepository.findByPublishedTrueOrderByIdAsc());
+            return lessonRepository.findByPublishedTrueOrderByTitleAsc();
         }
     }
 

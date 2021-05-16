@@ -18,7 +18,7 @@ public class ExerciseController {
 
     @GetMapping("/exercises")
     public List<Exercise> exercises() {
-        return new ArrayList<>(exerciseRepository.findAllByOrderByIdAsc());
+        return exerciseRepository.findAllByOrderByIdAsc();
     }
 
     @PostMapping(value = "/exercise")
