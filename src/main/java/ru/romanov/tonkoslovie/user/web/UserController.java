@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.user.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,11 +46,8 @@ public class UserController {
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest request) {
         UserResponse response = userService.login(request);
 
-        if(StringUtils.isEmpty(response.getErrorMessage())) {
-            return new ResponseEntity<>(response, OK);
-        } else {
-            return new ResponseEntity<>(response, BAD_REQUEST);
-        }
+        HttpStatus responseStatus = StringUtils.hasText(response.getErrorMessage()) ? BAD_REQUEST : OK;
+        return new ResponseEntity<>(response, responseStatus);
     }
 
     @PostMapping("/registration")
