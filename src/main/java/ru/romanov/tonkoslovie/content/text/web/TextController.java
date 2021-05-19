@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.text.Text;
 import ru.romanov.tonkoslovie.content.text.TextRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

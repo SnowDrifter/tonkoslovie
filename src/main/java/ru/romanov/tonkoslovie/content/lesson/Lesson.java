@@ -24,7 +24,7 @@ public class Lesson {
     @Column(columnDefinition = "text")
     private String content;
 
-    @OrderBy(value="title")
+    @OrderBy(value = "title")
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Text> texts;
 
