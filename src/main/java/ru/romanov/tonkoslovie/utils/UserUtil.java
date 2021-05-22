@@ -6,10 +6,10 @@ import ru.romanov.tonkoslovie.user.entity.Role;
 
 import java.util.Set;
 
-public class UserHelper {
+public class UserUtil {
 
-    public final static String ROLES_DELIMITER = ",";
-    public final static String OAUTH_USER_ID_ATTRIBUTE = "tonkoslovie_user_id";
+    public static final String ROLES_DELIMITER = ",";
+    public static final String OAUTH_USER_ID_ATTRIBUTE = "tonkoslovie_user_id";
 
     public static String convertRoles(Set<Role> roles) {
         StringBuilder rolesBuilder = new StringBuilder();

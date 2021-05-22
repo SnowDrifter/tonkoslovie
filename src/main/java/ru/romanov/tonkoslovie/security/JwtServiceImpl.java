@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
-import ru.romanov.tonkoslovie.utils.UserHelper;
+import ru.romanov.tonkoslovie.utils.UserUtil;
 
 import javax.annotation.PostConstruct;
 import java.security.Key;
@@ -54,7 +54,7 @@ public class JwtServiceImpl implements JwtService {
     public String makeToken(long userId, Set<Role> roles, Map<String, Object> params) {
         Claims claims = Jwts.claims();
         claims.put(JWT_USER_ID_KEY, userId);
-        claims.put(JWT_ROLES_KEY, UserHelper.convertRoles(roles));
+        claims.put(JWT_ROLES_KEY, UserUtil.convertRoles(roles));
         claims.put(JWT_SALT_KEY, System.currentTimeMillis());
 
         if (params != null) {

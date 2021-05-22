@@ -15,7 +15,7 @@ import ru.romanov.tonkoslovie.user.entity.User;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.OAUTH_USER_ID_ATTRIBUTE;
+import static ru.romanov.tonkoslovie.utils.UserUtil.OAUTH_USER_ID_ATTRIBUTE;
 
 @Component
 @RequiredArgsConstructor

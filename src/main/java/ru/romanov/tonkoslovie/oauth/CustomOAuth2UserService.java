@@ -2,10 +2,7 @@ package ru.romanov.tonkoslovie.oauth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -16,14 +13,15 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.romanov.tonkoslovie.oauth.converter.service.UserConverterService;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.entity.User;
-import ru.romanov.tonkoslovie.utils.UserHelper;
+import ru.romanov.tonkoslovie.utils.UserUtil;
 
 import java.util.*;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.OAUTH_USER_ID_ATTRIBUTE;
+import static ru.romanov.tonkoslovie.utils.UserUtil.OAUTH_USER_ID_ATTRIBUTE;
 
 @Slf4j
 @Service
@@ -50,7 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> attributes = new HashMap<>(oauth2User.getAttributes());
         attributes.put(OAUTH_USER_ID_ATTRIBUTE, user.getId());
 
-        String userNameAttributeName = UserHelper.getUserNameAttributeName(request);
+        String userNameAttributeName = UserUtil.getUserNameAttributeName(request);
         return new DefaultOAuth2User(user.getAuthorities(), attributes, userNameAttributeName);
     }
 
@@ -58,18 +56,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User loadVkUser(OAuth2UserRequest request) {
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Type", "application/json");
-            HttpEntity<?> httpRequest = new HttpEntity(headers);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+            HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 
-            String uri = getVkUserRequestUri(request);
-            ResponseEntity<Object> entity = restTemplate.exchange(uri, HttpMethod.GET, httpRequest, Object.class);
+            String url = getVkUserRequestUrl(request);
+            ResponseEntity<Object> entity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Object.class);
 
             Map<String, Object> response = (Map<String, Object>) entity.getBody();
-            ArrayList valueList = (ArrayList) response.get("response");
-            Map<String, Object> attributes = (Map<String, Object>) valueList.get(0);
+            if (response == null) {
+                throw new RuntimeException("Cannot get response");
+            }
+
+            List<Map<String, Object>> valueList = (List<Map<String, Object>>) response.get("response");
+            Map<String, Object> attributes = valueList.get(0);
             attributes.putAll(request.getAdditionalParameters());
 
-            String userNameAttributeName = UserHelper.getUserNameAttributeName(request);
+            String userNameAttributeName = UserUtil.getUserNameAttributeName(request);
             Set<GrantedAuthority> authorities = Set.of(new OAuth2UserAuthority(attributes));
             return new DefaultOAuth2User(authorities, attributes, userNameAttributeName);
         } catch (HttpClientErrorException e) {
@@ -78,9 +80,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
-    private String getVkUserRequestUri(OAuth2UserRequest request) {
-        return  request.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri()
-                + "&access_token=" + request.getAccessToken().getTokenValue();
+    private String getVkUserRequestUrl(OAuth2UserRequest request) {
+        String url = request.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUri();
+
+        return UriComponentsBuilder.fromUriString(url)
+                .queryParam("access_token", request.getAccessToken().getTokenValue())
+                .build()
+                .toUriString();
     }
 
     private User findOrCreateUser(OAuth2User oauth2User, String registrationId) {

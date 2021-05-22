@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.romanov.tonkoslovie.utils.UserHelper.ROLES_DELIMITER;
+import static ru.romanov.tonkoslovie.utils.UserUtil.ROLES_DELIMITER;
 
 @Data
 @Entity

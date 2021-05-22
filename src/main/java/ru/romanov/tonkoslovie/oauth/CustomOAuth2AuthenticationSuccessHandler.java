@@ -8,7 +8,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import ru.romanov.tonkoslovie.security.JwtService;
 import ru.romanov.tonkoslovie.user.entity.Role;
-import ru.romanov.tonkoslovie.utils.UserHelper;
+import ru.romanov.tonkoslovie.utils.UserUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +29,14 @@ public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthentic
     @SuppressWarnings("unchecked")
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
-        long userId = oauth2User.getAttribute(UserHelper.OAUTH_USER_ID_ATTRIBUTE);
-        Set<Role> roles = (Set<Role>) oauth2User.getAuthorities();
+        Long userId = oauth2User.getAttribute(UserUtil.OAUTH_USER_ID_ATTRIBUTE);
 
-        String token = jwtService.makeToken(userId, roles);
+        if (userId != null) {
+            Set<Role> roles = (Set<Role>) oauth2User.getAuthorities();
+            String token = jwtService.makeToken(userId, roles);
+            this.setDefaultTargetUrl(siteHost + "?token=" + token);
+        }
 
-        this.setDefaultTargetUrl(siteHost + "?token=" + token);
         super.onAuthenticationSuccess(request, response, authentication);
     }
 
