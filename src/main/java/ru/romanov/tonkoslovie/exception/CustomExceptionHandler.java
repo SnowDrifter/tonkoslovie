@@ -13,7 +13,7 @@ import ru.romanov.tonkoslovie.user.exception.ValidationException;
 @Slf4j
 @RestController
 @ControllerAdvice
-public class ExceptionHandlerController {
+public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
