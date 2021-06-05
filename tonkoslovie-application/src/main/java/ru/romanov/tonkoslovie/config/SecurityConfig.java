@@ -41,7 +41,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${app.siteHost}")
+    @Value("${app.site-host}")
     private String siteHost;
 
     private final CustomOAuth2AuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
@@ -130,15 +130,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
-        DefaultAuthorizationCodeTokenResponseClient client = new DefaultAuthorizationCodeTokenResponseClient();
-        client.setRequestEntityConverter(new OAuth2AuthorizationCodeGrantRequestEntityConverter());
-
         OAuth2AccessTokenResponseHttpMessageConverter tokenConverter = new OAuth2AccessTokenResponseHttpMessageConverter();
         tokenConverter.setTokenResponseConverter(new CustomTokenResponseConverter());
 
         RestTemplate restTemplate = new RestTemplate(List.of(new FormHttpMessageConverter(), tokenConverter));
         restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
 
+        DefaultAuthorizationCodeTokenResponseClient client = new DefaultAuthorizationCodeTokenResponseClient();
+        client.setRequestEntityConverter(new OAuth2AuthorizationCodeGrantRequestEntityConverter());
         client.setRestOperations(restTemplate);
         return client;
     }

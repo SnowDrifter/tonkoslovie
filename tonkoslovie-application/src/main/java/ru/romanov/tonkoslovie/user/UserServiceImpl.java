@@ -31,7 +31,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Value("${app.siteHost}")
+    @Value("${app.site-host}")
     private String siteHost;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

@@ -20,7 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CustomOAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${app.siteHost}")
+    @Value("${app.site-host}")
     private String siteHost;
 
     private final JwtService jwtService;

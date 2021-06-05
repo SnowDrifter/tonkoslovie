@@ -1,6 +1,6 @@
 app:
-  host: http://localhost:8080
-  siteHost: http://localhost:3000
+  host: ${APP_HOST:http://localhost:8080}
+  site-host: ${APP_SITE_HOST:http://localhost:3000}
 
 spring:
   datasource:
