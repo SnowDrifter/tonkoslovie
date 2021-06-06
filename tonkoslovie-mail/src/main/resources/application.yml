@@ -5,7 +5,7 @@ spring:
       auto-offset-reset: earliest
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "*"
+        spring.json.trusted.packages: "ru.romanov.tonkoslovie.*"
 
   mail:
     host: smtp.gmail.com
