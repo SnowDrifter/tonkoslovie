@@ -43,8 +43,8 @@ spring:
         enabled: false
 
   kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:${KAFKA_PORT:29092}
     producer:
-      bootstrap-servers: ${KAFKA_HOST:localhost:9092}
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
   servlet:
