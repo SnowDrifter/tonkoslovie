@@ -107,7 +107,7 @@ services:
     ports:
       - 9092:9092
       - 29092:29092
-    restart: on-failure
+    restart: unless-stopped
     volumes:
       - ./docker_volumes/kafka/data:/var/lib/kafka/data
       - ./docker_volumes/kafka/secrets:/etc/kafka/secrets
