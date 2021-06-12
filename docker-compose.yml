@@ -5,8 +5,9 @@ services:
     image: tonkoslovie_application
     container_name: tonkoslovie_application
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+      - kafka
+      - influxdb
     environment:
       DB_SERVER: postgres
       DB_DATABASE: tonkoslovie
@@ -17,6 +18,8 @@ services:
       INFLUXDB_URI: http://influxdb:8086
       INFLUXDB_USER: ${INFLUXDB_USER:-admin}
       INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-1234}
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
       OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID:-test}
       OAUTH_GOOGLE_SECRET: ${OAUTH_GOOGLE_SECRET:-test}
       OAUTH_FB_CLIENT_ID: ${OAUTH_FB_CLIENT_ID:-test}
@@ -27,10 +30,20 @@ services:
       MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
       JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
     ports:
-      - 8081:8080
+      - 127.0.0.1:8081:8080
+    restart: unless-stopped
     volumes:
       - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./data:/workspace/data
+
+  mail:
+    image: tonkoslovie_mail
+    container_name: tonkoslovie_mail
+    depends_on:
+      - kafka
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
 
   postgres:
     image: postgres:11-alpine
@@ -40,7 +53,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1234}
       POSTGRES_DB: tonkoslovie
     ports:
-      - 5432:5432
+      - 127.0.0.1:5432:5432
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -60,7 +73,7 @@ services:
     image: nginx
     container_name: tonkoslovie_nginx
     ports:
-      - 80:80
+      - 127.0.0.1:80:80
     volumes:
       - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./data:/usr/share/nginx/html/tonkoslovie
@@ -71,15 +84,13 @@ services:
       retries: 5
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:latest
+    image: confluentinc/cp-zookeeper:6.2.0
     container_name: tonkoslovie_zookeeper
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_SERVERS: zookeeper:22888:23888
-    ports:
-      - 2181:2181
     volumes:
       - ./docker_volumes/zookeeper/data:/var/lib/zookeeper/data
       - ./docker_volumes/zookeeper/log:/var/lib/zookeeper/log
@@ -92,7 +103,7 @@ services:
       retries: 5
 
   kafka:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-kafka:6.2.0
     container_name: tonkoslovie_kafka
     depends_on:
       - zookeeper
@@ -105,8 +116,8 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
-      - 9092:9092
-      - 29092:29092
+      - 127.0.0.1:9092:9092
+      - 127.0.0.1:29092:29092
     restart: unless-stopped
     volumes:
       - ./docker_volumes/kafka/data:/var/lib/kafka/data
@@ -119,14 +130,14 @@ services:
       retries: 5
 
   kafka-ui:
-    image: obsidiandynamics/kafdrop
+    image: obsidiandynamics/kafdrop:3.27.0
     container_name: tonkoslovie_kafka-ui
     depends_on:
       - kafka
     environment:
       KAFKA_BROKERCONNECT: kafka:9092
     ports:
-      - 9002:9000
+      - 127.0.0.1:9002:9000
     healthcheck:
       test: "curl -f localhost:9000/actuator/health || exit 1"
       start_period: 1m
@@ -143,7 +154,7 @@ services:
       INFLUXDB_HTTP_AUTH_ENABLED: 'true'
       INFLUXDB_HTTP_LOG_ENABLED: 'false'
     ports:
-      - 8086:8086
+      - 127.0.0.1:8086:8086
     healthcheck:
       test: [ "CMD-SHELL", "ln -sf /bin/busybox /bin/wget && /bin/wget -q -Y off http://localhost:8086/metrics -O /dev/null > /dev/null 2>&1" ]
       interval: 10s
