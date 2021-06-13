@@ -20,6 +20,17 @@ spring:
           starttls.enable: true
           starttls.required: true
 
+server:
+  port: 8087
+
+management:
+  server:
+    port: 8087
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"

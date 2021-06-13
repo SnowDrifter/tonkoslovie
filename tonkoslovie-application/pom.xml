@@ -18,6 +18,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <runImage>paketobuildpacks/run:1.2.8-full-cnb</runImage>
                     <imageName>tonkoslovie_application</imageName>
                 </configuration>
             </plugin>

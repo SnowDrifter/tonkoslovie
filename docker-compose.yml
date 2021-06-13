@@ -26,8 +26,6 @@ services:
       OAUTH_FB_SECRET: ${OAUTH_FB_SECRET:-test}
       OAUTH_VK_CLIENT_ID: ${OAUTH_VK_CLIENT_ID:-test}
       OAUTH_VK_SECRET: ${OAUTH_VK_SECRET:-test}
-      MAIL_USERNAME: ${MAIL_USERNAME:-test}
-      MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
       JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
     ports:
       - 127.0.0.1:8081:8080
@@ -35,6 +33,11 @@ services:
     volumes:
       - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./data:/workspace/data
+    healthcheck:
+      test: "curl -f localhost:8085/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   mail:
     image: tonkoslovie_mail
@@ -44,6 +47,13 @@ services:
     environment:
       KAFKA_HOST: kafka
       KAFKA_PORT: 9092
+      MAIL_USERNAME: ${MAIL_USERNAME:-test}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
+    healthcheck:
+      test: "curl -f localhost:8087/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   postgres:
     image: postgres:11-alpine
