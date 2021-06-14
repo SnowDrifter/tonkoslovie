@@ -120,9 +120,12 @@ management:
       influx:
         enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
+        org: tonkoslovie
+        bucket: tonkoslovie
         uri: ${INFLUXDB_URI}
         user-name: ${INFLUXDB_USER}
         password: ${INFLUXDB_PASSWORD}
+        token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
 
 logging:
