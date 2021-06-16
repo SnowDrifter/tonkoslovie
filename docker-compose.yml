@@ -30,7 +30,6 @@ services:
       JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
     ports:
       - 127.0.0.1:8081:8080
-    restart: unless-stopped
     volumes:
       - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./data:/workspace/data
@@ -129,7 +128,6 @@ services:
     ports:
       - 127.0.0.1:9092:9092
       - 127.0.0.1:29092:29092
-    restart: unless-stopped
     volumes:
       - ./docker_volumes/kafka/data:/var/lib/kafka/data
       - ./docker_volumes/kafka/secrets:/etc/kafka/secrets
