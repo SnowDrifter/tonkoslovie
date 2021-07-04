@@ -127,6 +127,7 @@ management:
         password: ${INFLUXDB_PASSWORD}
         token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
+        api-version: v2
 
 logging:
   pattern:
