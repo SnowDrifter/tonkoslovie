@@ -30,6 +30,21 @@ management:
     web:
       exposure:
         include: health
+  metrics:
+    export:
+      influx:
+        enabled: ${INFLUXDB_ENABLED:false}
+        db: tonkoslovie
+        org: tonkoslovie
+        bucket: tonkoslovie
+        uri: ${INFLUXDB_URI}
+        user-name: ${INFLUXDB_USER}
+        password: ${INFLUXDB_PASSWORD}
+        token: ${INFLUXDB_ADMIN_TOKEN}
+        step: 10s
+        api-version: v2
+    tags:
+      service.name: ${SERVICE_NAME:mail.test}
 
 logging:
   pattern:
