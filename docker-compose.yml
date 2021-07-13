@@ -28,6 +28,7 @@ services:
       OAUTH_VK_CLIENT_ID: ${OAUTH_VK_CLIENT_ID:-test}
       OAUTH_VK_SECRET: ${OAUTH_VK_SECRET:-test}
       JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
+      SERVICE_NAME: "application.1"
     ports:
       - 127.0.0.1:8081:8080
     volumes:
@@ -49,6 +50,12 @@ services:
       KAFKA_PORT: 9092
       MAIL_USERNAME: ${MAIL_USERNAME:-test}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
+      INFLUXDB_ENABLED: 'true'
+      INFLUXDB_URI: http://influxdb:8086
+      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
+      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
+      SERVICE_NAME: "mail.1"
     healthcheck:
       test: "curl -f localhost:8087/actuator/health || exit 1"
       interval: 10s
