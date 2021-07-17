@@ -9,6 +9,7 @@ services:
       - kafka
       - influxdb
     environment:
+      SPRING_PROFILES_ACTIVE: dev
       DB_SERVER: postgres
       DB_DATABASE: tonkoslovie
       DB_USER: ${POSTGRES_USER:-postgres}

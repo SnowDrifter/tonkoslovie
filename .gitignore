@@ -1,6 +1,6 @@
 *.iml
 target
-data
-docker_volumes
+/data
+/docker_volumes
 .idea
 .env

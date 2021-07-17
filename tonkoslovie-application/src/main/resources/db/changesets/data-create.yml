@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: root_user
+      author: romanov
+      context: dev
+      changes:
+      - sqlFile:
+          path: db/sql/data/root-user.sql

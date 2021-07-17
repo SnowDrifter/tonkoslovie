@@ -20,7 +20,6 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -38,22 +37,6 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
     private final JwtService jwtService;
-
-    @PostConstruct
-    @Transactional
-    public void createRoot() {
-        User root = userRepository.findFirstByEmail("root");
-
-        if (root == null) {
-            root = new User();
-            root.setUsername("root");
-            root.setPassword(passwordEncoder.encode("1q2w3e4r"));
-            root.setRoles(Set.of(Role.values()));
-            root.setEnabled(true);
-            root.setEmail("root");
-            userRepository.save(root);
-        }
-    }
 
     @Override
     @Transactional(readOnly = true)

@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: lesson_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/lesson.sql
+
+  - changeSet:
+      id: text_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/text.sql
+
+  - changeSet:
+      id: lesson_texts_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/lesson_texts.sql
+
+  - changeSet:
+      id: theme_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/theme.sql
+
+
+  - changeSet:
+      id: exercise_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/exercise.sql
+
+  - changeSet:
+      id: theme_exercises_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/theme_exercises.sql
+
+  - changeSet:
+      id: word_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/word.sql
+
+  - changeSet:
+      id: user_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/user.sql
+
+  - changeSet:
+      id: email_verification_table.create
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/table/email_verification.sql

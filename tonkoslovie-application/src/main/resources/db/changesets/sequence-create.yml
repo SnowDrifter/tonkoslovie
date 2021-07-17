@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: hibernate_sequence.create
+      author: romanov
+      changes:
+      - sqlFile:
+          path: db/sql/sequence/hibernate_sequence.sql

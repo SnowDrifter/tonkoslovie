@@ -28,7 +28,8 @@ spring:
           use_jdbc_metadata_defaults: false
 
   liquibase:
-    change-log: classpath:db/changelog-master.yaml
+    change-log: classpath:db/changelog.yml
+    contexts: ${spring.profiles.active}
 
   redis:
     host: ${REDIS_HOST:localhost}
