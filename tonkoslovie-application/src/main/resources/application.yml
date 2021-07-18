@@ -134,7 +134,7 @@ management:
 
 logging:
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %green(%-5level) %highlight(%logger{36}) - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%4.-4thread] %clr(%level) %clr([%c{1}]){cyan} %m%n%wEx"
   level:
     root: info
     org.eclipse.jetty: warn
