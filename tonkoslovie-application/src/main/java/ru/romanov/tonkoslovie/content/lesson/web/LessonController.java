@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.lesson.Lesson;
 import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
+import ru.romanov.tonkoslovie.content.lesson.dto.LessonDto;
+import ru.romanov.tonkoslovie.content.lesson.dto.LessonMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -20,24 +22,30 @@ public class LessonController {
     private final LessonRepository lessonRepository;
 
     @GetMapping("/lessons")
-    public List<Lesson> lessons(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+    public List<LessonDto> lessons(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+        List<Lesson> lessons;
         if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            return lessonRepository.findAllByOrderByTitleAsc();
+            lessons = lessonRepository.findAllByOrderByTitleAsc();
         } else {
-            return lessonRepository.findByPublishedTrueOrderByTitleAsc();
+            lessons = lessonRepository.findByPublishedTrueOrderByTitleAsc();
         }
+
+        return LessonMapper.INSTANCE.toDtoList(lessons);
     }
 
     @PostMapping(value = "/lesson")
-    public Lesson saveLesson(@RequestBody Lesson lesson) {
-        return lessonRepository.save(lesson);
+    public LessonDto saveLesson(@RequestBody LessonDto lessonDto) {
+        Lesson lesson = LessonMapper.INSTANCE.toEntity(lessonDto);
+        lesson = lessonRepository.save(lesson);
+        return LessonMapper.INSTANCE.toDto(lesson);
     }
 
     @GetMapping(value = "/lesson")
-    public ResponseEntity<Lesson> getLesson(@RequestParam Long id) {
+    public ResponseEntity<LessonDto> getLesson(@RequestParam Long id) {
         Optional<Lesson> lesson = lessonRepository.findById(id);
 
-        return lesson.map(ResponseEntity::ok)
+        return lesson.map(LessonMapper.INSTANCE::toDto)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 

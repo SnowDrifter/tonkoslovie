@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.UserService;
 import ru.romanov.tonkoslovie.user.annotation.CurrentUserId;
+import ru.romanov.tonkoslovie.user.dto.UserDto;
+import ru.romanov.tonkoslovie.user.dto.UserMapper;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
@@ -30,16 +32,18 @@ public class UserController {
     private final UserRepository userRepository;
 
     @GetMapping
-    public ResponseEntity<User> getUser(@CurrentUserId Long userId) {
+    public ResponseEntity<UserDto> getUser(@CurrentUserId Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        return user.map(ResponseEntity::ok)
+        return user.map(UserMapper.INSTANCE::toDto)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/users")
-    public List<User> users() {
-        return userRepository.findAllByOrderByIdAsc();
+    public List<UserDto> users() {
+        List<User> users = userRepository.findAllByOrderByIdAsc();
+        return UserMapper.INSTANCE.toDtoList(users);
     }
 
     @PostMapping("/login")
@@ -51,7 +55,8 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public void processRegistration(@RequestBody User user) {
+    public void processRegistration(@RequestBody UserDto userDto) {
+        User user = UserMapper.INSTANCE.toEntity(userDto);
         userService.saveNewUser(user);
     }
 
@@ -61,8 +66,8 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public User updateUser(@CurrentUserId Long userId, @RequestBody UserRequest request) {
-        return userService.update(userId, request);
+    public UserDto updateUser(@CurrentUserId Long userId, @RequestBody UserDto userDto) {
+        return userService.update(userId, userDto);
     }
 
 }

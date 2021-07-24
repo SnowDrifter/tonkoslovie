@@ -2,6 +2,7 @@ package ru.romanov.tonkoslovie.user;
 
 
 import org.springframework.security.core.userdetails.UserDetailsService;
+import ru.romanov.tonkoslovie.user.dto.UserDto;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
@@ -16,7 +17,7 @@ public interface UserService extends UserDetailsService {
 
     void saveNewUser(User user);
 
-    User update(long userId, UserRequest request);
+    UserDto update(long userId, UserDto userDto);
 
     void confirmRegistration(UUID token, HttpServletResponse response) throws IOException;
 

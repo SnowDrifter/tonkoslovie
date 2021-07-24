@@ -8,11 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import ru.romanov.tonkoslovie.mail.EmailService;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
 import ru.romanov.tonkoslovie.security.JwtService;
+import ru.romanov.tonkoslovie.user.dto.UserDto;
+import ru.romanov.tonkoslovie.user.dto.UserMapper;
 import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.exception.ValidationException;
@@ -39,7 +40,6 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
 
     @Override
-    @Transactional(readOnly = true)
     public UserResponse login(UserRequest request) {
         User user = userRepository.findFirstByEmail(request.getEmail());
         if (user == null) {
@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void saveNewUser(User user) {
         List<ValidationError> validationErrors = new ArrayList<>();
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -75,29 +76,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long userId, UserRequest request) {
+    @Transactional
+    public UserDto update(long userId, UserDto userDto) {
         if (!userRepository.existsById(userId)) {
             throw new RuntimeException("Пользователь не найден");
         }
 
-        User user = userRepository.getOne(userId);
-
-        if (StringUtils.hasText(request.getFirstName())) {
-            user.setFirstName(request.getFirstName());
-        }
-
-        if (StringUtils.hasText(request.getLastName())) {
-            user.setLastName(request.getLastName());
-        }
-
-        if (StringUtils.hasText(request.getUsername())) {
-            user.setUsername(request.getUsername());
-        }
-
-        return userRepository.save(user);
+        User user = userRepository.getById(userId);
+        UserMapper.INSTANCE.updateUserFromDto(user, userDto);
+        user = userRepository.save(user);
+        return UserMapper.INSTANCE.toDto(user);
     }
 
     @Override
+    @Transactional
     public void confirmRegistration(UUID token, HttpServletResponse response) throws IOException {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 

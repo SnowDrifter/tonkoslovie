@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.word.Word;
 import ru.romanov.tonkoslovie.content.word.WordRepository;
+import ru.romanov.tonkoslovie.content.word.dto.WordDto;
+import ru.romanov.tonkoslovie.content.word.dto.WordMapper;
 
 import java.util.List;
 
@@ -15,13 +17,16 @@ public class WordController {
     private final WordRepository wordRepository;
 
     @GetMapping("/words")
-    public List<Word> words() {
-        return wordRepository.findAllByOrderByIdAsc();
+    public List<WordDto> words() {
+        List<Word> words = wordRepository.findAllByOrderByIdAsc();
+        return WordMapper.INSTANCE.toDtoList(words);
     }
 
     @PostMapping(value = "/word")
-    public Word saveWord(@RequestBody Word word) {
-        return wordRepository.save(word);
+    public WordDto saveWord(@RequestBody WordDto wordDto) {
+        Word word = WordMapper.INSTANCE.toEntity(wordDto);
+        word = wordRepository.save(word);
+        return WordMapper.INSTANCE.toDto(word);
     }
 
     @DeleteMapping(value = "/word")
@@ -32,8 +37,9 @@ public class WordController {
     }
 
     @GetMapping("/random")
-    public List<Word> getRandomWords(@RequestParam Integer limit) {
-        return wordRepository.getRandomWords(limit);
+    public List<WordDto> getRandomWords(@RequestParam Integer limit) {
+        List<Word> words = wordRepository.getRandomWords(limit);
+        return WordMapper.INSTANCE.toDtoList(words);
     }
 
 }

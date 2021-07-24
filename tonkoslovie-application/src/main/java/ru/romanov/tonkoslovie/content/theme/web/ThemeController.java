@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
 import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.theme.Theme;
+import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
+import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
+import ru.romanov.tonkoslovie.content.theme.dto.ThemeMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -24,24 +26,29 @@ public class ThemeController {
     private final ThemeRepository themeRepository;
 
     @GetMapping("/themes")
-    public List<Theme> themes(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+    public List<ThemeDto> themes(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
+        List<Theme> themes;
         if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            return themeRepository.findAllByOrderByTitleAsc();
+            themes = themeRepository.findAllByOrderByTitleAsc();
         } else {
-            return themeRepository.findByPublishedTrueOrderByTitleAsc();
+            themes = themeRepository.findByPublishedTrueOrderByTitleAsc();
         }
+
+        return ThemeMapper.INSTANCE.toDtoList(themes);
     }
 
     @PostMapping(value = "/theme")
-    public Theme saveTheme(@RequestBody Theme theme) {
-        return themeRepository.save(theme);
+    public ThemeDto saveTheme(@RequestBody ThemeDto themeDto) {
+        Theme theme = ThemeMapper.INSTANCE.toEntity(themeDto);
+        theme = themeRepository.save(theme);
+        return ThemeMapper.INSTANCE.toDto(theme);
     }
 
     @GetMapping(value = "/theme")
     @Transactional
-    public ResponseEntity<Theme> getTheme(@RequestParam Long id,
-                                          @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
-                                          @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
+    public ResponseEntity<ThemeDto> getTheme(@RequestParam Long id,
+                                             @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
+                                             @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
         Optional<Theme> themeOptional = themeRepository.findById(id);
 
         if (!themeOptional.isPresent()) {
@@ -58,7 +65,8 @@ public class ThemeController {
         exercises = exercises.subList(0, Math.min(exercises.size(), exercisesCount));
         theme.setExercises(exercises);
 
-        return ResponseEntity.ok(theme);
+        ThemeDto themeDto = ThemeMapper.INSTANCE.toDto(theme);
+        return ResponseEntity.ok(themeDto);
     }
 
     @DeleteMapping(value = "/theme")
