@@ -1,6 +1,5 @@
 package ru.romanov.tonkoslovie.content.text;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -17,7 +16,6 @@ import java.util.List;
 @TypeDefs(value = {
         @TypeDef(name = "TextPartListJsonType", typeClass = TextPartListJsonType.class)
 })
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Text {
 
     @Id

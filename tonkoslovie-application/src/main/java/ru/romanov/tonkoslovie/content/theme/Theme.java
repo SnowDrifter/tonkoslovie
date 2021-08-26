@@ -1,7 +1,6 @@
 package ru.romanov.tonkoslovie.content.theme;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import ru.romanov.tonkoslovie.content.exercise.Exercise;
 
@@ -10,7 +9,6 @@ import java.util.List;
 
 @Data
 @Entity
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
 public class Theme {
 
     @Id
