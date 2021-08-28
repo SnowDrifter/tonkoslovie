@@ -1,16 +1,14 @@
 package ru.romanov.tonkoslovie.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import ru.romanov.tonkoslovie.user.entity.User;
 
-import java.util.List;
-
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 
-    List<User> findAllByOrderByIdAsc();
+    User getById(long id);
 
     User findFirstByEmail(String email);
 

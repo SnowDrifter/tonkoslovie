@@ -1,9 +1,14 @@
 package ru.romanov.tonkoslovie.user.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.UserService;
@@ -15,14 +20,16 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
@@ -41,9 +48,11 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserDto> users() {
-        List<User> users = userRepository.findAllByOrderByIdAsc();
-        return UserMapper.INSTANCE.toDtoList(users);
+    public Page<UserDto> users(@RequestParam(defaultValue = "0") @Min(0) int page,
+                               @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(UserMapper.INSTANCE::toDto);
     }
 
     @PostMapping("/login")
