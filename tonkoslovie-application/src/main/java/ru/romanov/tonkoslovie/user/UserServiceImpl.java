@@ -1,13 +1,20 @@
 package ru.romanov.tonkoslovie.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.romanov.tonkoslovie.hibernate.specification.GenericSpecificationBuilder;
 import ru.romanov.tonkoslovie.mail.EmailService;
 import ru.romanov.tonkoslovie.mail.EmailVerificationRepository;
 import ru.romanov.tonkoslovie.mail.entity.EmailVerification;
@@ -38,6 +45,17 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final EmailVerificationRepository emailVerificationRepository;
     private final JwtService jwtService;
+
+    @Override
+    public Page<UserDto> searchUsers(int page, int size, String searchQuery) {
+        Specification<User> specification = new GenericSpecificationBuilder<User>()
+                .addParametersFromSearchQuery(searchQuery)
+                .build();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<User> users = userRepository.findAll(specification, pageable);
+        return users.map(UserMapper.INSTANCE::toDto);
+    }
 
     @Override
     public UserResponse login(UserRequest request) {
@@ -89,6 +107,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SneakyThrows
     @Transactional
     public void confirmRegistration(UUID token, HttpServletResponse response) throws IOException {
         EmailVerification verification = emailVerificationRepository.findByToken(token);

@@ -2,9 +2,6 @@ package ru.romanov.tonkoslovie.user.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -49,10 +46,9 @@ public class UserController {
 
     @GetMapping("/users")
     public Page<UserDto> users(@RequestParam(defaultValue = "0") @Min(0) int page,
-                               @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<User> users = userRepository.findAll(pageable);
-        return users.map(UserMapper.INSTANCE::toDto);
+                               @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                               @RequestParam(required = false) String search) {
+        return userService.searchUsers(page, size, search);
     }
 
     @PostMapping("/login")

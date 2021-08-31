@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.user;
 
 
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.romanov.tonkoslovie.user.dto.UserDto;
 import ru.romanov.tonkoslovie.user.entity.User;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.util.UUID;
 
 public interface UserService extends UserDetailsService {
+
+    Page<UserDto> searchUsers(int page, int size, String searchQuery);
 
     UserResponse login(UserRequest request);
 
