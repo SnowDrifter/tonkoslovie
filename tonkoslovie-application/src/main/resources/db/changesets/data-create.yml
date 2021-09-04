@@ -3,6 +3,11 @@ databaseChangeLog:
       id: root_user
       author: romanov
       context: dev
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "select count(*) from \"user\" where username = 'root'"
       changes:
-      - sqlFile:
-          path: db/sql/data/root-user.sql
+        - sqlFile:
+            path: db/sql/data/root-user.sql
