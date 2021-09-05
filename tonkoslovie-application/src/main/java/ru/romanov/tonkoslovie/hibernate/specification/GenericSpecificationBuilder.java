@@ -46,7 +46,7 @@ public class GenericSpecificationBuilder<T> {
 
         Specification<T> result = specifications.get(0);
         for (int i = 1; i < parameters.size(); i++) {
-            result =  Specification.where(result).and(specifications.get(i));
+            result = Specification.where(result).and(specifications.get(i));
         }
         return result;
     }

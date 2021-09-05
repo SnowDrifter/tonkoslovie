@@ -13,9 +13,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
 
     User findFirstByEmail(String email);
 
-    @Query("select count(u)>0 from User u where token = ?1")
-    boolean existsByToken(String token);
-
     @Query("select count(u)>0 from User u where email = ?1")
     boolean existsByEmail(String email);
 

@@ -29,7 +29,6 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 
 
@@ -109,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @SneakyThrows
     @Transactional
-    public void confirmRegistration(UUID token, HttpServletResponse response) throws IOException {
+    public void confirmRegistration(UUID token, HttpServletResponse response) {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
         if (verification != null && verification.getExpirationDate().after(new Date())) {

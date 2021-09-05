@@ -19,7 +19,6 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/registration/confirm")
-    public void confirmRegistration(@RequestParam("token") UUID token, HttpServletResponse response) throws IOException {
+    public void confirmRegistration(@RequestParam("token") UUID token, HttpServletResponse response) {
         userService.confirmRegistration(token, response);
     }
 

@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <body>
-    <div th:with="condition=${displayName!=null}" th:remove="tag">
-        <h3 th:if="${condition}">Здравствуйте, <span th:text="${displayName}"></span>!</h3>
-        <h3 th:unless="${condition}" class="xxx">Здравствуйте!</h3>
-    </div>
 
-    <p>Спасибо за регистрацию на портале tonkoslovie.ru.
-        Для завершения регистрации, пожалуйста, перейдите по этой ссылке:  <a th:href="@{${link}}">подтвердить e-mail</a></p>
+<div th:with="condition=${displayName!=null}" th:remove="tag">
+    <h3 th:if="${condition}">Здравствуйте, <span th:text="${displayName}"></span>!</h3>
+    <h3 th:unless="${condition}" class="xxx">Здравствуйте!</h3>
+</div>
 
-    <p>Если вы не пытались зарегистрироваться на tonkoslovie.ru просто проигнорируйте это письмо.</p>
+<p>Спасибо за регистрацию на портале tonkoslovie.ru.
+    Для завершения регистрации, пожалуйста, перейдите по этой ссылке: <a th:href="@{${link}}">подтвердить e-mail</a></p>
 
-    <br/>
-    <p> С уважением, команда tonkoslovie.ru!</p>
+<p>Если вы не пытались зарегистрироваться на tonkoslovie.ru просто проигнорируйте это письмо.</p>
+
+<br/>
+<p> С уважением, команда tonkoslovie.ru!</p>
+
 </body>
 </html>

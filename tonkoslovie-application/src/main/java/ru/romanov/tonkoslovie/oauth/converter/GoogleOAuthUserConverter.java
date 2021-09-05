@@ -1,8 +1,8 @@
 package ru.romanov.tonkoslovie.oauth.converter;
 
 import org.springframework.stereotype.Component;
-import ru.romanov.tonkoslovie.user.entity.SocialMedia;
 import ru.romanov.tonkoslovie.user.entity.Role;
+import ru.romanov.tonkoslovie.user.entity.SocialMedia;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.Collections;

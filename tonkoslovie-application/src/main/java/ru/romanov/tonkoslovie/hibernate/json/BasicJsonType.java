@@ -45,7 +45,7 @@ public abstract class BasicJsonType<T> implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException, SQLException {
+    public Object nullSafeGet(ResultSet resultSet, String[] strings, SharedSessionContractImplementor sharedSessionContractImplementor, Object o) throws HibernateException {
         if (strings[0] != null) {
             try {
                 PGobject pGobject = (PGobject) resultSet.getObject(strings[0]);

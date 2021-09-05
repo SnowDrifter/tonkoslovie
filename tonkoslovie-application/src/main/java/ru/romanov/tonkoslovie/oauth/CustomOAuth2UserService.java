@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.oauth.converter.service.UserConverterService;
+import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.utils.UserUtil;
 

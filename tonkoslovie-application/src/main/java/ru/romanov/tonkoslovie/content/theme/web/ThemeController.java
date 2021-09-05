@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.romanov.tonkoslovie.content.exercise.Exercise;
 import ru.romanov.tonkoslovie.content.theme.Theme;
 import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
 import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
@@ -47,23 +46,17 @@ public class ThemeController {
     @GetMapping(value = "/theme")
     @Transactional
     public ResponseEntity<ThemeDto> getTheme(@RequestParam Long id,
-                                             @RequestParam(required = false, defaultValue = "false") boolean randomExercises,
-                                             @RequestParam(required = false, defaultValue = "5") int exercisesCount) {
+                                             @RequestParam(required = false, defaultValue = "false") boolean randomExercises) {
         Optional<Theme> themeOptional = themeRepository.findById(id);
-
-        if (!themeOptional.isPresent()) {
+        if (themeOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         Theme theme = themeOptional.get();
 
-        List<Exercise> exercises = theme.getExercises();
         if (randomExercises) {
-            Collections.shuffle(exercises);
+            Collections.shuffle(theme.getExercises());
         }
-
-        exercises = exercises.subList(0, Math.min(exercises.size(), exercisesCount));
-        theme.setExercises(exercises);
 
         ThemeDto themeDto = ThemeMapper.INSTANCE.toDto(theme);
         return ResponseEntity.ok(themeDto);

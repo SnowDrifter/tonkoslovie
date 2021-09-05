@@ -8,8 +8,8 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
-import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.oauth.converter.service.UserConverterService;
+import ru.romanov.tonkoslovie.user.UserRepository;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import java.util.HashMap;

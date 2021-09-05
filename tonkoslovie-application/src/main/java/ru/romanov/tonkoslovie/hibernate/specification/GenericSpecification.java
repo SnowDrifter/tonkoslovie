@@ -6,7 +6,10 @@ import org.hibernate.query.criteria.internal.predicate.ComparisonPredicate;
 import org.hibernate.query.criteria.internal.predicate.LikePredicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -20,7 +23,7 @@ public class GenericSpecification<T> implements Specification<T> {
         return builder.and(predicate);
     }
 
-    private Predicate createPredicate(Root<T> root,  CriteriaBuilder builder) {
+    private Predicate createPredicate(Root<T> root, CriteriaBuilder builder) {
         Class<?> fieldType = root.get(criteria.getKey()).getJavaType();
 
         if (fieldType == String.class) {
@@ -35,7 +38,7 @@ public class GenericSpecification<T> implements Specification<T> {
     private ComparisonPredicate.ComparisonOperator getCompressionOperator() {
         switch (criteria.getOperation()) {
             case ">":
-               return ComparisonPredicate.ComparisonOperator.GREATER_THAN;
+                return ComparisonPredicate.ComparisonOperator.GREATER_THAN;
             case "<":
                 return ComparisonPredicate.ComparisonOperator.LESS_THAN;
             default:
