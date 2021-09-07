@@ -6,6 +6,6 @@ import lombok.Data;
 public class ChoiceVariant {
 
     private String title;
-    private boolean right;
+    private boolean correct;
 
 }
