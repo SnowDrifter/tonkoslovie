@@ -9,8 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LessonRepository extends PagingAndSortingRepository<Lesson, Long> {
 
-    Page<Lesson> findAllByOrderByTitleAsc(Pageable pageable);
-
-    Page<Lesson> findByPublishedTrueOrderByTitleAsc(Pageable pageable);
+    Page<Lesson> findAllByPublishedTrue(Pageable pageable);
 
 }

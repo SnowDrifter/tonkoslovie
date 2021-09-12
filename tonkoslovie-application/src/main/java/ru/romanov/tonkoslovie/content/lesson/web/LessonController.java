@@ -31,14 +31,15 @@ public class LessonController {
     public Page<LessonDto> lessons(@RequestParam(defaultValue = "0") @Min(0) int page,
                                    @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
                                    @RequestParam(required = false, defaultValue = "false") boolean unpublished,
+                                   @RequestParam(required = false, defaultValue = "title") String sortField,
                                    HttpServletRequest request) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("title").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
 
         Page<Lesson> lessons;
         if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            lessons = lessonRepository.findAllByOrderByTitleAsc(pageable);
+            lessons = lessonRepository.findAll(pageable);
         } else {
-            lessons = lessonRepository.findByPublishedTrueOrderByTitleAsc(pageable);
+            lessons = lessonRepository.findAllByPublishedTrue(pageable);
         }
 
         return lessons.map(LessonMapper.INSTANCE::toDto);
