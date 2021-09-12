@@ -1,15 +1,16 @@
 package ru.romanov.tonkoslovie.content.lesson;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 
 @Repository
-public interface LessonRepository extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends PagingAndSortingRepository<Lesson, Long> {
 
-    List<Lesson> findAllByOrderByTitleAsc();
+    Page<Lesson> findAllByOrderByTitleAsc(Pageable pageable);
 
-    List<Lesson> findByPublishedTrueOrderByTitleAsc();
+    Page<Lesson> findByPublishedTrueOrderByTitleAsc(Pageable pageable);
 
 }
