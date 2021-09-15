@@ -1,22 +1,15 @@
 package ru.romanov.tonkoslovie.content.lesson.web;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.romanov.tonkoslovie.content.lesson.Lesson;
-import ru.romanov.tonkoslovie.content.lesson.LessonRepository;
+import ru.romanov.tonkoslovie.content.lesson.LessonService;
 import ru.romanov.tonkoslovie.content.lesson.dto.LessonDto;
-import ru.romanov.tonkoslovie.content.lesson.dto.LessonMapper;
+import ru.romanov.tonkoslovie.hibernate.RestPage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.util.Optional;
 
 import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 
@@ -25,46 +18,32 @@ import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 @RequestMapping("/api/content")
 public class LessonController {
 
-    private final LessonRepository lessonRepository;
+    private final LessonService lessonService;
 
     @GetMapping("/lessons")
-    public Page<LessonDto> lessons(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                   @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
-                                   @RequestParam(required = false, defaultValue = "false") boolean unpublished,
-                                   @RequestParam(required = false, defaultValue = "title") String sortField,
-                                   HttpServletRequest request) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
-
-        Page<Lesson> lessons;
-        if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            lessons = lessonRepository.findAll(pageable);
-        } else {
-            lessons = lessonRepository.findAllByPublishedTrue(pageable);
-        }
-
-        return lessons.map(LessonMapper.INSTANCE::toDto);
+    public RestPage<LessonDto> lessons(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                       @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                                       @RequestParam(required = false, defaultValue = "false") boolean unpublished,
+                                       @RequestParam(required = false, defaultValue = "title") String sortField,
+                                       HttpServletRequest request) {
+        boolean includeUnpublished = unpublished && request.isUserInRole(ROLE_ADMIN.name());
+        return lessonService.getLessons(page, size, includeUnpublished, sortField);
     }
 
     @PostMapping(value = "/lesson")
     public LessonDto saveLesson(@RequestBody LessonDto lessonDto) {
-        Lesson lesson = LessonMapper.INSTANCE.toEntity(lessonDto);
-        lesson = lessonRepository.save(lesson);
-        return LessonMapper.INSTANCE.toDto(lesson);
+        return lessonService.save(lessonDto);
     }
 
     @GetMapping(value = "/lesson")
     public ResponseEntity<LessonDto> getLesson(@RequestParam Long id) {
-        Optional<Lesson> lesson = lessonRepository.findById(id);
-
-        return lesson.map(LessonMapper.INSTANCE::toDto)
+        return lessonService.getLesson(id)
                 .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(value = "/lesson")
     public void deleteLesson(@RequestParam Long id) {
-        if (lessonRepository.existsById(id)) {
-            lessonRepository.deleteById(id);
-        }
+        lessonService.delete(id);
     }
 }

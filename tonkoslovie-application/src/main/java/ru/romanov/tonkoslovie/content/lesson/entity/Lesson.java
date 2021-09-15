@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.content.lesson;
+package ru.romanov.tonkoslovie.content.lesson.entity;
 
 import lombok.Data;
 import ru.romanov.tonkoslovie.content.text.Text;
