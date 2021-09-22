@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.content.exercise;
+package ru.romanov.tonkoslovie.content.exercise.entity;
 
 
 import lombok.Data;
@@ -7,10 +7,7 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import ru.romanov.tonkoslovie.hibernate.json.StringListJsonType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data

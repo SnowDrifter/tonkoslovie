@@ -2,7 +2,7 @@ package ru.romanov.tonkoslovie.content.exercise.dto;
 
 
 import lombok.Data;
-import ru.romanov.tonkoslovie.content.exercise.ExerciseType;
+import ru.romanov.tonkoslovie.content.exercise.entity.ExerciseType;
 
 import java.util.List;
 

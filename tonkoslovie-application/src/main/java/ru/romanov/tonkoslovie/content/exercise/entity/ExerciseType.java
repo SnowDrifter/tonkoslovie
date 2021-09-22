@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.content.exercise;
+package ru.romanov.tonkoslovie.content.exercise.entity;
 
 
 public enum ExerciseType {
