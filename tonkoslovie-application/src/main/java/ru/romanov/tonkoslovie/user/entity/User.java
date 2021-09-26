@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.user.entity;
 
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -8,7 +9,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.romanov.tonkoslovie.hibernate.json.SocialMediaJsonType;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -25,7 +25,7 @@ import static ru.romanov.tonkoslovie.utils.UserUtil.ROLES_DELIMITER;
 @NoArgsConstructor
 @Table(name = "\"user\"")
 @TypeDefs(value = {
-        @TypeDef(name = "SocialMediaJsonType", typeClass = SocialMediaJsonType.class)
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 public class User implements UserDetails {
 
@@ -43,7 +43,7 @@ public class User implements UserDetails {
     private String lastName;
     @Column(columnDefinition = "boolean default false")
     private boolean enabled;
-    @Type(type = "SocialMediaJsonType")
+    @Type(type = "jsonb")
     private SocialMedia socialMedia;
 
     public User(long id, String roles) {

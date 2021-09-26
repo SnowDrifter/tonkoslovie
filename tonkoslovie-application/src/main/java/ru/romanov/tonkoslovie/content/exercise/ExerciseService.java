@@ -14,7 +14,7 @@ public interface ExerciseService {
 
     List<ExerciseDto> findByTitle(String title);
 
-    ExerciseDto save(ExerciseDto lesson);
+    ExerciseDto save(ExerciseDto exerciseDto);
 
     Long findRandomId(List<Long> excludeIds);
 

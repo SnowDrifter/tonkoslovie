@@ -1,10 +1,10 @@
 package ru.romanov.tonkoslovie.content.text;
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import ru.romanov.tonkoslovie.hibernate.json.TextPartListJsonType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @TypeDefs(value = {
-        @TypeDef(name = "TextPartListJsonType", typeClass = TextPartListJsonType.class)
+        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 })
 public class Text {
 
@@ -24,7 +24,7 @@ public class Text {
 
     private String title;
 
-    @Type(type = "TextPartListJsonType")
+    @Type(type = "jsonb")
     private List<TextPart> parts;
 
     private String soundFileName;

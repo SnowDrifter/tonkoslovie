@@ -23,9 +23,7 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: ru.romanov.tonkoslovie.hibernate.JsonPostgresDialect
-        temp:
-          use_jdbc_metadata_defaults: false
+        types.print.banner: false
 
   liquibase:
     change-log: classpath:db/changelog.yml
