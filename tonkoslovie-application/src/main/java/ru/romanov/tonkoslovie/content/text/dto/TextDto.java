@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.text.dto;
 
 import lombok.Data;
-import ru.romanov.tonkoslovie.content.text.TextPart;
+import ru.romanov.tonkoslovie.content.text.entity.TextPart;
 
 import java.util.List;
 

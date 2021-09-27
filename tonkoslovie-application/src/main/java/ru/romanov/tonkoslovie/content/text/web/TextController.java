@@ -3,53 +3,48 @@ package ru.romanov.tonkoslovie.content.text.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.romanov.tonkoslovie.content.text.Text;
-import ru.romanov.tonkoslovie.content.text.TextRepository;
+import ru.romanov.tonkoslovie.content.text.TextService;
 import ru.romanov.tonkoslovie.content.text.dto.TextDto;
-import ru.romanov.tonkoslovie.content.text.dto.TextMapper;
+import ru.romanov.tonkoslovie.hibernate.RestPage;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/content")
 public class TextController {
 
-    private final TextRepository textRepository;
+    private final TextService textService;
 
     @GetMapping("/texts")
-    public List<TextDto> texts() {
-        return TextMapper.INSTANCE.toDtoList(textRepository.findAllByOrderByTitleAsc());
-    }
-
-    @PostMapping(value = "/text")
-    public TextDto saveText(@RequestBody TextDto textDto) {
-        Text text = TextMapper.INSTANCE.toEntity(textDto);
-        text = textRepository.save(text);
-        return TextMapper.INSTANCE.toDto(text);
+    public RestPage<TextDto> texts(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                   @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                                   @RequestParam(required = false, defaultValue = "title") String sortField) {
+        return textService.getTexts(page, size, sortField);
     }
 
     @GetMapping(value = "/text")
     public ResponseEntity<TextDto> getText(@RequestParam Long id) {
-        Optional<Text> text = textRepository.findById(id);
-
-        return text.map(TextMapper.INSTANCE::toDto)
+        return textService.getText(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
+    @PostMapping(value = "/text")
+    public TextDto saveText(@RequestBody TextDto textDto) {
+        return textService.save(textDto);
+    }
+
     @GetMapping(value = "/texts/find")
     public List<TextDto> findTexts(@RequestParam String title) {
-        List<Text> texts = textRepository.findByTitleContainingIgnoreCase(title);
-        return TextMapper.INSTANCE.toDtoList(texts);
+        return textService.findTexts(title);
     }
 
     @DeleteMapping(value = "/text")
     public void deleteText(@RequestParam Long id) {
-        if (textRepository.existsById(id)) {
-            textRepository.deleteById(id);
-        }
+        textService.delete(id);
     }
 
 }

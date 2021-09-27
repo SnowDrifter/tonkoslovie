@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.lesson.entity;
 
 import lombok.Data;
-import ru.romanov.tonkoslovie.content.text.Text;
+import ru.romanov.tonkoslovie.content.text.entity.Text;
 
 import javax.persistence.*;
 import java.util.List;

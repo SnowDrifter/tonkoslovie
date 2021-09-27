@@ -2,7 +2,7 @@ package ru.romanov.tonkoslovie.content.text.dto;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ru.romanov.tonkoslovie.content.text.Text;
+import ru.romanov.tonkoslovie.content.text.entity.Text;
 
 import java.util.List;
 
