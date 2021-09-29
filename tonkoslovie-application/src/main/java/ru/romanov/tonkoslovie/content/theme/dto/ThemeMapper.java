@@ -3,7 +3,7 @@ package ru.romanov.tonkoslovie.content.theme.dto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import ru.romanov.tonkoslovie.content.exercise.dto.ExerciseMapper;
-import ru.romanov.tonkoslovie.content.theme.Theme;
+import ru.romanov.tonkoslovie.content.theme.entity.Theme;
 
 import java.util.List;
 

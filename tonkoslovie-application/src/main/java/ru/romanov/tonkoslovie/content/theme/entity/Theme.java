@@ -1,8 +1,8 @@
-package ru.romanov.tonkoslovie.content.theme;
+package ru.romanov.tonkoslovie.content.theme.entity;
 
 
 import lombok.Data;
-import ru.romanov.tonkoslovie.content.exercise.Exercise;
+import ru.romanov.tonkoslovie.content.exercise.entity.Exercise;
 
 import javax.persistence.*;
 import java.util.List;

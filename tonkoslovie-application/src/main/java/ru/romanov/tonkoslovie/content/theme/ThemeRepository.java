@@ -1,15 +1,14 @@
 package ru.romanov.tonkoslovie.content.theme;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import ru.romanov.tonkoslovie.content.theme.entity.Theme;
 
 @Repository
-public interface ThemeRepository extends JpaRepository<Theme, Long> {
+public interface ThemeRepository extends PagingAndSortingRepository<Theme, Long> {
 
-    List<Theme> findAllByOrderByTitleAsc();
-
-    List<Theme> findByPublishedTrueOrderByTitleAsc();
+    Page<Theme> findAllByPublishedTrue(Pageable pageable);
 
 }

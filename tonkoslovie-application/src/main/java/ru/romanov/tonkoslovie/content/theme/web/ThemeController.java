@@ -5,15 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.romanov.tonkoslovie.content.theme.Theme;
-import ru.romanov.tonkoslovie.content.theme.ThemeRepository;
+import ru.romanov.tonkoslovie.content.theme.ThemeService;
 import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
-import ru.romanov.tonkoslovie.content.theme.dto.ThemeMapper;
+import ru.romanov.tonkoslovie.hibernate.RestPage;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 
@@ -22,51 +21,40 @@ import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 @RequestMapping("/api/content")
 public class ThemeController {
 
-    private final ThemeRepository themeRepository;
+    private final ThemeService themeService;
 
     @GetMapping("/themes")
-    public List<ThemeDto> themes(@RequestParam(required = false, defaultValue = "false") boolean unpublished, HttpServletRequest request) {
-        List<Theme> themes;
-        if (unpublished && request.isUserInRole(ROLE_ADMIN.name())) {
-            themes = themeRepository.findAllByOrderByTitleAsc();
-        } else {
-            themes = themeRepository.findByPublishedTrueOrderByTitleAsc();
-        }
-
-        return ThemeMapper.INSTANCE.toDtoList(themes);
+    public RestPage<ThemeDto> themes(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                     @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                                     @RequestParam(required = false, defaultValue = "false") boolean unpublished,
+                                     @RequestParam(required = false, defaultValue = "title") String sortField,
+                                     HttpServletRequest request) {
+        boolean includeUnpublished = unpublished && request.isUserInRole(ROLE_ADMIN.name());
+        return themeService.getThemes(page, size, includeUnpublished, sortField);
     }
 
     @PostMapping(value = "/theme")
     public ThemeDto saveTheme(@RequestBody ThemeDto themeDto) {
-        Theme theme = ThemeMapper.INSTANCE.toEntity(themeDto);
-        theme = themeRepository.save(theme);
-        return ThemeMapper.INSTANCE.toDto(theme);
+        return themeService.save(themeDto);
     }
 
     @GetMapping(value = "/theme")
     @Transactional
     public ResponseEntity<ThemeDto> getTheme(@RequestParam Long id,
-                                             @RequestParam(required = false, defaultValue = "false") boolean randomExercises) {
-        Optional<Theme> themeOptional = themeRepository.findById(id);
-        if (themeOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Theme theme = themeOptional.get();
-
-        if (randomExercises) {
-            Collections.shuffle(theme.getExercises());
-        }
-
-        ThemeDto themeDto = ThemeMapper.INSTANCE.toDto(theme);
-        return ResponseEntity.ok(themeDto);
+                                             @RequestParam(required = false, defaultValue = "false") boolean shuffleExercises) {
+        return themeService.getTheme(id)
+                .map(theme -> {
+                    if (shuffleExercises && theme.getExercises() != null) {
+                        Collections.shuffle(theme.getExercises());
+                    }
+                    return ResponseEntity.ok(theme);
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping(value = "/theme")
     public void deleteTheme(@RequestParam Long id) {
-        if (themeRepository.existsById(id)) {
-            themeRepository.deleteById(id);
-        }
+        themeService.delete(id);
     }
 
 }
