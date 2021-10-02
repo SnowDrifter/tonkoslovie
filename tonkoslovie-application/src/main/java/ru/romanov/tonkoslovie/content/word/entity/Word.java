@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.content.word;
+package ru.romanov.tonkoslovie.content.word.entity;
 
 import lombok.Data;
 
