@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface ThemeService {
 
-    RestPage<ThemeDto> getThemes(int page, int size, boolean includeUnpublished, String sortField);
+    RestPage<ThemeDto> getThemes(int page, int size, boolean includeUnpublished, String sortField, String direction);
 
     Optional<ThemeDto> getTheme(long id);
 

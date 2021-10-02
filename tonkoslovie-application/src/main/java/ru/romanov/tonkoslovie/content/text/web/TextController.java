@@ -1,14 +1,15 @@
 package ru.romanov.tonkoslovie.content.text.web;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.text.TextService;
 import ru.romanov.tonkoslovie.content.text.dto.TextDto;
 import ru.romanov.tonkoslovie.hibernate.RestPage;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RestController
@@ -20,9 +21,10 @@ public class TextController {
 
     @GetMapping("/texts")
     public RestPage<TextDto> texts(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                   @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
-                                   @RequestParam(required = false, defaultValue = "title") String sortField) {
-        return textService.getTexts(page, size, sortField);
+                                   @RequestParam(defaultValue = "10") @Range(min = 1, max = 100) int size,
+                                   @RequestParam(defaultValue = "id") String sortField,
+                                   @RequestParam(defaultValue = "asc") @Pattern(regexp = "asc|desc") String direction) {
+        return textService.getTexts(page, size, sortField, direction);
     }
 
     @GetMapping(value = "/text")

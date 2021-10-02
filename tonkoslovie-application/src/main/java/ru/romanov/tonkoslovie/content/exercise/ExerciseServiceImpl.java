@@ -26,8 +26,10 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Override
     @Cacheable(cacheNames = "exerciseList", key = "#page + '-' + #size")
-    public RestPage<ExerciseDto> getExercises(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").ascending());
+    public RestPage<ExerciseDto> getExercises(int page, int size, String sortField, String direction) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<Exercise> exercises = exerciseRepository.findAll(pageable);
         return RestPage.of(exercises.map(ExerciseMapper.INSTANCE::toDto));
     }

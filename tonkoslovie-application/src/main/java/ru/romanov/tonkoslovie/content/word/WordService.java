@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface WordService {
 
-    RestPage<WordDto> getWords(int page, int size, String sortField);
+    RestPage<WordDto> getWords(int page, int size, String sortField, String direction);
 
     Optional<WordDto> getWord(long id);
 

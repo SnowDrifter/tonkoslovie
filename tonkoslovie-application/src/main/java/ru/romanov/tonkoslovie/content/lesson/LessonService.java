@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface LessonService {
 
-    RestPage<LessonDto> getLessons(int page, int size, boolean includeUnpublished, String sortField);
+    RestPage<LessonDto> getLessons(int page, int size, boolean includeUnpublished, String sortField, String direction);
 
     Optional<LessonDto> getLesson(long id);
 

@@ -52,6 +52,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
         Page<User> users = userRepository.findAll(specification, pageable);
         return users.map(UserMapper.INSTANCE::toDto);
     }

@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.user.web;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,7 +45,7 @@ public class UserController {
 
     @GetMapping("/users")
     public Page<UserDto> users(@RequestParam(defaultValue = "0") @Min(0) int page,
-                               @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size,
+                               @RequestParam(defaultValue = "10") @Range(min = 1, max = 100) int size,
                                @RequestParam(required = false) String search) {
         return userService.searchUsers(page, size, search);
     }

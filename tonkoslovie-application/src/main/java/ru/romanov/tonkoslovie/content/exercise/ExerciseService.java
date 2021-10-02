@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface ExerciseService {
 
-    RestPage<ExerciseDto> getExercises(int page, int size);
+    RestPage<ExerciseDto> getExercises(int page, int size, String sortField, String direction);
 
     Optional<ExerciseDto> getExercise(long id);
 

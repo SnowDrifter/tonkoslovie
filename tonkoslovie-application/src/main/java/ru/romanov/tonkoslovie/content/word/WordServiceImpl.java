@@ -24,9 +24,11 @@ public class WordServiceImpl implements WordService {
     private final WordRepository wordRepository;
 
     @Override
-    @Cacheable(cacheNames = "wordList", key = "#page + '-' + #size + '-' + #sortField")
-    public RestPage<WordDto> getWords(int page, int size, String sortField) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortField).ascending());
+    @Cacheable(cacheNames = "wordList", key = "#page + '-' + #size + '-' + #sortField + '-' + #direction")
+    public RestPage<WordDto> getWords(int page, int size, String sortField, String direction) {
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
         Page<Word> exercises = wordRepository.findAll(pageable);
         return RestPage.of(exercises.map(WordMapper.INSTANCE::toDto));
     }
