@@ -23,7 +23,7 @@ public class ThemeServiceImpl implements ThemeService {
     private final ThemeRepository themeRepository;
 
     @Override
-    @Cacheable(cacheNames = "themeList", key = "#page + '-' + #size + '-' + #sortField", condition = "!#includeUnpublished")
+    @Cacheable(cacheNames = "themeList", key = "#page + '-' + #size + '-' + #sortField + '-' + #direction", condition = "!#includeUnpublished")
     public RestPage<ThemeDto> getThemes(int page, int size, boolean includeUnpublished, String sortField, String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);

@@ -25,7 +25,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseRepository exerciseRepository;
 
     @Override
-    @Cacheable(cacheNames = "exerciseList", key = "#page + '-' + #size")
+    @Cacheable(cacheNames = "exerciseList", key = "#page + '-' + #size + '-' + #direction")
     public RestPage<ExerciseDto> getExercises(int page, int size, String sortField, String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);

@@ -24,7 +24,7 @@ public class TextServiceImpl implements TextService {
     private final TextRepository textRepository;
 
     @Override
-    @Cacheable(cacheNames = "textList", key = "#page + '-' + #size + '-' + #sortField")
+    @Cacheable(cacheNames = "textList", key = "#page + '-' + #size + '-' + #sortField + '-' + #direction")
     public RestPage<TextDto> getTexts(int page, int size, String sortField, String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);

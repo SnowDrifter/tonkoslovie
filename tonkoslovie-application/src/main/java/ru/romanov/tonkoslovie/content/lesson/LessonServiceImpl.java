@@ -24,7 +24,7 @@ public class LessonServiceImpl implements LessonService {
     private final LessonRepository lessonRepository;
 
     @Override
-    @Cacheable(cacheNames = "lessonList", key = "#page + '-' + #size + '-' + #sortField", condition = "!#includeUnpublished")
+    @Cacheable(cacheNames = "lessonList", key = "#page + '-' + #size + '-' + #sortField + '-' + #direction", condition = "!#includeUnpublished")
     public RestPage<LessonDto> getLessons(int page, int size, boolean includeUnpublished, String sortField, String direction) {
         Sort sort = Sort.by(Sort.Direction.fromString(direction), sortField);
         Pageable pageable = PageRequest.of(page, size, sort);
