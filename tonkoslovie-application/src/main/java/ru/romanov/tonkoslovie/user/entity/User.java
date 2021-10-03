@@ -30,9 +30,9 @@ import static ru.romanov.tonkoslovie.utils.UserUtil.ROLES_DELIMITER;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_generator")
+    @SequenceGenerator(name = "user_id_generator", sequenceName = "user_id_sequence", allocationSize = 1)
     private Long id;
-    @Column
     @Convert(converter = RoleAttributeConverter.class)
     private Set<Role> roles = new HashSet<>();
     private String username;
@@ -41,7 +41,6 @@ public class User implements UserDetails {
     private String email;
     private String firstName;
     private String lastName;
-    @Column(columnDefinition = "boolean default false")
     private boolean enabled;
     @Type(type = "jsonb")
     private SocialMedia socialMedia;

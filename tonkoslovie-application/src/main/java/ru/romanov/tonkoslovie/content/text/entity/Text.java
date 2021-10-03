@@ -6,9 +6,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -19,7 +17,8 @@ import java.util.List;
 public class Text {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "text_id_generator")
+    @SequenceGenerator(name = "text_id_generator", sequenceName = "text_id_sequence", allocationSize = 1)
     private long id;
 
     private String title;

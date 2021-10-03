@@ -7,10 +7,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Data
@@ -21,7 +18,8 @@ import java.util.List;
 public class Exercise {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "exercise_id_generator")
+    @SequenceGenerator(name = "exercise_id_generator", sequenceName = "exercise_id_sequence", allocationSize = 1)
     private long id;
 
     private String title;
@@ -35,10 +33,8 @@ public class Exercise {
 
     private String answerRegex;
 
-    @Column(columnDefinition = "text")
     private String dictionary;
 
-    @Column(columnDefinition = "boolean default false")
     private boolean published;
 
 }

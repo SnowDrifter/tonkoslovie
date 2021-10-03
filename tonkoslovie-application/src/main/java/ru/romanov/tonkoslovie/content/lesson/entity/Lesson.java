@@ -11,15 +11,14 @@ import java.util.List;
 public class Lesson {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lesson_id_generator")
+    @SequenceGenerator(name = "lesson_id_generator", sequenceName = "lesson_id_sequence", allocationSize = 1)
     private long id;
 
     private String title;
 
-    @Column(columnDefinition = "text")
     private String annotation;
 
-    @Column(columnDefinition = "text")
     private String content;
 
     @OrderBy(value = "title")
@@ -28,7 +27,6 @@ public class Lesson {
 
     private String previewImage;
 
-    @Column(columnDefinition = "boolean default false")
     private boolean published;
 
 }

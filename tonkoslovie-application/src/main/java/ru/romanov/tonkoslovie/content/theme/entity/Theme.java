@@ -12,7 +12,8 @@ import java.util.List;
 public class Theme {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "theme_id_generator")
+    @SequenceGenerator(name = "theme_id_generator", sequenceName = "theme_id_sequence", allocationSize = 1)
     private long id;
 
     private String title;
@@ -20,7 +21,6 @@ public class Theme {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Exercise> exercises;
 
-    @Column(columnDefinition = "boolean default false")
     private boolean published;
 
 }
