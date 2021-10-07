@@ -1,3 +1,3 @@
-CREATE SEQUENCE IF NOT EXISTS exercise_id_sequence
+CREATE SEQUENCE exercise_id_sequence
     CACHE 10
     INCREMENT BY 1;

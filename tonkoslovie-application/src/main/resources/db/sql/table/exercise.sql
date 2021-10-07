@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS exercise
+CREATE TABLE exercise
 (
     id           int8 NOT NULL PRIMARY KEY,
     answer_regex varchar(255),

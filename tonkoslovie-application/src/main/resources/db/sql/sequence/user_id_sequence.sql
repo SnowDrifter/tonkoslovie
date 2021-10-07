@@ -1,3 +1,3 @@
-CREATE SEQUENCE IF NOT EXISTS user_id_sequence
+CREATE SEQUENCE user_id_sequence
     CACHE 50
     INCREMENT BY 1;

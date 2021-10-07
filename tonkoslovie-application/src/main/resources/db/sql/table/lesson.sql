@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS lesson
+CREATE TABLE lesson
 (
     id            int8 NOT NULL PRIMARY KEY,
     title         varchar(255),

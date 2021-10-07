@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: user_email_index.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+          - indexExists:
+              tableName: user
+              columnNames: email
+      changes:
+        - sqlFile:
+            path: db/sql/index/user_email_index.sql
+
+  - changeSet:
+      id: email_verification_token_index.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - indexExists:
+                tableName: email_verification
+                columnNames: token
+      changes:
+        - sqlFile:
+            path: db/sql/index/email_verification_token_index.sql

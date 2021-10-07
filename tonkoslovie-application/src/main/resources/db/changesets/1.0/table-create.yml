@@ -2,6 +2,11 @@ databaseChangeLog:
   - changeSet:
       id: lesson_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: lesson
       changes:
         - sqlFile:
             path: db/sql/table/lesson.sql
@@ -9,6 +14,11 @@ databaseChangeLog:
   - changeSet:
       id: text_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: text
       changes:
         - sqlFile:
             path: db/sql/table/text.sql
@@ -16,6 +26,11 @@ databaseChangeLog:
   - changeSet:
       id: lesson_texts_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: lesson_texts
       changes:
         - sqlFile:
             path: db/sql/table/lesson_texts.sql
@@ -23,14 +38,23 @@ databaseChangeLog:
   - changeSet:
       id: theme_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: theme
       changes:
         - sqlFile:
             path: db/sql/table/theme.sql
 
-
   - changeSet:
       id: exercise_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: exercise
       changes:
         - sqlFile:
             path: db/sql/table/exercise.sql
@@ -38,6 +62,11 @@ databaseChangeLog:
   - changeSet:
       id: theme_exercises_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: theme_exercises
       changes:
         - sqlFile:
             path: db/sql/table/theme_exercises.sql
@@ -45,6 +74,11 @@ databaseChangeLog:
   - changeSet:
       id: word_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: word
       changes:
         - sqlFile:
             path: db/sql/table/word.sql
@@ -52,6 +86,11 @@ databaseChangeLog:
   - changeSet:
       id: user_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: user
       changes:
         - sqlFile:
             path: db/sql/table/user.sql
@@ -59,6 +98,11 @@ databaseChangeLog:
   - changeSet:
       id: email_verification_table.create
       author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: email_verification
       changes:
         - sqlFile:
             path: db/sql/table/email_verification.sql

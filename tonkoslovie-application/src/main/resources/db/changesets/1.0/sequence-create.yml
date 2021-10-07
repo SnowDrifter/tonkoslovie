@@ -1,0 +1,85 @@
+databaseChangeLog:
+  - changeSet:
+      id: exercise_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        # Forced use of sql check to avoid a liquibase bug (https://github.com/liquibase/liquibase/issues/1163)
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'exercise_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/exercise_id_sequence.sql
+
+  - changeSet:
+      id: lesson_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'lesson_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/lesson_id_sequence.sql
+
+  - changeSet:
+      id: text_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'text_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/text_id_sequence.sql
+
+  - changeSet:
+      id: theme_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'theme_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/theme_id_sequence.sql
+
+  - changeSet:
+      id: word_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'word_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/word_id_sequence.sql
+
+  - changeSet:
+      id: user_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'user_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/user_id_sequence.sql
+
+  - changeSet:
+      id: email_verification_id_sequence.create
+      author: romanov
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'email_verification_id_sequence'"
+      changes:
+        - sqlFile:
+            path: db/sql/sequence/email_verification_id_sequence.sql

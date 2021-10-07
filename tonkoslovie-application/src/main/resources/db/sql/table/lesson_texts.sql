@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS lesson_texts
+CREATE TABLE lesson_texts
 (
     lesson_id int8 NOT NULL,
     texts_id  int8 NOT NULL,

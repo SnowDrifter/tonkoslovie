@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS theme_exercises
+CREATE TABLE theme_exercises
 (
     theme_id     int8 NOT NULL,
     exercises_id int8 NOT NULL,

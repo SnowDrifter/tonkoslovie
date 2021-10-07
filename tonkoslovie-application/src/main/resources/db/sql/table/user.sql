@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "user"
+CREATE TABLE "user"
 (
     id            int8         NOT NULL PRIMARY KEY,
     creation_date timestamp    NOT NULL DEFAULT current_timestamp,
@@ -11,5 +11,3 @@ CREATE TABLE IF NOT EXISTS "user"
     social_media  jsonb,
     username      varchar(255)
 );
-
-CREATE UNIQUE INDEX IF NOT EXISTS user_email_index ON "user" USING btree (email);

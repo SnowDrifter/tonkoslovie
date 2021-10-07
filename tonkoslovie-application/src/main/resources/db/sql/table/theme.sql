@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS theme
+CREATE TABLE theme
 (
     id        int8 NOT NULL PRIMARY KEY,
     published bool DEFAULT false,

@@ -1,0 +1,1 @@
+CREATE INDEX email_verification_token_index ON email_verification USING btree (token);

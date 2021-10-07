@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX user_email_index ON "user" USING btree (email);

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS text
+CREATE TABLE text
 (
     id              int8 NOT NULL PRIMARY KEY,
     parts           jsonb,
