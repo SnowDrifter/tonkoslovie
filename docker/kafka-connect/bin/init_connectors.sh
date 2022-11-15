@@ -10,12 +10,12 @@ while :; do
     if [[ $(curl -sb -H "Accept:application/json" http://kafka-connect:8083/connectors) == "[]" ]]; then
 
       echo "Prepare debezium connector config"
-      sed -i "s/{DB_HOSTNAME}/${DB_HOSTNAME}/" debezium-connector-config.json
-      sed -i "s/{DB_DATABASE}/${DB_DATABASE}/" debezium-connector-config.json
-      sed -i "s/{DB_USER}/${DB_USER}/" debezium-connector-config.json
-      sed -i "s/{DB_PASSWORD}/${DB_PASSWORD}/" debezium-connector-config.json
+      sed -i "s/{DB_HOSTNAME}/${DB_HOSTNAME}/" debezium-connector.json
+      sed -i "s/{DB_DATABASE}/${DB_DATABASE}/" debezium-connector.json
+      sed -i "s/{DB_USER}/${DB_USER}/" debezium-connector.json
+      sed -i "s/{DB_PASSWORD}/${DB_PASSWORD}/" debezium-connector.json
 
-      curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://kafka-connect:8083/connectors/ -d @debezium-connector-config.json
+      curl -X POST -H "Accept:application/json" -H "Content-Type:application/json" http://kafka-connect:8083/connectors/ -d @debezium-connector.json
       echo -e "\nDebezium connector initialized successfully"
 
       echo -e "\nPrepare elastic connector config"

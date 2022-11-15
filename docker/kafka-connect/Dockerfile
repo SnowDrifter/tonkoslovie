@@ -7,7 +7,7 @@ WORKDIR /connect
 
 COPY bin/start.sh .
 COPY bin/init_connectors.sh .
-COPY config/debezium-connector-config.json .
+COPY config/debezium-connector.json .
 COPY config/elastic-sink-connector.json .
 
 EXPOSE 8083
