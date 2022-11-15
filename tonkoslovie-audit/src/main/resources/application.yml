@@ -1,0 +1,36 @@
+spring:
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+
+server:
+  port: 8082
+
+management:
+  server:
+    port: 8089
+  endpoints:
+    web:
+      exposure:
+        include: health
+  metrics:
+    export:
+      influx:
+        enabled: ${INFLUXDB_ENABLED:false}
+        db: tonkoslovie
+        org: tonkoslovie
+        bucket: tonkoslovie
+        uri: ${INFLUXDB_URI}
+        user-name: ${INFLUXDB_USER}
+        password: ${INFLUXDB_PASSWORD}
+        token: ${INFLUXDB_ADMIN_TOKEN}
+        step: 10s
+        api-version: v2
+    tags:
+      service.name: ${SERVICE_NAME:audit.test}
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%4.-4thread] %clr(%level) %clr([%c{1}]){cyan} %m%n%wEx"
+  level:
+    root: info

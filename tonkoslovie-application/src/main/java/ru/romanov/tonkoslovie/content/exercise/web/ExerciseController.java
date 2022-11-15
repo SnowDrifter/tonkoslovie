@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.exercise.ExerciseService;
 import ru.romanov.tonkoslovie.content.exercise.dto.ExerciseDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;

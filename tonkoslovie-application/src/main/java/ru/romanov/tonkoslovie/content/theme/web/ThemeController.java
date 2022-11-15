@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.theme.ThemeService;
 import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;

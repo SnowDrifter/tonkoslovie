@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -24,9 +23,7 @@ import static ru.romanov.tonkoslovie.utils.UserUtil.ROLES_DELIMITER;
 @Entity
 @NoArgsConstructor
 @Table(name = "\"user\"")
-@TypeDefs(value = {
-        @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-})
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class User implements UserDetails {
 
     @Id

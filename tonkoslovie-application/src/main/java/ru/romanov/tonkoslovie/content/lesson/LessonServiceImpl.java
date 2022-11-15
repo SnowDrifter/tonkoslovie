@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.romanov.tonkoslovie.content.lesson.dto.LessonDto;
 import ru.romanov.tonkoslovie.content.lesson.dto.LessonMapper;
 import ru.romanov.tonkoslovie.content.lesson.entity.Lesson;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.Optional;
 

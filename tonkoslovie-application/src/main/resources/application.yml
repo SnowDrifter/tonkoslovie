@@ -26,7 +26,7 @@ spring:
         types.print.banner: false
 
   liquibase:
-    change-log: classpath:db/changelog.yml
+    change-log: classpath:db/changelog-master.yml
     contexts: ${spring.profiles.active}
 
   redis:
@@ -106,6 +106,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+  port: 8081
 
 management:
   endpoints:

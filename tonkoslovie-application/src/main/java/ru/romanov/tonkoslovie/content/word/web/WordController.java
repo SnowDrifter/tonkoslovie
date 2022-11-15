@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.word.WordService;
 import ru.romanov.tonkoslovie.content.word.dto.WordDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

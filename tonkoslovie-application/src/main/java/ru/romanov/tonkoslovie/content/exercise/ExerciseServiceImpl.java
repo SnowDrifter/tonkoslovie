@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.romanov.tonkoslovie.content.exercise.dto.ExerciseDto;
 import ru.romanov.tonkoslovie.content.exercise.dto.ExerciseMapper;
 import ru.romanov.tonkoslovie.content.exercise.entity.Exercise;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,7 +4,7 @@ databaseChangeLog:
       author: romanov
       preConditions:
         - onFail: MARK_RAN
-        # Forced use of sql check to avoid a liquibase bug (https://github.com/liquibase/liquibase/issues/1163)
+        # TODO: Forced use of sql check to avoid a liquibase bug (https://github.com/liquibase/liquibase/issues/1163)
         - sqlCheck:
             expectedResult: 0
             sql: "SELECT COUNT(*) FROM pg_class WHERE relname = 'exercise_id_sequence'"

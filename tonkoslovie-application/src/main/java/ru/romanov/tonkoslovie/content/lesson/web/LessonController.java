@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.romanov.tonkoslovie.content.lesson.LessonService;
 import ru.romanov.tonkoslovie.content.lesson.dto.LessonDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;

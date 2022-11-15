@@ -2,7 +2,6 @@ package ru.romanov.tonkoslovie.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,9 +22,6 @@ import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorH
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 import ru.romanov.tonkoslovie.oauth.CustomOAuth2AuthenticationSuccessHandler;
 import ru.romanov.tonkoslovie.oauth.CustomOAuth2UserService;
 import ru.romanov.tonkoslovie.oauth.CustomOidcUserService;
@@ -40,9 +36,6 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${app.site-host}")
-    private String siteHost;
 
     private final CustomOAuth2AuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
     private final CustomOidcUserService oidcUserService;
@@ -69,7 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
-        http.addFilter(corsFilter());
 
         http.oauth2Login()
                 .authorizationEndpoint()
@@ -109,19 +101,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         });
         headerAuthenticationFilter.afterPropertiesSet();
         return headerAuthenticationFilter;
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin(siteHost);
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
     }
 
     @Bean

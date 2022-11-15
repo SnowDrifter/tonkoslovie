@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import ru.romanov.tonkoslovie.content.word.dto.WordDto;
 import ru.romanov.tonkoslovie.content.word.dto.WordMapper;
 import ru.romanov.tonkoslovie.content.word.entity.Word;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.List;
 import java.util.Optional;

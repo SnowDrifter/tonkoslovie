@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: alter.content_replica_identity
+      author: romanov
+      changes:
+        - sqlFile:
+            path: db/sql/alter/content_replica_identity.sql

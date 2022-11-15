@@ -1,4 +1,4 @@
-package ru.romanov.tonkoslovie.hibernate;
+package ru.romanov.tonkoslovie.model.web;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

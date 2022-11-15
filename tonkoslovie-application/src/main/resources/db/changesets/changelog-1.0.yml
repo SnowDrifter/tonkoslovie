@@ -1,12 +1,15 @@
 databaseChangeLog:
   - include:
-      file: db/changesets/1.0/sequence-create.yml
+      file: db/changesets/1.0/sequence.yml
 
   - include:
-      file: db/changesets/1.0/table-create.yml
+      file: db/changesets/1.0/table.yml
 
   - include:
-      file: db/changesets/1.0/index-create.yml
+      file: db/changesets/1.0/index.yml
 
   - include:
-      file: db/changesets/1.0/data-create.yml
+      file: db/changesets/1.0/data.yml
+
+  - include:
+      file: db/changesets/1.0/alter.yml

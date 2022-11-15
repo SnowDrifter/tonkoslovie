@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.word;
 
 import ru.romanov.tonkoslovie.content.word.dto.WordDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.List;
 import java.util.Optional;

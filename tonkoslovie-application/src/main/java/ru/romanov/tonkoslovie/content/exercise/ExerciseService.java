@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.exercise;
 
 import ru.romanov.tonkoslovie.content.exercise.dto.ExerciseDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.List;
 import java.util.Optional;

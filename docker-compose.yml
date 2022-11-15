@@ -31,7 +31,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
       SERVICE_NAME: "application.1"
     ports:
-      - 127.0.0.1:8081:8080
+      - "127.0.0.1:8081:8080"
     volumes:
       - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./data:/workspace/data
@@ -64,14 +64,17 @@ services:
       retries: 5
 
   postgres:
-    image: postgres:11-alpine
+    image: postgres:15-alpine
     container_name: tonkoslovie_postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1234}
       POSTGRES_DB: tonkoslovie
     ports:
-      - 127.0.0.1:5432:5432
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./docker_volumes/postgres:/var/lib/postgresql/data
+    command: [ "postgres", "-c", "wal_level=logical" ]
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -79,8 +82,10 @@ services:
       retries: 5
 
   redis:
-    image: redis:5-alpine
+    image: redis:7-alpine
     container_name: tonkoslovie_redis
+    ports:
+      - "127.0.0.1:6379:6379"
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli", "ping" ]
       interval: 10s
@@ -91,70 +96,83 @@ services:
     image: nginx
     container_name: tonkoslovie_nginx
     ports:
-      - 127.0.0.1:80:80
+      - "127.0.0.1:8080:8080"
     volumes:
-      - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
-      - ./data:/usr/share/nginx/html/tonkoslovie
+      - ./docker/nginx/nginx_local.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/cors.conf:/etc/nginx/cors.conf
     healthcheck:
       test: [ "CMD", "service", "nginx", "status" ]
       interval: 10s
       timeout: 3s
       retries: 5
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.0
-    container_name: tonkoslovie_zookeeper
+  kafka:
+    image: bitnami/kafka:3.3.1
+    container_name: tonkoslovie_kafka
     environment:
-      ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-      ZOOKEEPER_SERVERS: zookeeper:22888:23888
+      KAFKA_BROKER_ID: 1
+      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+    ports:
+      - "127.0.0.1:9092:9092"
+      - "127.0.0.1:29092:29092"
     volumes:
-      - ./docker_volumes/zookeeper/data:/var/lib/zookeeper/data
-      - ./docker_volumes/zookeeper/log:/var/lib/zookeeper/log
-      - ./docker_volumes/zookeeper/secrets:/etc/zookeeper/secrets
+      - ./docker_volumes/kafka:/bitnami/kafka
     healthcheck:
-      test: [ "CMD-SHELL", "echo stat | nc localhost $$ZOOKEEPER_CLIENT_PORT" ]
+      test: "kafka-broker-api-versions.sh --version"
       start_period: 1m
       interval: 10s
       timeout: 3s
       retries: 5
 
-  kafka:
-    image: confluentinc/cp-kafka:6.2.0
-    container_name: tonkoslovie_kafka
+  kafka-connect:
+    build:
+      context: docker/kafka-connect
+    container_name: tonkoslovie_kafka_connect
     depends_on:
-      - zookeeper
+      - kafka
+      - postgres
+      - elastic
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-      KAFKA_BROKER_ID: 1
-      KAFKA_DELETE_TOPIC_ENABLE: 'true'
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      CONNECT_BOOTSTRAP_SERVERS: kafka:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_GROUP_ID: 1
+      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: connect-statuses
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      DB_HOSTNAME: postgres
+      DB_DATABASE: tonkoslovie
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-1234}
+      ELASTIC_URL: elastic:9200
     ports:
-      - 127.0.0.1:9092:9092
-      - 127.0.0.1:29092:29092
-    volumes:
-      - ./docker_volumes/kafka/data:/var/lib/kafka/data
-      - ./docker_volumes/kafka/secrets:/etc/kafka/secrets
+      - "127.0.0.1:8083:8083"
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
-      start_period: 1m
+      test: "curl -f localhost:8083/connectors/ || exit 1"
       interval: 10s
       timeout: 3s
       retries: 5
 
   kafka-ui:
-    image: obsidiandynamics/kafdrop:3.27.0
+    image: obsidiandynamics/kafdrop:3.30.0
     container_name: tonkoslovie_kafka-ui
     depends_on:
       - kafka
     environment:
       KAFKA_BROKERCONNECT: kafka:9092
     ports:
-      - 127.0.0.1:9002:9000
+      - "127.0.0.1:9002:9000"
     healthcheck:
       test: "curl -f localhost:9000/actuator/health || exit 1"
       start_period: 1m
@@ -172,10 +190,27 @@ services:
       DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_USER:-admin}
       DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
+      DOCKER_INFLUXDB_INIT_RETENTION: ${DOCKER_INFLUXDB_INIT_RETENTION:-3w}
     ports:
-      - 127.0.0.1:8086:8086
+      - "127.0.0.1:8086:8086"
     healthcheck:
       test: [ "CMD-SHELL", "ln -sf /bin/busybox /bin/wget && /bin/wget -q -Y off http://localhost:8086/metrics -O /dev/null > /dev/null 2>&1" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  elastic:
+    image: elasticsearch:8.4.3
+    container_name: tonkoslovie_elastic
+    environment:
+      xpack.security.enabled: 'false'
+      discovery.type: single-node
+    ports:
+      - "127.0.0.1:9200:9200"
+    volumes:
+      - ./docker_volumes/elastic:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s http://elastic:9200 >/dev/null || exit 1" ]
       interval: 10s
       timeout: 3s
       retries: 5

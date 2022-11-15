@@ -1,0 +1,17 @@
+{
+  "name" : "pg-debezium-connector",
+  "config" : {
+    "connector.class" : "io.debezium.connector.postgresql.PostgresConnector",
+    "plugin.name" : "pgoutput",
+    "database.hostname" : "{DB_HOSTNAME}",
+    "database.dbname" : "{DB_DATABASE}",
+    "database.user" : "{DB_USER}",
+    "database.password" : "{DB_PASSWORD}",
+    "database.server.name" : "tonkoslovie",
+    "table.include.list" : "public.(lesson|exercise|text|theme|word)",
+    "transforms": "reroute",
+    "transforms.reroute.type": "io.debezium.transforms.ByLogicalTableRouter",
+    "transforms.reroute.topic.regex": ".*",
+    "transforms.reroute.topic.replacement": "debezium.audit"
+  }
+}

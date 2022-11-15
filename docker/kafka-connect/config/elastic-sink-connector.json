@@ -1,0 +1,13 @@
+{
+  "name": "elastic-sink",
+  "config": {
+    "name": "elastic-sink",
+    "connector.class": "io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
+    "tasks.max": "1",
+    "topics": "debezium.audit",
+    "connection.url": "{ELASTIC_URL}",
+    "type.name": "kafka-connect",
+    "key.ignore": "true",
+    "behavior.on.null.values": "IGNORE"
+  }
+}

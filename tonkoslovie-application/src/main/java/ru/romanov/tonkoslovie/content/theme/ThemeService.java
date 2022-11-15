@@ -1,7 +1,7 @@
 package ru.romanov.tonkoslovie.content.theme;
 
 import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
-import ru.romanov.tonkoslovie.hibernate.RestPage;
+import ru.romanov.tonkoslovie.model.web.RestPage;
 
 import java.util.Optional;
 
