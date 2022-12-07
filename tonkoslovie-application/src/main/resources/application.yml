@@ -46,12 +46,6 @@ spring:
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-  servlet:
-    multipart:
-      enabled: true
-      max-file-size: 128MB
-      max-request-size: 128MB
-
   security:
     oauth2:
       client:
@@ -95,10 +89,6 @@ spring:
             authorization-uri: https://oauth.vk.com/authorize
             user-info-uri: https://api.vk.com/method/users.get?fields=id,photo_max_orig&v=5.130
 
-media:
-  imageDirectory: ./data/images
-  soundDirectory: ./data/sounds
-
 jwt:
   secret: ${JWT_SECRET}
 
@@ -114,7 +104,7 @@ management:
       exposure:
         include: health
   server:
-    port: 8085
+    port: 8181
   metrics:
     export:
       influx:

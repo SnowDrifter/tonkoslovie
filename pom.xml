@@ -11,6 +11,7 @@
         <module>tonkoslovie-application</module>
         <module>tonkoslovie-model</module>
         <module>tonkoslovie-mail</module>
+        <module>tonkoslovie-media</module>
         <module>tonkoslovie-audit</module>
     </modules>
     <packaging>pom</packaging>

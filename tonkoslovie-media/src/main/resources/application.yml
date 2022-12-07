@@ -1,14 +1,25 @@
-spring:
-  elasticsearch:
-    rest:
-      uris: http://localhost:9200
-
 server:
-  port: 8082
+  port: 8083
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+images:
+  available-sizes: 200-200.jpg
+
+minio:
+  url: http://localhost:9005
+  bucket: tonkoslovie-media
+  access-key: tonkoslovie
+  secret-key: 12345678
 
 management:
   server:
-    port: 8182
+    port: 8183
   endpoints:
     web:
       exposure:
@@ -27,7 +38,7 @@ management:
         step: 10s
         api-version: v2
     tags:
-      service.name: ${SERVICE_NAME:audit.test}
+      service.name: ${SERVICE_NAME:media.test}
 
 logging:
   pattern:
