@@ -109,7 +109,7 @@
         <dependency>
             <groupId>ru.romanov</groupId>
             <artifactId>tonkoslovie-model</artifactId>
-            <version>0.2</version>
+            <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
