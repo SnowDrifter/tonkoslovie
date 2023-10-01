@@ -7,8 +7,10 @@
     <parent>
         <artifactId>tonkoslovie</artifactId>
         <groupId>ru.romanov</groupId>
-        <version>0.2</version>
+        <version>0.3</version>
     </parent>
+
+    <artifactId>tonkoslovie-mail</artifactId>
 
     <build>
         <plugins>
@@ -16,7 +18,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <runImage>paketobuildpacks/run:1.2.8-full-cnb</runImage>
+                    <runImage>paketobuildpacks/run:full-cnb</runImage>
                     <imageName>tonkoslovie_mail</imageName>
                 </configuration>
             </plugin>
@@ -27,8 +29,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <artifactId>tonkoslovie-mail</artifactId>
 
     <dependencies>
         <!-- Spring -->
@@ -65,6 +65,12 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <!-- Temporary fix for startup error -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
 
         <!-- Tonkoslovie -->

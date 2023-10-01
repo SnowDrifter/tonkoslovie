@@ -8,9 +8,9 @@ import ru.romanov.tonkoslovie.content.word.WordService;
 import ru.romanov.tonkoslovie.content.word.dto.WordDto;
 import ru.romanov.tonkoslovie.model.web.RestPage;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import java.util.List;
 
 @Validated

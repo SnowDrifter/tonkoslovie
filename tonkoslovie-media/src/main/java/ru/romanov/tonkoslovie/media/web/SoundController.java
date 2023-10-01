@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.romanov.tonkoslovie.media.sound.SoundService;
 import ru.romanov.tonkoslovie.media.web.response.UploadResponse;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 
 @Slf4j

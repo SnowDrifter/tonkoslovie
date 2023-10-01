@@ -9,7 +9,7 @@ import ru.romanov.tonkoslovie.audit.dto.AuditDto;
 import ru.romanov.tonkoslovie.audit.service.AuditService;
 import ru.romanov.tonkoslovie.model.web.RestPage;
 
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.Min;
 
 @RestController
 @RequiredArgsConstructor

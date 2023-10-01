@@ -13,7 +13,7 @@ public class GenericSpecificationBuilder<T> {
 
     private final List<SearchCriteria> parameters = new ArrayList<>();
 
-    private static final Pattern SEARCH_QUERY_PATTERN = Pattern.compile("(\\w+)([:<>])([\\w\\d.@]+);?");
+    private static final Pattern SEARCH_QUERY_PATTERN = Pattern.compile("(\\w+)([:<>])([\\w.@]+);?");
 
     public GenericSpecificationBuilder<T> addParametersFromSearchQuery(String searchQuery) {
         if (StringUtils.hasText(searchQuery)) {

@@ -10,9 +10,9 @@ import ru.romanov.tonkoslovie.content.theme.ThemeService;
 import ru.romanov.tonkoslovie.content.theme.dto.ThemeDto;
 import ru.romanov.tonkoslovie.model.web.RestPage;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import java.util.Collections;
 
 import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;

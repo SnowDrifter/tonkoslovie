@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8082
 
 spring:
   servlet:
@@ -12,21 +12,21 @@ images:
   available-sizes: 200-200.jpg
 
 minio:
-  url: http://localhost:9005
   bucket: tonkoslovie-media
-  access-key: tonkoslovie
-  secret-key: 12345678
+  url: ${MINIO_URL:http://localhost:9005}
+  access-key: ${MINIO_ACCESS_KEY:tonkoslovie}
+  secret-key: ${MINIO_SECRET_KEY:12345678}
 
 management:
   server:
-    port: 8183
+    port: 8182
   endpoints:
     web:
       exposure:
         include: health
-  metrics:
-    export:
-      influx:
+  influx:
+    metrics:
+      export:
         enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
         org: tonkoslovie
@@ -37,8 +37,9 @@ management:
         token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
         api-version: v2
+  metrics:
     tags:
-      service.name: ${SERVICE_NAME:media.test}
+      service.name: ${SERVICE_NAME:media.dev}
 
 logging:
   pattern:

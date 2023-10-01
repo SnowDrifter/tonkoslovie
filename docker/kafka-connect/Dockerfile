@@ -1,7 +1,7 @@
-FROM confluentinc/cp-kafka-connect:7.2.2
+FROM confluentinc/cp-kafka-connect:7.5.0
 
-RUN confluent-hub install --no-prompt debezium/debezium-connector-postgresql:1.9.7
-RUN confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:14.0.2
+RUN confluent-hub install --no-prompt debezium/debezium-connector-postgresql:2.2.1
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-elasticsearch:14.0.10
 
 WORKDIR /connect
 

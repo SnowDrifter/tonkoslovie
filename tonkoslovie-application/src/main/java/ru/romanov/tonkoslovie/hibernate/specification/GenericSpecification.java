@@ -1,15 +1,14 @@
 package ru.romanov.tonkoslovie.hibernate.specification;
 
+import jakarta.persistence.criteria.*;
 import lombok.AllArgsConstructor;
-import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
-import org.hibernate.query.criteria.internal.predicate.ComparisonPredicate;
-import org.hibernate.query.criteria.internal.predicate.LikePredicate;
+import lombok.SneakyThrows;
+import org.hibernate.query.sqm.ComparisonOperator;
+import org.hibernate.query.sqm.internal.SqmCriteriaNodeBuilder;
+import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
+import org.hibernate.query.sqm.tree.predicate.SqmComparisonPredicate;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -23,27 +22,32 @@ public class GenericSpecification<T> implements Specification<T> {
         return builder.and(predicate);
     }
 
+    @SneakyThrows
     private Predicate createPredicate(Root<T> root, CriteriaBuilder builder) {
+        SqmCriteriaNodeBuilder sqmBuilder = (SqmCriteriaNodeBuilder) builder;
+
         Class<?> fieldType = root.get(criteria.getKey()).getJavaType();
 
         if (fieldType == String.class) {
-            return new LikePredicate((CriteriaBuilderImpl) builder, root.get(criteria.getKey()), String.format("%%%s%%", criteria.getValue()));
+            return builder.like(root.get(criteria.getKey()), String.format("%%%s%%", criteria.getValue()));
         } else {
             Object value = convertValue(criteria.getValue(), fieldType);
-            ComparisonPredicate.ComparisonOperator operator = getCompressionOperator();
-            return builder.and(new ComparisonPredicate((CriteriaBuilderImpl) builder, operator, root.get(criteria.getKey()), value));
+
+            return new SqmComparisonPredicate(
+                    (SqmBasicValuedSimplePath<Object>) root.get(criteria.getKey()),
+                    getCompressionOperator(),
+                    sqmBuilder.value(value),
+                    sqmBuilder
+            );
         }
     }
 
-    private ComparisonPredicate.ComparisonOperator getCompressionOperator() {
-        switch (criteria.getOperation()) {
-            case ">":
-                return ComparisonPredicate.ComparisonOperator.GREATER_THAN;
-            case "<":
-                return ComparisonPredicate.ComparisonOperator.LESS_THAN;
-            default:
-                return ComparisonPredicate.ComparisonOperator.EQUAL;
-        }
+    private ComparisonOperator getCompressionOperator() {
+        return switch (criteria.getOperation()) {
+            case ">" -> ComparisonOperator.GREATER_THAN;
+            case "<" -> ComparisonOperator.LESS_THAN;
+            default -> ComparisonOperator.EQUAL;
+        };
     }
 
     private Object convertValue(String value, Class<?> type) {

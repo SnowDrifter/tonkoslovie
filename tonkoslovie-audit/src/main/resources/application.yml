@@ -1,21 +1,20 @@
 spring:
   elasticsearch:
-    rest:
-      uris: http://localhost:9200
+    uris: ${ELASTIC_URL:http://localhost:9200}
 
 server:
-  port: 8082
+  port: 8083
 
 management:
   server:
-    port: 8182
+    port: 8183
   endpoints:
     web:
       exposure:
         include: health
-  metrics:
-    export:
-      influx:
+  influx:
+    metrics:
+      export:
         enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
         org: tonkoslovie
@@ -26,8 +25,9 @@ management:
         token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
         api-version: v2
+  metrics:
     tags:
-      service.name: ${SERVICE_NAME:audit.test}
+      service.name: ${SERVICE_NAME:audit.dev}
 
 logging:
   pattern:

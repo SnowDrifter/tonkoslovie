@@ -1,26 +1,32 @@
 version: '3.8'
 
+include:
+  - docker-compose.yml
+
 services:
   sonarqube:
-    image: sonarqube
+    image: sonarqube:10.2-community
     container_name: tonkoslovie_sonarqube
     volumes:
-    - ./docker_volumes/sonarqube/conf:/opt/sonarqube/conf
-    - ./docker_volumes/sonarqube/data:/opt/sonarqube/data
-    - ./docker_volumes/sonarqube/logs:/opt/sonarqube/logs
-    - ./docker_volumes/sonarqube/extensions:/opt/sonarqube/extensions
+      - ./docker_volumes/sonarqube/conf:/opt/sonarqube/conf
+      - ./docker_volumes/sonarqube/data:/opt/sonarqube/data
+      - ./docker_volumes/sonarqube/logs:/opt/sonarqube/logs
+      - ./docker_volumes/sonarqube/extensions:/opt/sonarqube/extensions
     ports:
-      - 9001:9000
+      - "127.0.0.1:9001:9000"
 
   grafana:
-    image: grafana/grafana:8.0.6
+    image: grafana/grafana:10.1.4
     container_name: tonkoslovie_grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-1234}
       INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
     ports:
-      - 3001:3000
+      - "127.0.0.1:3001:3000"
     volumes:
-      - ./metrics/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
-      - ./metrics/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
-      - ./metrics/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./docker/metrics/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./docker/metrics/grafana/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml
+      - ./docker/metrics/grafana/dashboards:/etc/grafana/provisioning/dashboards

@@ -9,6 +9,7 @@
     "database.password" : "{DB_PASSWORD}",
     "database.server.name" : "tonkoslovie",
     "table.include.list" : "public.(lesson|exercise|text|theme|word)",
+    "topic.prefix": "debezium.audit",
     "transforms": "reroute",
     "transforms.reroute.type": "io.debezium.transforms.ByLogicalTableRouter",
     "transforms.reroute.topic.regex": ".*",

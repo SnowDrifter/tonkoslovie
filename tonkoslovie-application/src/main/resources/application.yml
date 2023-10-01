@@ -29,15 +29,13 @@ spring:
     change-log: classpath:db/changelog-master.yml
     contexts: ${spring.profiles.active}
 
-  redis:
-    host: ${REDIS_HOST:localhost}
-    jedis:
-      pool:
-        max-idle: ${REDIS_MAX_IDLE:3}
-        max-active: ${REDIS_MAX_TOTAL:10}
-
   data:
     redis:
+      host: ${REDIS_HOST:localhost}
+      jedis:
+        pool:
+          max-idle: ${REDIS_MAX_IDLE:3}
+          max-active: ${REDIS_MAX_TOTAL:10}
       repositories:
         enabled: false
 
@@ -71,7 +69,7 @@ spring:
             client-id: ${OAUTH_VK_CLIENT_ID}
             client-secret: ${OAUTH_VK_SECRET}
             authorization-grant-type: authorization_code
-            client-authentication-method: post
+            client-authentication-method: client_secret_post
             redirect-uri: "{baseUrl}/api/oauth/login/callback/{registrationId}"
             scope: email
         provider:
@@ -105,9 +103,9 @@ management:
         include: health
   server:
     port: 8181
-  metrics:
-    export:
-      influx:
+  influx:
+    metrics:
+      export:
         enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
         org: tonkoslovie
@@ -118,8 +116,9 @@ management:
         token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
         api-version: v2
+  metrics:
     tags:
-      service.name: ${SERVICE_NAME:application.test}
+      service.name: ${SERVICE_NAME:application.dev}
 
 logging:
   pattern:

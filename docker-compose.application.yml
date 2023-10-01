@@ -1,0 +1,109 @@
+version: '3.8'
+
+include:
+  - docker-compose.yml
+
+services:
+  application:
+    image: tonkoslovie_application
+    container_name: tonkoslovie_application
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      DB_SERVER: postgres
+      DB_DATABASE: tonkoslovie
+      DB_USER: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-1234}
+      REDIS_HOST: redis
+      INFLUXDB_ENABLED: 'true'
+      INFLUXDB_URI: http://influxdb:8086
+      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
+      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID:-test}
+      OAUTH_GOOGLE_SECRET: ${OAUTH_GOOGLE_SECRET:-test}
+      OAUTH_FB_CLIENT_ID: ${OAUTH_FB_CLIENT_ID:-test}
+      OAUTH_FB_SECRET: ${OAUTH_FB_SECRET:-test}
+      OAUTH_VK_CLIENT_ID: ${OAUTH_VK_CLIENT_ID:-test}
+      OAUTH_VK_SECRET: ${OAUTH_VK_SECRET:-test}
+      JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
+      SERVICE_NAME: "application.1"
+    ports:
+      - "127.0.0.1:7081:8081"
+    volumes:
+      - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
+      - ./data:/workspace/data
+    healthcheck:
+      test: "curl -f localhost:8181/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  media:
+    image: tonkoslovie_media
+    container_name: tonkoslovie_media
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-tonkoslovie}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-12345678}
+    ports:
+      - "127.0.0.1:7082:8082"
+    healthcheck:
+      test: "curl -f localhost:8182/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  audit:
+    image: tonkoslovie_audit
+    container_name: tonkoslovie_audit
+    depends_on:
+      elastic:
+        condition: service_healthy
+    environment:
+      ELASTIC_URL: http://elastic:9200
+      INFLUXDB_ENABLED: 'true'
+      INFLUXDB_URI: http://influxdb:8086
+      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
+      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
+      SERVICE_NAME: "audit.1"
+    ports:
+      - "127.0.0.1:7083:8083"
+    healthcheck:
+      test: "curl -f localhost:8183/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  mail:
+    image: tonkoslovie_mail
+    container_name: tonkoslovie_mail
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      KAFKA_HOST: kafka
+      KAFKA_PORT: 9092
+      MAIL_USERNAME: ${MAIL_USERNAME:-test}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
+      INFLUXDB_ENABLED: 'true'
+      INFLUXDB_URI: http://influxdb:8086
+      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
+      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
+      SERVICE_NAME: "mail.1"
+    healthcheck:
+      test: "curl -f localhost:8184/actuator/health || exit 1"
+      interval: 10s
+      timeout: 3s
+      retries: 5

@@ -17,22 +17,20 @@ spring:
       mail:
         smtp:
           auth: true
-          starttls.enable: true
-          starttls.required: true
 
 server:
-  port: 8087
+  port: 8084
 
 management:
   server:
-    port: 8087
+    port: 8184
   endpoints:
     web:
       exposure:
         include: health
-  metrics:
-    export:
-      influx:
+  influx:
+    metrics:
+      export:
         enabled: ${INFLUXDB_ENABLED:false}
         db: tonkoslovie
         org: tonkoslovie
@@ -43,8 +41,9 @@ management:
         token: ${INFLUXDB_ADMIN_TOKEN}
         step: 10s
         api-version: v2
+  metrics:
     tags:
-      service.name: ${SERVICE_NAME:mail.test}
+      service.name: ${SERVICE_NAME:mail.dev}
 
 logging:
   pattern:

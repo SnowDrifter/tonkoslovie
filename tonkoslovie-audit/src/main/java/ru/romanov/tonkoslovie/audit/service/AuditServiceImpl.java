@@ -1,10 +1,8 @@
 package ru.romanov.tonkoslovie.audit.service;
 
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.data.domain.*;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.*;
@@ -23,11 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 
-    private final ElasticsearchRestTemplate elasticsearchTemplate;
+    private final ElasticsearchTemplate elasticsearchTemplate;
 
     @Override
     public RestPage<AuditDto> findAuditRecords(int page, int size, String table, String entityId) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("source.ts_ms").descending());
         Query query = createQuery(pageable, table, entityId);
 
         SearchHits<Audit> search = elasticsearchTemplate.search(query, Audit.class);
@@ -36,22 +34,17 @@ public class AuditServiceImpl implements AuditService {
     }
 
     private Query createQuery(Pageable pageable, String table, String entityId) {
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        Criteria criteria = new Criteria();
         if (StringUtils.hasText(table)) {
-            boolQueryBuilder.must(QueryBuilders.queryStringQuery(table).field("source.table"));
+            criteria.and(new Criteria("source.table").is(table));
         }
         if (StringUtils.hasText(entityId)) {
-            boolQueryBuilder.must(
-                    QueryBuilders.boolQuery()
-                            .should(QueryBuilders.queryStringQuery(entityId).field("before.id"))
-                            .should(QueryBuilders.queryStringQuery(entityId).field("after.id"))
+            criteria.subCriteria(
+                    new Criteria("before.id").is(entityId)
+                            .or("after.id").is(entityId)
             );
         }
-
-        return new NativeSearchQueryBuilder()
-                .withQuery(boolQueryBuilder)
-                .withPageable(pageable)
-                .build();
+        return new CriteriaQuery(criteria, pageable);
     }
 
     private Page<AuditDto> convertSearchHits(SearchHits<Audit> searchHits, Pageable pageable) {

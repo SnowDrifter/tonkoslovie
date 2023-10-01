@@ -3,14 +3,12 @@ package ru.romanov.tonkoslovie.content.text.entity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Text {
 
     @Id
@@ -20,7 +18,7 @@ public class Text {
 
     private String title;
 
-    @Type(type = "jsonb")
+    @Type(JsonBinaryType.class)
     private List<TextPart> parts;
 
     private String soundFileName;

@@ -10,7 +10,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import ru.romanov.tonkoslovie.model.mail.MailMessage;
 
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMessage;
 
 @Slf4j
 @Service

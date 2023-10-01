@@ -12,7 +12,7 @@ import ru.romanov.tonkoslovie.user.entity.Role;
 import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.utils.UserUtil;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Map;
 import java.util.Set;

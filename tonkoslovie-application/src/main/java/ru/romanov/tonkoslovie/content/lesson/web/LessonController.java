@@ -8,9 +8,9 @@ import ru.romanov.tonkoslovie.content.lesson.LessonService;
 import ru.romanov.tonkoslovie.content.lesson.dto.LessonDto;
 import ru.romanov.tonkoslovie.model.web.RestPage;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 
 import static ru.romanov.tonkoslovie.user.entity.Role.ROLE_ADMIN;
 

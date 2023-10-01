@@ -4,14 +4,12 @@ package ru.romanov.tonkoslovie.content.exercise.entity;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.List;
 
 @Data
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Exercise {
 
     @Id
@@ -21,11 +19,12 @@ public class Exercise {
 
     private String title;
 
+    @Column(columnDefinition = "int4")
     private ExerciseType type;
 
     private String original;
 
-    @Type(type = "jsonb")
+    @Type(JsonBinaryType.class)
     private List<String> answers;
 
     private String answerRegex;

@@ -8,7 +8,7 @@ import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 public interface UserService extends UserDetailsService {

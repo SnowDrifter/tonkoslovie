@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-mvn clean package
-mvn spring-boot:build-image -pl tonkoslovie-application,tonkoslovie-mail
+mvn clean install -pl tonkoslovie-model
+mvn spring-boot:build-image -pl !tonkoslovie-model
 
-docker-compose up -d
+docker compose up -d

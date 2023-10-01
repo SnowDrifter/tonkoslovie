@@ -1,68 +1,6 @@
 version: '3.8'
 
 services:
-  application:
-    image: tonkoslovie_application
-    container_name: tonkoslovie_application
-    depends_on:
-      - postgres
-      - kafka
-      - influxdb
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-      DB_SERVER: postgres
-      DB_DATABASE: tonkoslovie
-      DB_USER: ${POSTGRES_USER:-postgres}
-      DB_PASSWORD: ${POSTGRES_PASSWORD:-1234}
-      REDIS_HOST: redis
-      INFLUXDB_ENABLED: 'true'
-      INFLUXDB_URI: http://influxdb:8086
-      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
-      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
-      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
-      KAFKA_HOST: kafka
-      KAFKA_PORT: 9092
-      OAUTH_GOOGLE_CLIENT_ID: ${OAUTH_GOOGLE_CLIENT_ID:-test}
-      OAUTH_GOOGLE_SECRET: ${OAUTH_GOOGLE_SECRET:-test}
-      OAUTH_FB_CLIENT_ID: ${OAUTH_FB_CLIENT_ID:-test}
-      OAUTH_FB_SECRET: ${OAUTH_FB_SECRET:-test}
-      OAUTH_VK_CLIENT_ID: ${OAUTH_VK_CLIENT_ID:-test}
-      OAUTH_VK_SECRET: ${OAUTH_VK_SECRET:-test}
-      JWT_SECRET: ${JWT_SECRET:-nUmHdv1cSMjl4v1D8yD6VLIjdm4S5Q4O}
-      SERVICE_NAME: "application.1"
-    ports:
-      - "127.0.0.1:8081:8080"
-    volumes:
-      - ./nginx/nginx_local.conf:/etc/nginx/nginx.conf
-      - ./data:/workspace/data
-    healthcheck:
-      test: "curl -f localhost:8085/actuator/health || exit 1"
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
-  mail:
-    image: tonkoslovie_mail
-    container_name: tonkoslovie_mail
-    depends_on:
-      - kafka
-    environment:
-      KAFKA_HOST: kafka
-      KAFKA_PORT: 9092
-      MAIL_USERNAME: ${MAIL_USERNAME:-test}
-      MAIL_PASSWORD: ${MAIL_PASSWORD:-test}
-      INFLUXDB_ENABLED: 'true'
-      INFLUXDB_URI: http://influxdb:8086
-      INFLUXDB_USER: ${INFLUXDB_USER:-admin}
-      INFLUXDB_PASSWORD: ${INFLUXDB_PASSWORD:-12345678}
-      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-token}
-      SERVICE_NAME: "mail.1"
-    healthcheck:
-      test: "curl -f localhost:8087/actuator/health || exit 1"
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
   postgres:
     image: postgres:15-alpine
     container_name: tonkoslovie_postgres
@@ -93,13 +31,15 @@ services:
       retries: 5
 
   nginx:
-    image: nginx:1.22.1
+    image: nginx:1.25.2
     container_name: tonkoslovie_nginx
     ports:
       - "127.0.0.1:8080:8080"
+      - "127.0.0.1:7080:7080"
     volumes:
       - ./docker/nginx/nginx_local.conf:/etc/nginx/nginx.conf
       - ./docker/nginx/cors.conf:/etc/nginx/cors.conf
+      - ./docker_volumes/nginx/cache:/data/nginx/cache
     healthcheck:
       test: [ "CMD", "service", "nginx", "status" ]
       interval: 10s
@@ -107,18 +47,16 @@ services:
       retries: 5
 
   kafka:
-    image: bitnami/kafka:3.3.1
+    image: bitnami/kafka:3.5.1
     container_name: tonkoslovie_kafka
     environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ENABLE_KRAFT: 'yes'
+      KAFKA_CFG_NODE_ID: 0
       KAFKA_CFG_PROCESS_ROLES: broker,controller
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
-      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka:9093
       KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,PLAINTEXT_HOST://:29092
       KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      ALLOW_PLAINTEXT_LISTENER: 'yes'
     ports:
       - "127.0.0.1:9092:9092"
       - "127.0.0.1:29092:29092"
@@ -136,9 +74,12 @@ services:
       context: docker/kafka-connect
     container_name: tonkoslovie_kafka_connect
     depends_on:
-      - kafka
-      - postgres
-      - elastic
+      kafka:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      elastic:
+        condition: service_healthy
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka:9092
       CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
@@ -157,19 +98,20 @@ services:
       DB_PASSWORD: ${POSTGRES_PASSWORD:-1234}
       ELASTIC_URL: elastic:9200
     ports:
-      - "127.0.0.1:8083:8083"
+      - "127.0.0.1:18083:8083"
     healthcheck:
       test: "curl -f localhost:8083/connectors/ || exit 1"
-      start_period: 1m
+      start_period: 2m
       interval: 10s
-      timeout: 3s
-      retries: 5
+      timeout: 5s
+      retries: 10
 
   kafka-ui:
-    image: obsidiandynamics/kafdrop:3.30.0
+    image: obsidiandynamics/kafdrop:3.31.0
     container_name: tonkoslovie_kafka-ui
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
     environment:
       KAFKA_BROKERCONNECT: kafka:9092
     ports:
@@ -182,7 +124,7 @@ services:
       retries: 5
 
   influxdb:
-    image: influxdb:2.0-alpine
+    image: influxdb:2.7-alpine
     container_name: tonkoslovie_influxdb
     environment:
       DOCKER_INFLUXDB_INIT_MODE: setup
@@ -201,7 +143,7 @@ services:
       retries: 5
 
   elastic:
-    image: elasticsearch:8.4.3
+    image: elasticsearch:8.7.1
     container_name: tonkoslovie_elastic
     environment:
       xpack.security.enabled: 'false'
@@ -218,7 +160,7 @@ services:
       retries: 5
 
   minio:
-    image: bitnami/minio:2022.12.2
+    image: bitnami/minio:2023.9.27
     container_name: tonkoslovie_minio
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-tonkoslovie}

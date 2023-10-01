@@ -3,7 +3,7 @@ package ru.romanov.tonkoslovie.mail.entity;
 import lombok.Data;
 import ru.romanov.tonkoslovie.user.entity.User;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 

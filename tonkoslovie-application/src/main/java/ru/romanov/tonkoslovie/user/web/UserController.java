@@ -1,10 +1,13 @@
 package ru.romanov.tonkoslovie.user.web;
 
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +20,6 @@ import ru.romanov.tonkoslovie.user.entity.User;
 import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.Min;
 import java.util.Optional;
 import java.util.UUID;
 

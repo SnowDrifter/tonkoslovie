@@ -5,11 +5,10 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -23,7 +22,6 @@ import static ru.romanov.tonkoslovie.utils.UserUtil.ROLES_DELIMITER;
 @Entity
 @NoArgsConstructor
 @Table(name = "\"user\"")
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class User implements UserDetails {
 
     @Id
@@ -39,7 +37,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private boolean enabled;
-    @Type(type = "jsonb")
+    @Type(JsonBinaryType.class)
     private SocialMedia socialMedia;
 
     public User(long id, String roles) {

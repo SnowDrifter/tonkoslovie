@@ -1,6 +1,7 @@
 package ru.romanov.tonkoslovie.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +9,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCo
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequestEntityConverter;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import ru.romanov.tonkoslovie.oauth.CustomOAuth2AuthenticationSuccessHandler;
@@ -35,48 +38,54 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 
     private final CustomOAuth2AuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
     private final CustomOidcUserService oidcUserService;
     private final CustomOAuth2UserService oauth2UserService;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeRequests()
-                .antMatchers("/api/user/login",
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/user/login",
                         "/api/user/registration/**",
                         "/api/oauth/**",
                         "/actuator/health").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/content/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/content/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/content/**").hasRole("ADMIN")
-                .antMatchers("/api/user/users").hasRole("ADMIN")
-                .antMatchers("/api/user").hasRole("ADMIN")
-                .antMatchers("/api/user/update").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .requestMatchers("/api/content/exercises").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/content/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/content/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/content/**").hasRole("ADMIN")
+                .requestMatchers("/api/user/users").hasRole("ADMIN")
+                .requestMatchers("/api/user").hasRole("ADMIN")
+                .requestMatchers("/api/user/update").hasRole("ADMIN")
+                .anyRequest().authenticated());
 
-        http.csrf().disable();
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.addFilter(headerAuthenticationFilter(authenticationManager()));
 
-        http.oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/api/oauth/login")
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/api/oauth/login/callback/*")
-                .and()
-                .tokenEndpoint()
-                .accessTokenResponseClient(accessTokenResponseClient())
-                .and()
-                .userInfoEndpoint()
-                .userService(oauth2UserService)
-                .oidcUserService(oidcUserService)
-                .and()
-                .successHandler(oauthAuthenticationSuccessHandler);
+        http.oauth2Login(oauth -> oauth
+                .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
+                        .baseUri("/api/oauth/login"))
+                .redirectionEndpoint(redirectionEndpointConfig -> redirectionEndpointConfig
+                        .baseUri("/api/oauth/login/callback/*"))
+                .tokenEndpoint(tokenEndpointConfig -> tokenEndpointConfig
+                        .accessTokenResponseClient(accessTokenResponseClient()))
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                        .userService(oauth2UserService)
+                        .oidcUserService(oidcUserService))
+                .successHandler(oauthAuthenticationSuccessHandler));
+
+        return http.build();
+    }
+
+    @Bean
+    @SneakyThrows
+    public AuthenticationManager authenticationManager() {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Autowired
@@ -109,7 +118,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
         OAuth2AccessTokenResponseHttpMessageConverter tokenConverter = new OAuth2AccessTokenResponseHttpMessageConverter();
-        tokenConverter.setTokenResponseConverter(new CustomTokenResponseConverter());
+        tokenConverter.setAccessTokenResponseConverter(new CustomTokenResponseConverter());
 
         RestTemplate restTemplate = new RestTemplate(List.of(new FormHttpMessageConverter(), tokenConverter));
         restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());

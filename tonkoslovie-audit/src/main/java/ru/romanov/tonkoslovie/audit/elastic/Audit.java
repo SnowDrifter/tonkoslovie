@@ -2,12 +2,10 @@ package ru.romanov.tonkoslovie.audit.elastic;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.Date;
 import java.util.Map;
 
 @Data
@@ -16,13 +14,11 @@ public class Audit {
 
     @Id
     private String id;
-    @Field("source.table")
-    private String table;
     private Map<String, String> before;
     private Map<String, String> after;
     private String op;
-    @Field(name = "source.ts_ms", type = FieldType.Date, format = DateFormat.epoch_millis)
-    private Date createdAt;
+    @Field(type = FieldType.Object)
+    private AuditSource source;
 
     public String findEntityId() {
         if (before != null && before.containsKey("id")) {

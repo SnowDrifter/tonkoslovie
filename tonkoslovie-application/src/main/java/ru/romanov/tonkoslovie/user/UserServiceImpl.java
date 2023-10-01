@@ -28,7 +28,7 @@ import ru.romanov.tonkoslovie.user.web.request.UserRequest;
 import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 
 
