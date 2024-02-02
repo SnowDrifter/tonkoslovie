@@ -14,8 +14,8 @@ images:
 minio:
   bucket: tonkoslovie-media
   url: ${MINIO_URL:http://localhost:9005}
-  access-key: ${MINIO_ACCESS_KEY:tonkoslovie}
-  secret-key: ${MINIO_SECRET_KEY:12345678}
+  access-key: ${MINIO_SERVER_ACCESS_KEY:tonkoslovie}
+  secret-key: ${MINIO_SERVER_SECRET_KEY:12345678}
 
 management:
   server:

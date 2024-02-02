@@ -1,14 +1,16 @@
 package ru.romanov.tonkoslovie.content.text.entity;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 
 import jakarta.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
 public class Text {
 
     @Id

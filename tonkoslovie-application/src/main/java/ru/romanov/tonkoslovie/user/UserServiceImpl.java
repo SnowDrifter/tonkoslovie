@@ -1,7 +1,6 @@
 package ru.romanov.tonkoslovie.user;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -29,6 +28,8 @@ import ru.romanov.tonkoslovie.user.web.response.UserResponse;
 import ru.romanov.tonkoslovie.user.web.response.ValidationError;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 import java.util.*;
 
 
@@ -107,20 +108,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @SneakyThrows
     @Transactional
     public void confirmRegistration(UUID token, HttpServletResponse response) {
         EmailVerification verification = emailVerificationRepository.findByToken(token);
 
-        if (verification != null && verification.getExpirationDate().after(new Date())) {
-            User user = verification.getUser();
-            user.setEnabled(true);
-            userRepository.save(user);
+        try {
+            if (verification != null && verification.getExpirationDate().after(new Date())) {
+                User user = verification.getUser();
+                user.setEnabled(true);
+                userRepository.save(user);
 
-            String jwtToken = jwtService.makeToken(user.getId(), user.getRoles());
-            response.sendRedirect(siteHost + "/registration/success?token=" + jwtToken);
-        } else {
-            response.sendRedirect(siteHost + "/registration/error");
+                String jwtToken = jwtService.makeToken(user.getId(), user.getRoles());
+
+                response.sendRedirect(siteHost + "/registration/success?token=" + jwtToken);
+            } else {
+                response.sendRedirect(siteHost + "/registration/error");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

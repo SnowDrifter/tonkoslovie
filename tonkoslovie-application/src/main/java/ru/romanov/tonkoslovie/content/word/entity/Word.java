@@ -1,11 +1,12 @@
 package ru.romanov.tonkoslovie.content.word.entity;
 
-import lombok.Data;
-
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Entity
+@Getter
+@Setter
 public class Word {
 
     @Id

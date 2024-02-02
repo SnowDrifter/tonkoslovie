@@ -1,14 +1,16 @@
 package ru.romanov.tonkoslovie.mail.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.romanov.tonkoslovie.user.entity.User;
 
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
 
-@Data
 @Entity
+@Getter
+@Setter
 public class EmailVerification {
 
     @Id

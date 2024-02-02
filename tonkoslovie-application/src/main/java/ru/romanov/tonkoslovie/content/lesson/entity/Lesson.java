@@ -1,13 +1,15 @@
 package ru.romanov.tonkoslovie.content.lesson.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.romanov.tonkoslovie.content.text.entity.Text;
 
 import jakarta.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
 public class Lesson {
 
     @Id
